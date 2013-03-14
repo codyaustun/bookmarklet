@@ -4,7 +4,8 @@ $(document).ready(function(){
 	$("a[rel*=leanModal]").leanModal();
 
 	$("a[rel*=leanModal]").click(function(e){
-				// Get source URL for video
+		
+		// Get source URL for video
 		var url = $(this).attr('data-u');
 
 		// Update source URL in the modal dialog box
@@ -22,12 +23,20 @@ $(document).ready(function(){
 	$(".bl-create").click(function(e){
 		var start_time = $("input[name='bl-start']").val();
 		var end_time = $("input[name='bl-end']").val();
-		var url = $("#bl iframe").attr('src');
+		// var url = $("#bl iframe").attr('src');
+		var url = player.getVideoUrl();
+		var vid = getVideoIdFromURL(url);
+		var type = 'yt'
 
-		var newURL = url + "?start="+start_time+"&end="+end_time;
+		// var newURL = url + "?start="+start_time+"&end="+end_time;
+		var newLink = "<a rel='leanModal' data-start='"+start_time+
+					  "' data-end='"+end_time+"' data-type='"+
+					  type+"' data-vid='" + vid +
+					  "' href='#bl-vid'>Click Here</a>";
 
-		$(".bl-URL").text(newURL);
+		$(".bl-URL").text(newLink);
 	});
+
 
 	// Put the current time from the video into start input box	
 	$(".bl-start").click(function(e){
