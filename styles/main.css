@@ -1,0 +1,114 @@
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%; 
+}
+
+.inner-wrap {
+	width: 1200;
+	margin: auto;
+}
+
+.testVid {
+	width: 49%;
+	margin: 0.5%;
+	float: left;
+}
+
+.thebutton {
+  background-color: #FF0000;
+  width: 550px;
+  display: block;
+  color: #FFF;
+  padding: 5px;
+  text-align: center;
+}
+
+.thebutton a{
+	text-decoration: none;
+	color: #FFF;
+}
+
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+
+
+/* Bookmarklet Styles */
+#bl {
+	display: none;
+	background-color: #FFF;
+	padding: 10px;
+	width: 800px;
+}
+
+.bl-top{
+	width: 100%;
+	float: none;
+}
+
+.bl-vid{
+	width: 560px;
+	float: left;
+}
+
+.bl-controls{
+	width: 230px;
+	float: right;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.bl-bottom{
+	width: 100%;
+	clear: both;
+}
+
+.bl-title{
+	background-color: #000;
+	color: #FFF;
+	margin-bottom: 5px;
+}
+
+.bl-instructions {
+	margin-bottom: 5px;
+}
+
+.bl-input {
+	margin: auto;
+	margin-bottom: 20px;
+}
+
+.bl-label {
+	background-color: #333;
+	color: #FFF;
+}
+
+.bl-input .bl-label, .bl-input input{
+	width: 100px;
+	
+}
+
+.bl-input .bl-label{
+	text-align: center;
+}
+
+.bl-create{
+	display: inline-block;
+	background-color: #000;
+	color: #FFF;
+	margin-bottom: 5px;
+}
+
+.bl-URL{
+	background-color: #AAA;
+	margin: 0px;
+	width: 100%;
+}
