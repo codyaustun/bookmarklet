@@ -14,6 +14,7 @@
   <body>
     <div class="outer-wrap">
       <div class="inner-wrap">
+
         <h1>
           <center>Bookmarklet Test</center>
         </h1>
@@ -27,6 +28,7 @@
           </div>
         </div>
 
+
         <div class="testVid">
           <iframe width="560" height="315" src="http://www.youtube.com/embed/m4Bm3cs9TFo" frameborder="0" allowfullscreen></iframe>
           <div>
@@ -35,6 +37,11 @@
             </div>
           </div>
         </div>
+
+        <div class="bl-test">
+
+        </div>
+
       </div>
     </div>
 
@@ -46,56 +53,55 @@
 
 
     <!-- start bookmarklet box -->
+    <!-- start snippet box -->
     <div id="bl">
       <div class="bl-top">
         <div class="bl-vid">
-        <iframe id="player" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+        <iframe id="player" frameborder="0" allowfullscreen></iframe>
         </div>
         <div class="bl-controls">
           <div class="bl-title">
-            Create a reference clip URL
+            <h1>Create a URL</h1>
           </div>
           <div class="bl-instructions">
-            Create a reference clip URL as the video plays by clicking "Start Time" and "End Time" buttons,
-            or by typing in time code in the text boxes.
+            Click "Start Time" and "End Time" buttons,
+            or by type in the time in the text boxes.
           </div>
           <table class="bl-input">
             <tr>
-                <td class="bl-label bl-start">
-                  Start Time
+                <td>
+                  <input class="bl-button bl-start" type="button" value="Start Time">
                 </td>
                 <td>
                 </td>
-                <td class="bl-label bl-end">
-                  End Time
+                <td>
+                  <input class="bl-button bl-end" type="button" value="End Time">
                 </td>
             </tr>
             <tr>
                 <td>
-                  <input type="text" name="bl-start">
+                  <input class="bl-data" type="text" name="bl-start">
                 </td>
                 <td>
                   -
                 </td>
                 <td>
-                  <input type="text" name="bl-end">
+                  <input class="bl-data" type="text" name="bl-end">
                 </td>
             </tr>
             <tr>
-                <td class="bl-label bl-play">
-                  Play
+                <td>
+                  <input class="bl-button bl-play" type="button" value="Play">
                 </td>
                 <td>
                 </td>
-                <td class="bl-label bl-reset">
-                  Reset
+                <td>
+                  <input class="bl-button bl-reset" type="button" value="Reset">
                 </td>
             </tr>
           </table>
-          <div class="bl-create">
-              Create URL
-          </div>
-          <textarea class="bl-URL" rows="6">
+
+          <textarea class="bl-URL">
             Generate URL goes here
           </textarea>
         </div>
@@ -107,6 +113,15 @@
     </div>
 
     <div id="lean_overlay"></div>
+    <!-- end snippet box -->
+    <!-- start player box -->
+    <div id="bl-vid">
+      <div class="bl-vid-wrap">
+        <iframe id="playerV" frameborder="0" data-test="red" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- end player box -->
     <!-- end bookmarklet box -->
   </body>
 </html>
