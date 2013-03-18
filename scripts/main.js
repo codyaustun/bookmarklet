@@ -4,8 +4,6 @@ $(document).ready(function(){
 	
 	addAction();
 
-
-
 	// Put the current time from the video into start input box	
 	$(".bl-start").click(function(e){
 		var curr_time = player.getCurrentTime();
@@ -61,13 +59,23 @@ function addAction(){
 			clearInputs();
 		}else if($(this).attr('data-vid') !== undefined){
 			var vid = $(this).attr('data-vid');
-			var start = $(this).attr('data-start');
-			var end = $(this).attr('data-end');
+			var start_time = $(this).attr('data-start');
+			var end_time = $(this).attr('data-end');
 			var type = $(this).attr('data-type');
 			var url = "http://www.youtube.com/embed/"+vid;
+			var playerV;
+			
+			// Start and end parameters didn't work
+			playerV = new YT.Player('playerV', {
+				  videoId: vid,
+				  
+		          events: {
+		          	'onReady': onPlayerReady,
+		          }
+		    });
 
-			$("#bl-vid iframe").attr('src', url);
-			playerV.loadVideoById({'videoId': vid, 'startSeconds': start, 'endSeconds': end, 'suggestedQuality': 'large'});
+		    $("#bl-vid iframe").attr('data-start', start_time);
+		    $("#bl-vid iframe").attr('data-end', end_time);
 
 
 		}
@@ -76,6 +84,13 @@ function addAction(){
 
 }
 
+function onPlayerReady(event) {
+		var start_time = $("#bl-vid iframe").attr('data-start');
+		var end_time = $("#bl-vid iframe").attr('data-end');
+		var url = event.target.getVideoUrl();
+		var vid = getVideoIdFromURL(url);
+        event.target.cueVideoById({'videoId': vid, 'startSeconds': start_time, 'endSeconds': end_time, 'suggestedQuality': 'large'});
+}
 
 
 // clear input fields
@@ -135,25 +150,31 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
+	  iv_load_policy: 3,
 	  events: {
 	  	// set up event listeners
 	  }
 	});
 
-	playerV = new YT.Player('playerV', {
-          events: {
-
-          }
-    });
 };
 
 function getVideoIdFromURL(url){
-	var vid = url.split('v=')[1];
-	var ampersandPosition = vid.indexOf('&');
-	if(ampersandPosition != -1) {
-			 vid = vid.substring(0, ampersandPosition);
-	};
+	if(url.indexOf("v=") !== -1){
+		var vid = url.split('v=')[1];
+		var ampersandPosition = vid.indexOf('&');
+		if(ampersandPosition != -1) {
+				 vid = vid.substring(0, ampersandPosition);
+		};
 
-	return vid
+		return vid
+	}else{
+		var vid = url.split('embed/')[1];
+		var questionPosition = vid.indexOf('?');
+		if(questionPosition != -1) {
+				 vid = vid.substring(0, questionPosition);
+		};
+
+		return vid
+	}
 };
 
