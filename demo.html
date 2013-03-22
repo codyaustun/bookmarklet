@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      MITx Bookmarklet Test
+    </title>
+    <script type="text/javascript" src="scripts/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery.leanModal.min.js"></script>
+    <script type="text/javascript" src="scripts/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css"></script>
+
+    <style>
+      #generator{
+        width: 300px;
+        margin: auto;
+      }
+      .demoVid{
+        width:50%;
+        margin: auto;
+      }
+    </style>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $(".demo").click(function(e){
+
+            var url = $("input[name='demo']").val();
+            
+            var vid = bookMarklet.getVideoIdFromURL(url);
+            
+            var url = "http://www.youtube.com/embed/"+vid;
+
+            var question = $("div.demoVid:first").clone(true, true);
+            
+            var iframe = $(question).find("iframe");
+
+            var link = $(question).find(".bl-link");
+      
+            $(iframe).attr("src", url);
+            $(link).attr("data-u", url);
+            
+            $("#questions").prepend(question);
+            
+
+
+        });
+      });
+    </script>
+
+  </head>
+  <body>
+
+    <div class="outer-wrap">
+      <div class="inner-wrap">
+        <div id="generator">
+          <label for="demo">Enter URL</label>
+          <input class="url" type="text" name="demo">
+          <input class="demo" type="button" value="Create">
+        </div>
+
+
+        <div id="questions">
+          <div class="demoVid">
+            <iframe width="560" height="315" src="http://www.youtube.com/embed/8f7wj_RcqYk" frameborder="0" allowfullscreen></iframe>
+            <div>
+              <div class="bl-question">
+                
+                <div class="bl-answer"></div>
+                <a rel="leanModal" href="#bl" class="bl-link" data-u="http://www.youtube.com/embed/8f7wj_RcqYk">Snippet</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+
+
+    <!-- start bookmarklet box -->
+    <!-- start snippet box -->
+    <div id="bl">
+      <div class="bl-top">
+        <div class="bl-vid">
+        <iframe id="player" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="bl-controls">
+          <div class="bl-title">
+            <h1>Create a URL</h1>
+          </div>
+          <div class="bl-instructions">
+            Click "Start Time" and "End Time" buttons,
+            or by type in the time in the text boxes.
+          </div>
+          <table class="bl-input">
+            <tr>
+                <td>
+                  <input class="bl-button bl-start" type="button" value="Start Time">
+                </td>
+                <td>
+                </td>
+                <td>
+                  <input class="bl-button bl-end" type="button" value="End Time">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                  <input class="bl-data" type="text" name="bl-start">
+                </td>
+                <td>
+                  -
+                </td>
+                <td>
+                  <input class="bl-data" type="text" name="bl-end">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                  <input class="bl-button bl-done" type="button" value="Done">
+                </td>
+                <td>
+                </td>
+                <td>
+                  <input class="bl-button bl-reset" type="button" value="Reset">
+                </td>
+            </tr>
+          </table>
+
+          <textarea class="bl-URL">
+            Generate URL goes here
+          </textarea>
+        </div>
+      </div>
+      <div class="bl-bottom">
+        Source URL: 
+        <a class="bl-srcURL"></a>
+      </div>
+    </div>
+
+    <!-- end snippet box -->
+    <!-- start player box -->
+    <div id="bl-vid">
+      <div class="bl-vid-wrap">
+        <iframe id="playerV" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- end player box -->
+    <!-- end bookmarklet box --> 
+
+  </body>
+</html>
