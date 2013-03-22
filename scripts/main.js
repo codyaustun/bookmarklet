@@ -1,17 +1,19 @@
-
-$(document).ready(function(){
-	$("a[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
-	bookMarklet.start();
-});
-
 var bookMarklet = 
 {	
 	start: function (){
 		bookMarklet.addAction();
 
+		// Create a YouTube player object for the modal dialog window
+		// alert(bookMarklet.player);
+		bookMarklet.player = new window.YT.Player('player', {
+		  events: {
+		  	// set up event listeners
+		  }
+		});
+
 		// Put the current time from the video into start input box	
 		$(".bl-start").click(function(e){
-			var curr_time = player.getCurrentTime();
+			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-start']").val(curr_time);
 
 			// Generate new "a" Tag with snippet in bl-URL
@@ -20,7 +22,7 @@ var bookMarklet =
 
 		// Put the current time from the video into end input box
 		$(".bl-end").click(function(e){
-			var curr_time = player.getCurrentTime();
+			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-end']").val(curr_time);
 
 			// Generate new "a" Tag with snippet in bl-URL
@@ -40,16 +42,16 @@ var bookMarklet =
 
 		// close modal window and stop video
 		$(".bl-done").click(function(e){
-			player.stopVideo();
+			bookMarklet.player.stopVideo();
 		});
 
 		// Reset the video player
 		$(".bl-reset").click(function(e){
-			var url = player.getVideoUrl();
+			var url = bookMarklet.player.getVideoUrl();
 			var vid = bookMarklet.getVideoIdFromURL(url);
 			bookMarklet.clearInputs();
 
-			player.loadVideoById(vid, 0, "large")
+			bookMarklet.player.loadVideoById(vid, 0, "large")
 		});
 	},
 
@@ -76,6 +78,11 @@ var bookMarklet =
 				var url = "http://www.youtube.com/embed/"+vid;
 
 				$("#bl-vid iframe").attr('src', url);
+				playerV = new YT.Player('playerV', {
+			          events: {
+			          	'onReady': bookMarklet.onPlayerReady,
+			          }
+			    });
 			
 
 			    $("#bl-vid iframe").attr('data-start', start_time);
@@ -104,7 +111,7 @@ var bookMarklet =
 		if ((start_time < end_time || end_time === '') && (start_time !== '')) {
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
-			var url = player.getVideoUrl();
+			var url = bookMarklet.player.getVideoUrl();
 			var vid = bookMarklet.getVideoIdFromURL(url);
 			var type = 'yt'
 
@@ -125,6 +132,7 @@ var bookMarklet =
 			//$(".bl-answer a").remove();
 			// $(".bl-answer").append(newLink);
 
+			// adds overlay
 			$("a[rel*=leanModal]").leanModal();
 			bookMarklet.addAction();
 
@@ -163,6 +171,7 @@ var bookMarklet =
 	},
 
 	player: 'foo',
+	playerV: 'bar',
 
 	setup: function(){
 		// This code loads the IFrame Player API code asynchronously.
@@ -174,33 +183,19 @@ var bookMarklet =
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-		// Create a YouTube player object for the modal dialog window
-		bookMarklet.player = 'bar';
-		// alert(bookMarklet.player);
+		
 	}
 
 }
 
 
 bookMarklet.setup();
-
 // Create a YouTube player object for the modal dialog window
-var player;
-var playerV;
 function onYouTubeIframeAPIReady() {
-	player = new YT.Player('player', {
-	  events: {
-	  	// set up event listeners
-	  }
-	});
-
-
-	playerV = new YT.Player('playerV', {
-          events: {
-          	'onReady': bookMarklet.onPlayerReady,
-          }
-    });
-
+	$(document).ready(function(){
+		$("a[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
+		bookMarklet.start();
+	});	
 };
 
 
