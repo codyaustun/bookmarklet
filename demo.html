@@ -14,10 +14,16 @@
       #generator{
         width: 300px;
         margin: auto;
+        margin-bottom: 20px;
       }
       .demoVid{
         width:50%;
         margin: auto;
+        margin-bottom: 20px;
+      }
+
+      .hidden{
+        display:none;
       }
     </style>
 
@@ -26,12 +32,16 @@
         $(".demo").click(function(e){
 
             var url = $("input[name='demo']").val();
+
+            $(this).prev().val("");
             
             var vid = bookMarklet.getVideoIdFromURL(url);
             
             var url = "http://www.youtube.com/embed/"+vid;
 
             var question = $("div.demoVid:first").clone(true, true);
+
+            $(question).removeClass("hidden");
             
             var iframe = $(question).find("iframe");
 
@@ -61,9 +71,12 @@
 
 
         <div id="questions">
-          <div class="demoVid">
+          <div class="demoVid hidden">
             <iframe width="560" height="315" src="http://www.youtube.com/embed/8f7wj_RcqYk" frameborder="0" allowfullscreen></iframe>
             <div>
+              <p>
+                This is where the question prompt would go.
+              </p>
               <div class="bl-question">
                 
                 <div class="bl-answer"></div>

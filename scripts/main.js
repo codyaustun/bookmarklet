@@ -28,6 +28,7 @@ var bookMarklet =
 		// Adds click listeners to all #bl and #bl-vid elements
 		bookMarklet.addAction();
 
+		// TO DO: Generalize this
 		// Create a YouTube player object for the modal dialog window
 		bookMarklet.player = new window.YT.Player('player', {
 		  events: {
@@ -125,6 +126,7 @@ var bookMarklet =
 				var end_time = $(this).attr('data-end');
 				var type = $(this).attr('data-type');
 
+				// TO DO: Generalize this
 				// Generate URL needed by iframes
 				var url = "http://www.youtube.com/embed/"+vid;
 
@@ -135,6 +137,7 @@ var bookMarklet =
 			    $("#bl-vid iframe").attr('data-start', start_time);
 			    $("#bl-vid iframe").attr('data-end', end_time);
 
+			    // TO DO: Generalize this
 				// Create a YouTube player object for the modal dialog window
 				playerV = new YT.Player('playerV', {
 			          events: {
@@ -176,11 +179,17 @@ var bookMarklet =
 		if ((start_time < end_time || end_time === '') && (start_time !== '')) {
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
-			var url = bookMarklet.player.getVideoUrl();
-			var vid = bookMarklet.getVideoIdFromURL(url);
-			var type = 'yt'
+			
+			// TO DO: should be a parameter to generateTag
+			var type = 'yt' 
 
-			// var newURL = url + "?start="+start_time+"&end="+end_time;
+			// TO DO: Make this a case to add other video types
+			if(type === 'yt'){
+				var url = bookMarklet.player.getVideoUrl();
+				var vid = bookMarklet.getVideoIdFromURL(url);
+			}
+
+			// TO DO: Generalize this
 			var newLink = "<a rel='leanModal' data-start='"+start_time+
 						  "' data-end='"+end_time+"' data-type='"+
 						  type+"' data-vid='" + vid +
@@ -211,6 +220,7 @@ var bookMarklet =
 	// @modifies: None
 	getVideoIdFromURL: function(url){
 
+		// TO DO: Generalize this
 		// handles v=VIDEO_ID and embed/VIDEO_ID links
 		if(url.indexOf("v=") !== -1){
 			var vid = url.split('v=')[1];
@@ -240,6 +250,8 @@ var bookMarklet =
 	onPlayerReady: function(event) {
 			var start_time = $("#bl-vid iframe").attr('data-start');
 			var end_time = $("#bl-vid iframe").attr('data-end');
+
+			// TO DO: Generalize this
 			var url = event.target.getVideoUrl();
 			var vid = bookMarklet.getVideoIdFromURL(url);
 	        event.target.cueVideoById({'videoId': vid, 'startSeconds': start_time, 'endSeconds': end_time, 'suggestedQuality': 'large'});
