@@ -15,9 +15,13 @@
     		margin: auto;
     	}
 
-    	textarea{
+    	.bl-text{
     		width: 100%;
     		height: 200px;
+    		text-align: left;
+    		border-width: 1px;
+    		border-style: solid;
+    		border-color: #000;
     	}
 
     	.inner-wrap{
@@ -30,24 +34,13 @@
     		margin: auto;
     	}
 
+
+
     </style>
 
     <script type="text/javascript">
     	$(document).ready(function(){
-    		bookMarkletCreate("bl-answer", "yt", "8f7wj_RcqYk")
-
-    		function bookMarkletCreate (textareaid, videotype, videoid){
-    			console.log(textareaid);
-    			console.log(videotype);
-    			console.log(videoid);
-
-    			$("#"+textareaid).after("<input type='button' value='Snippet'>")
-    							 .next()
-    							 .attr("rel","leanModal")
-    							 .attr("href", "#bl");
-    			
-
-    		}
+    		bookMarklet.create("bl-text", "yt", "8f7wj_RcqYk");
     	});
     </script>
   </head>
@@ -64,8 +57,7 @@
   				Question: Pick the best Harlem Shake Video
   			</p>
   			</div>
-  			<textarea id="bl-answer">
-
+  			<textarea class="bl-text">
   			</textarea>
 
   		</div>

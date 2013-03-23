@@ -17,6 +17,12 @@ var bookMarklet =
 	//	 onPlayerReady()
 	// 	 setup()
 
+	vid: "",
+	start_time: "",
+	end_stime: "",
+	video_type: "",
+	answer_class: "bookMarklet-answer",
+
 	// Sets up event listeners for ".bl-start", ".bl-end", ".bl-reset", and
 	// 	".bl-done"
 	// Creates bookMarklet.player
@@ -26,16 +32,13 @@ var bookMarklet =
 	// @returns: nil
 	// @modifies: ".bl-start", ".bl-end", ".bl-reset", ".bl-done", "#bl", and
 	// 	"#bl-elements"
-
-	vid: "",
-	start_time: "",
-	end_stime: "",
-	video_type: "",
-
 	start: function (){
 
+
+		$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
+
 		// Adds click listeners to all #bl and #bl-vid elements
-		bookMarklet.addAction();
+		bookMarklet.addActions();
 
 		// TO DO: Generalize this
 		// Create a YouTube player object for the modal dialog window
@@ -53,10 +56,7 @@ var bookMarklet =
 			// Put the current time from the video into start input box	
 			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-start']").val(curr_time);
-
-			// Generate new "a" Tag with snippet in bl-URL
-			// Add tag to bl-answer for current question
-			bookMarklet.generateTag("Click Here");
+			bookMarklet.checkErrors();
 		}); 
 
 		// "End Time" button in #bl box
@@ -65,10 +65,7 @@ var bookMarklet =
 			// Put the current time from the video into end input box
 			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-end']").val(curr_time);
-
-			// Generate new "a" Tag with snippet in bl-URL
-			// Add tag to bl-answer for current question
-			bookMarklet.generateTag("Click Here");
+			bookMarklet.checkErrors();
 		}); 
 
 		// Removed Button but saving just in case
@@ -86,7 +83,7 @@ var bookMarklet =
 		// Also, closes #bl
 		$(".bl-done").click(function(e){
 
-			bookMarklet.generateTag("Click Here");
+			bookMarklet.generateTag();
 			// Stop "player" playback
 			bookMarklet.player.stopVideo();
 		});
@@ -102,6 +99,54 @@ var bookMarklet =
 		});
 	},
 
+	checkErrors: function(){
+		var start_time = $("input[name='bl-start']").val();
+		var end_time = $("input[name='bl-end']").val();
+		if((start_time < end_time || end_time === '') && (start_time !== '')){
+			$("input[name='bl-start']").removeClass("bl-incorrect");
+			$("input[name='bl-end']").removeClass("bl-incorrect");
+		}else{
+			$("input[name='bl-start']").addClass("bl-incorrect");
+			$("input[name='bl-end']").addClass("bl-incorrect");
+		}
+
+	},
+
+	create: function(textareaclass, videotype, videoid){
+
+		$("."+textareaclass).each(function(index){
+			var w = $(this).width();
+			var h = $(this).height();
+			var content = $(this).val();
+
+			$(this).after("<div></div>")
+				   .css("display", "none")
+				   .next()
+				   .attr({
+						contenteditable: "true"
+					})
+					.addClass(bookMarklet.answer_class)
+					.addClass(textareaclass)
+					.css({
+						width: w,
+						height: h
+					});
+
+		});
+
+
+		$("."+bookMarklet.answer_class).after("<input type='button' value='Snippet'>")
+						 .next()
+						 .attr({
+						 	rel: "leanModal",
+						 	href: "#bl",
+						 	"data-bl": "generate",
+						 	"data-bl-vid": videoid,
+						 	"data-bl-type": videotype
+						 });
+
+	},
+
 
 	// Adds click listeners to all #bl and #bl-vid leanModal links
 	// "a" tag with "data-bl" attribute of "generate" correspond to snippet generate links
@@ -109,8 +154,8 @@ var bookMarklet =
 	// @parameters: none
 	// @returns: nil
 	// @modifies: all "a[rel*=leanModal]" with attr 'data-bl'
-	addAction: function(){
-		$("a[rel*=leanModal]").click(function(e){
+	addActions: function(){
+		$(document).on("click","[rel*=leanModal]" ,function(){
 			
 
 			if($(this).attr('data-bl') === "generate"){
@@ -188,12 +233,24 @@ var bookMarklet =
 	// @modifies: all "input[name='bl-start']", "input[name='bl-end']", ".bl-URL"
 	// 			  one ".bl-answer"
 	// @creates: one "a[rel*=leanModal]" with attr "data-vid"
-	generateTag: function(text) {
+	generateTag: function() {
 		var start_time = $("input[name='bl-start']").val();
 		var end_time = $("input[name='bl-end']").val();
 		if ((start_time < end_time || end_time === '') && (start_time !== '')) {
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
+
+
+			if(end_time === ""){
+				end_time = bookMarklet.player.getDuration();
+			}
+
+			var startInt = Math.round(start_time);
+			var start = Math.floor(startInt/60)+":"+(startInt%60);
+			var endInt = Math.round(end_time);
+			var end = Math.floor(endInt/60)+":"+(endInt%60);
+
+			var text = start +"-"+ end;
 
 			// TO DO: Generalize this
 			var newLink = "<a rel='leanModal' data-bl-start='"+start_time+
@@ -208,9 +265,6 @@ var bookMarklet =
 			return newLink;
 
 		}else{
-			$("input[name='bl-start']").addClass("bl-incorrect");
-			$("input[name='bl-end']").addClass("bl-incorrect");
-
 			return "";
 		}
 	},
@@ -220,15 +274,14 @@ var bookMarklet =
 		$(".bl-URL").text(newLink);
 
 		var srcURL = $("#bl iframe").attr('src');
-		var srcQues = "a[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
+		var srcQues = "[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
 					  +bookMarklet.video_type+"']";
 					  
-		$(srcQues).prev(".bl-answer").children().remove();
-		$(srcQues).prev(".bl-answer").append(newLink);
+		// $(srcQues).prev(".bl-answer").children().remove();
+		$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);
 
 		// adds overlay
 		$("a[rel*=leanModal]").leanModal();
-		bookMarklet.addAction();
 	},
 
 	// Gets video id from v=VIDEO_ID and embed/VIDEO_ID links
@@ -262,7 +315,7 @@ var bookMarklet =
 
 	// Cues Video in "playerV" to data-start and data-end from #bl-vi iframe
 	// data-start and data-en are generated from an "a" tag with "data-vid" attribute.
-	// See bookMarklet.addAction() 
+	// See bookMarklet.addActions() 
 	// @parameters: event - onReady event from playerV
 	// @returns: nil
 	// @modifies: all "#bl-vid iframe"
@@ -300,7 +353,7 @@ bookMarklet.setup();
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {
 	$(document).ready(function(){
-		$("a[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
+		
 		bookMarklet.start();
 	});	
 };
