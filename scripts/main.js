@@ -4,6 +4,9 @@ var bookMarklet =
 	// Variables:
 	//	 player
 	//	 playerV
+	// 	 vid
+	//   start_time
+	//   end_time
 
 	// Functions:
 	//	 start()
@@ -23,6 +26,12 @@ var bookMarklet =
 	// @returns: nil
 	// @modifies: ".bl-start", ".bl-end", ".bl-reset", ".bl-done", "#bl", and
 	// 	"#bl-elements"
+
+	vid: "",
+	start_time: "",
+	end_stime: "",
+	video_type: "",
+
 	start: function (){
 
 		// Adds click listeners to all #bl and #bl-vid elements
@@ -47,7 +56,7 @@ var bookMarklet =
 
 			// Generate new "a" Tag with snippet in bl-URL
 			// Add tag to bl-answer for current question
-			bookMarklet.generateTag();
+			bookMarklet.generateTag("Click Here");
 		}); 
 
 		// "End Time" button in #bl box
@@ -59,7 +68,7 @@ var bookMarklet =
 
 			// Generate new "a" Tag with snippet in bl-URL
 			// Add tag to bl-answer for current question
-			bookMarklet.generateTag();
+			bookMarklet.generateTag("Click Here");
 		}); 
 
 		// Removed Button but saving just in case
@@ -77,6 +86,7 @@ var bookMarklet =
 		// Also, closes #bl
 		$(".bl-done").click(function(e){
 
+			bookMarklet.generateTag("Click Here");
 			// Stop "player" playback
 			bookMarklet.player.stopVideo();
 		});
@@ -94,18 +104,23 @@ var bookMarklet =
 
 
 	// Adds click listeners to all #bl and #bl-vid leanModal links
-	// "a" tag with "data-u" attribute correspond to snippet generate links
-	// "a" tag with "data-vid" attribute correspond to snippet playback links
+	// "a" tag with "data-bl" attribute of "generate" correspond to snippet generate links
+	// "a" tag with "data-bl" attribute of "show" correspond to snippet playback links
 	// @parameters: none
 	// @returns: nil
-	// @modifies: all "a[rel*=leanModal]" with attr 'data-u' or 'data-vid'
+	// @modifies: all "a[rel*=leanModal]" with attr 'data-bl'
 	addAction: function(){
 		$("a[rel*=leanModal]").click(function(e){
 			
 
-			if($(this).attr('data-u') !== undefined){
+			if($(this).attr('data-bl') === "generate"){
 				// Get source URL for video from data-u
-				var url = $(this).attr('data-u');
+				bookMarklet.vid = $(this).attr('data-bl-vid');
+				bookMarklet.video_type = $(this).attr('data-bl-type');
+
+				if(bookMarklet.video_type = "yt"){
+					var url = "http://www.youtube.com/embed/"+bookMarklet.vid;
+				};
 
 				
 				// Important: loads video into iframe and starts "player" controls
@@ -118,31 +133,30 @@ var bookMarklet =
 				// Reset the video player to initial state
 				bookMarklet.clearInputs();
 
-			}else if($(this).attr('data-vid') !== undefined){
+			}else if($(this).attr('data-bl') === "show"){
 
 				// Get video information from snippet playback link
-				var vid = $(this).attr('data-vid');
-				var start_time = $(this).attr('data-start');
-				var end_time = $(this).attr('data-end');
-				var type = $(this).attr('data-type');
+				bookMarklet.vid = $(this).attr('data-bl-vid');
+				bookMarklet.start_time = $(this).attr('data-bl-start');
+				bookMarklet.end_time = $(this).attr('data-bl-end');
+				bookMarklet.video_type = $(this).attr('data-bl-type');
 
 				// TO DO: Generalize this
 				// Generate URL needed by iframes
-				var url = "http://www.youtube.com/embed/"+vid;
+				if(bookMarklet.video_type = "yt"){
+					var url = "http://www.youtube.com/embed/"+bookMarklet.vid;
+				};
 
 				// Important: loads video into iframe and starts "playerV" controls
 				$("#bl-vid iframe").attr('src', url);
 
-				// Stores the start and end times in the iframe for playback
-			    $("#bl-vid iframe").attr('data-start', start_time);
-			    $("#bl-vid iframe").attr('data-end', end_time);
 
 			    // TO DO: Generalize this
 				// Create a YouTube player object for the modal dialog window
 				playerV = new YT.Player('playerV', {
 			          events: {
 			          	// Once "playerV" is ready this cues the snippet to play
-			          	'onReady': bookMarklet.onPlayerReady,
+			          	'onReady': bookMarklet.YTOnPlayerReady,
 			          }
 			    });
 			
@@ -168,48 +182,53 @@ var bookMarklet =
 	},
 
 	// Generate a URL for the snippet from the start and end input boxes
-	// @parameters: none
-	// @returns: nil
+	// @parameters: text - String for "a" tag text
+	// @returns: String - if start & end are valid values then the string is
+	//	 a valid "a" tag with text "text"
 	// @modifies: all "input[name='bl-start']", "input[name='bl-end']", ".bl-URL"
 	// 			  one ".bl-answer"
 	// @creates: one "a[rel*=leanModal]" with attr "data-vid"
-	generateTag: function() {
+	generateTag: function(text) {
 		var start_time = $("input[name='bl-start']").val();
 		var end_time = $("input[name='bl-end']").val();
 		if ((start_time < end_time || end_time === '') && (start_time !== '')) {
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
-			
-			// TO DO: should be a parameter to generateTag
-			var type = 'yt' 
-
-			// TO DO: Make this a case to add other video types
-			if(type === 'yt'){
-				var url = bookMarklet.player.getVideoUrl();
-				var vid = bookMarklet.getVideoIdFromURL(url);
-			}
 
 			// TO DO: Generalize this
-			var newLink = "<a rel='leanModal' data-start='"+start_time+
-						  "' data-end='"+end_time+"' data-type='"+
-						  type+"' data-vid='" + vid +
-						  "' href='#bl-vid'>Click Here</a>";
+			var newLink = "<a rel='leanModal' data-bl-start='"+start_time+
+						  "' data-bl-end='"+end_time+"' data-bl-type='"+
+						  bookMarklet.video_type+"' data-bl-vid='" + 
+						  bookMarklet.vid +
+						  "' href='#bl-vid' data-bl='show'>"+text+
+						  "</a>";
 
-			$(".bl-URL").text(newLink);
+			bookMarklet.update(newLink);
 
-			var srcURL = $("#bl iframe").attr('src');
-			var srcQues = "a[data-u='"+srcURL+"']";
-			$(srcQues).prev(".bl-answer").children().remove();
-			$(srcQues).prev(".bl-answer").append(newLink);
-
-			// adds overlay
-			$("a[rel*=leanModal]").leanModal();
-			bookMarklet.addAction();
+			return newLink;
 
 		}else{
 			$("input[name='bl-start']").addClass("bl-incorrect");
 			$("input[name='bl-end']").addClass("bl-incorrect");
+
+			return "";
 		}
+	},
+
+
+	update: function(newLink){
+		$(".bl-URL").text(newLink);
+
+		var srcURL = $("#bl iframe").attr('src');
+		var srcQues = "a[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
+					  +bookMarklet.video_type+"']";
+					  
+		$(srcQues).prev(".bl-answer").children().remove();
+		$(srcQues).prev(".bl-answer").append(newLink);
+
+		// adds overlay
+		$("a[rel*=leanModal]").leanModal();
+		bookMarklet.addAction();
 	},
 
 	// Gets video id from v=VIDEO_ID and embed/VIDEO_ID links
@@ -247,14 +266,14 @@ var bookMarklet =
 	// @parameters: event - onReady event from playerV
 	// @returns: nil
 	// @modifies: all "#bl-vid iframe"
-	onPlayerReady: function(event) {
-			var start_time = $("#bl-vid iframe").attr('data-start');
-			var end_time = $("#bl-vid iframe").attr('data-end');
-
+	YTOnPlayerReady: function(event) {
 			// TO DO: Generalize this
 			var url = event.target.getVideoUrl();
 			var vid = bookMarklet.getVideoIdFromURL(url);
-	        event.target.cueVideoById({'videoId': vid, 'startSeconds': start_time, 'endSeconds': end_time, 'suggestedQuality': 'large'});
+	        event.target.cueVideoById({'videoId': vid,
+	        						   'startSeconds': bookMarklet.start_time,
+	         						   'endSeconds': bookMarklet.end_time, 
+	         						   'suggestedQuality': 'large'});
 	},
 
 	// Add scripts for YouTube iFrame API
