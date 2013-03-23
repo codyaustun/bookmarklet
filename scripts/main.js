@@ -245,10 +245,16 @@ var bookMarklet =
 				end_time = bookMarklet.player.getDuration();
 			}
 
-			var startInt = Math.round(start_time);
-			var start = Math.floor(startInt/60)+":"+(startInt%60);
-			var endInt = Math.round(end_time);
-			var end = Math.floor(endInt/60)+":"+(endInt%60);
+			var start = new Date(null);
+			var end = new Date(null);
+			start.setSeconds(start_time);
+			end.setSeconds(end_time);
+			start = start.toTimeString().substr(3,5);
+			end = end.toTimeString().substr(3,5);
+			// var startInt = Math.round(start_time);
+			// var start = Math.floor(startInt/60)+":"+(startInt%60);
+			// var endInt = Math.round(end_time);
+			// var end = Math.floor(endInt/60)+":"+(endInt%60);
 
 			var text = start +"-"+ end;
 
