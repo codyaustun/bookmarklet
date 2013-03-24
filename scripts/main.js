@@ -2,20 +2,16 @@ var bookMarklet =
 {	
 	// bookMarklet namespace
 	// Variables:
-	//	 player
-	//	 playerV
-	// 	 vid
-	//   start_time
-	//   end_time
+	//	 player, playerV, vid, start_time, end_time, video_type
 
 	// Functions:
 	//	 start()
 	//	 addAction()
 	//	 clearInputs()
-	//	 getVideoIdFromURL(url)
 	// 	 generateTag()
 	//	 onPlayerReady()
 	// 	 setup()
+	//	 generateSnippetBox()
 
 	vid: "",
 	start_time: "",
@@ -34,10 +30,14 @@ var bookMarklet =
 	// 	"#bl-elements"
 	start: function (){
 
+		bookMarklet.generateVideoBox();
+		bookMarklet.generateSnippetBox();
+
 		$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
 
-		// Adds click listeners to all #bl and #bl-vid elements
+		// Adds click listeners to all #bl and #bl-vid leanModal links
 		bookMarklet.addActions();
+
 
 		// TO DO: Generalize this
 		// Create a YouTube player object for the modal dialog window
@@ -71,7 +71,7 @@ var bookMarklet =
 		// Also, closes #bl
 		$(".bl-done").click(function(e){
 
-			bookMarklet.generateTag();
+			bookMarklet.update(bookMarklet.generateTag());
 			// Stop "player" playback
 			bookMarklet.player.stopVideo();
 		});
@@ -91,9 +91,11 @@ var bookMarklet =
 		if((start_time < end_time || end_time === '') && (start_time !== '')){
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
+			return true;
 		}else{
 			$("input[name='bl-start']").addClass("bl-incorrect");
 			$("input[name='bl-end']").addClass("bl-incorrect");
+			return false;
 		}
 
 	},
@@ -219,7 +221,7 @@ var bookMarklet =
 	generateTag: function() {
 		var start_time = $("input[name='bl-start']").val();
 		var end_time = $("input[name='bl-end']").val();
-		if ((start_time < end_time || end_time === '') && (start_time !== '')) {
+		if (bookMarklet.checkErrors()) {
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
 
@@ -248,7 +250,7 @@ var bookMarklet =
 						  "' href='#bl-vid' data-bl='show'>"+text+
 						  "</a>";
 
-			bookMarklet.update(newLink);
+			
 
 			return newLink;
 
@@ -257,18 +259,75 @@ var bookMarklet =
 		}
 	},
 
+	generateVideoBox: function(){
+		$("<div id='bl-vid'><div class='bl-video-wrap'>"+
+			"<iframe id='playerV' frameborder='0' allowfullscreen></iframe>"				 
+		 +"</div></div>").appendTo("body");
+	},
+
+	generateSnippetBox: function(){
+		$("<div id='bl'>"+
+		      "<div class='bl-top'>"+
+		        "<div class='bl-vid'>"+
+		        "<iframe id='player' frameborder='0' allowfullscreen></iframe>"
+		        +"</div>"+
+		        "<div class='bl-controls'>"+
+		          "<div class='bl-title'>"+
+		            "<h1>Create a URL</h1>"+
+		          "</div>"+
+		          "<div class='bl-instructions'>"+
+		            "Click \"Start Time\" and \"End Time\" buttons,"+
+		            "or by type in the time in the text boxes."+
+		          "</div>"+
+		          "<table class='bl-input'>"+
+		            "<tr>"+
+		                "<td>"+
+		                  "<input class='bl-button bl-start' type='button' value='Start Time'>"+
+		                "</td>"+
+		                "<td>"+
+		                "</td>"+
+		                "<td>"+
+		                  "<input class='bl-button bl-end' type='button' value='End Time'>"+
+		                "</td>"+
+		            "</tr>"+
+		            "<tr>"+
+		                "<td>"+
+		                  "<input class='bl-data' type='text' name='bl-start'>"+
+		                "</td>"+
+		                "<td>"+
+		                  "-"+
+		                "</td>"+
+		                "<td><input class='bl-data' type='text' name='bl-end'></td>"+
+		            "</tr>"+
+		            "<tr>"+
+		                "<td><input class='bl-button bl-done' type='button' value='Done'></td>"+
+		                "<td></td>"+
+		                "<td><input class='bl-button bl-reset' type='button' value='Reset'></td>"+
+		            "</tr>"+
+		          "</table>"+
+
+		          "<textarea class='bl-URL'>"+
+		            "Generate URL goes here"+
+		          "</textarea>"+
+		        "</div>"+
+		      "</div>"+
+		      "<div class='bl-bottom'>"+
+		        "Source URL:"+ 
+		        "<a class='bl-srcURL'></a>"+
+		      "</div>"+
+		    "</div>").appendTo("body");
+	},
+
 
 	update: function(newLink){
 		$(".bl-URL").text(newLink);
 
-		var srcURL = $("#bl iframe").attr('src');
 		var srcQues = "[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
 					  +bookMarklet.video_type+"']";
 					  
-		// $(srcQues).prev(".bl-answer").children().remove();
 		$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);
 
-		// adds overlay
+		// PROBLEM: adds overlay
 		$("a[rel*=leanModal]").leanModal();
 	},
 
@@ -299,8 +358,6 @@ var bookMarklet =
 		tag.src = "https://www.youtube.com/iframe_api";
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-		
 	}
 
 }
