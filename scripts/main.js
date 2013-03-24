@@ -34,7 +34,6 @@ var bookMarklet =
 	// 	"#bl-elements"
 	start: function (){
 
-
 		$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
 
 		// Adds click listeners to all #bl and #bl-vid elements
@@ -68,17 +67,6 @@ var bookMarklet =
 			bookMarklet.checkErrors();
 		}); 
 
-		// Removed Button but saving just in case
-		// Play the snippet from the start and end input boxes
-		// $(".bl-play").click(function(e){
-		// 	var start = $("input[name='bl-start']").val();
-		// 	var end = $("input[name='bl-end']").val();
-		// 	var url = player.getVideoUrl();
-		// 	var vid = bookMarklet.getVideoIdFromURL(url);
-
-		// 	player.loadVideoById({'videoId': vid, 'startSeconds': start, 'endSeconds': end, 'suggestedQuality': 'large'});
-		// });
-
 		// "Done" button in #bl box
 		// Also, closes #bl
 		$(".bl-done").click(function(e){
@@ -92,10 +80,8 @@ var bookMarklet =
 		$(".bl-reset").click(function(e){
 
 			// Reset the video player to initial state
-			var url = bookMarklet.player.getVideoUrl();
-			var vid = bookMarklet.getVideoIdFromURL(url);
 			bookMarklet.clearInputs();
-			bookMarklet.player.loadVideoById(vid, 0, "large")
+			bookMarklet.player.loadVideoById(bookMarklet.vid, 0, "large")
 		});
 	},
 
@@ -204,9 +190,6 @@ var bookMarklet =
 			          	'onReady': bookMarklet.YTOnPlayerReady,
 			          }
 			    });
-			
-
-
 
 			}
 
@@ -258,7 +241,6 @@ var bookMarklet =
 
 			var text = start +"-"+ end;
 
-			// TO DO: Generalize this
 			var newLink = "<a rel='leanModal' data-bl-start='"+start_time+
 						  "' data-bl-end='"+end_time+"' data-bl-type='"+
 						  bookMarklet.video_type+"' data-bl-vid='" + 
@@ -290,54 +272,23 @@ var bookMarklet =
 		$("a[rel*=leanModal]").leanModal();
 	},
 
-	// Gets video id from v=VIDEO_ID and embed/VIDEO_ID links
-	// Example: "http://www.youtube.com/embed/8f7wj_RcqYk" -> "8f7wj_RcqYk"
-	// Example: "http://www.youtube.com/watch?v=3YIx3vARyEs" -> "3YIx3vARyEs"
-	// @parameters: url - String for the url to a video
-	// @returns: vid - String for the videos id
-	// @modifies: None
-	getVideoIdFromURL: function(url){
-
-		// TO DO: Generalize this
-		// handles v=VIDEO_ID and embed/VIDEO_ID links
-		if(url.indexOf("v=") !== -1){
-			var vid = url.split('v=')[1];
-			var ampersandPosition = vid.indexOf('&');
-			if(ampersandPosition != -1) {
-					 vid = vid.substring(0, ampersandPosition);
-			};
-
-			return vid
-		}else{
-			var vid = url.split('embed/')[1];
-			var questionPosition = vid.indexOf('?');
-			if(questionPosition != -1) {
-					 vid = vid.substring(0, questionPosition);
-			};
-
-			return vid
-		}
-	},
-
 	// Cues Video in "playerV" to data-start and data-end from #bl-vi iframe
 	// data-start and data-en are generated from an "a" tag with "data-vid" attribute.
 	// See bookMarklet.addActions() 
 	// @parameters: event - onReady event from playerV
-	// @returns: nil
+	// @returns: undefined
 	// @modifies: all "#bl-vid iframe"
 	YTOnPlayerReady: function(event) {
-			// TO DO: Generalize this
-			var url = event.target.getVideoUrl();
-			var vid = bookMarklet.getVideoIdFromURL(url);
-	        event.target.cueVideoById({'videoId': vid,
+	        event.target.cueVideoById({'videoId': bookMarklet.vid,
 	        						   'startSeconds': bookMarklet.start_time,
 	         						   'endSeconds': bookMarklet.end_time, 
 	         						   'suggestedQuality': 'large'});
 	},
 
+
 	// Add scripts for YouTube iFrame API
 	// @parameters: none
-	// @returns: nil
+	// @returns: undefined
 	// @modifies: "document"
 	setup: function(){
 		// This code loads the IFrame Player API code asynchronously.
@@ -359,7 +310,6 @@ bookMarklet.setup();
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {
 	$(document).ready(function(){
-		
 		bookMarklet.start();
 	});	
 };
