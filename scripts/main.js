@@ -132,6 +132,10 @@ var bookMarklet =
 						 	"data-bl-type": videotype
 						 });
 
+		$("."+bookMarklet.answer_class).click(function(e){
+			$("a[rel*=leanModal]").leanModal();
+		});
+
 	},
 
 
@@ -197,6 +201,7 @@ var bookMarklet =
 		});
 
 	},
+
 
 	// Clear input fields in #bl box
 	// @parameters: none
