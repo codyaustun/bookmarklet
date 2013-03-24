@@ -48,7 +48,6 @@ var bookMarklet =
 		  }
 		});
 
-
 		// "Start Time" button in #bl box
 		$(".bl-start").click(function(e){
 
@@ -86,9 +85,9 @@ var bookMarklet =
 	},
 
 	checkErrors: function(){
-		var start_time = $("input[name='bl-start']").val();
-		var end_time = $("input[name='bl-end']").val();
-		if((start_time < end_time || end_time === '') && (start_time !== '')){
+		var start_time = parseFloat($("input[name='bl-start']").val());
+		var end_time = parseFloat($("input[name='bl-end']").val());
+		if((start_time < end_time || isNaN(end_time)) && (!isNaN(start_time))){
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
 			return true;
