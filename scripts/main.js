@@ -30,8 +30,13 @@ var bookMarklet =
 	// 	"#bl-elements"
 	start: function (){
 
-		bookMarklet.generateVideoBox();
-		bookMarklet.generateSnippetBox();
+		if($("#bl").length === 0){
+			bookMarklet.generateSnippetBox();
+		}
+
+		if($("#bl-vid").length === 0){
+			bookMarklet.generateVideoBox();
+		}
 
 		$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
 
@@ -99,9 +104,9 @@ var bookMarklet =
 
 	},
 
-	create: function(textareaclass, videotype, videoid){
+	create: function(textareaid, videotype, videoid){
 
-		$("."+textareaclass).each(function(index){
+		$("#"+textareaid).each(function(index){
 			var w = $(this).width();
 			var h = $(this).height();
 			var content = $(this).val();
@@ -113,7 +118,6 @@ var bookMarklet =
 						contenteditable: "true"
 					})
 					.addClass(bookMarklet.answer_class)
-					.addClass(textareaclass)
 					.css({
 						width: w,
 						height: h
@@ -133,7 +137,8 @@ var bookMarklet =
 						 });
 
 		$("."+bookMarklet.answer_class).click(function(e){
-			$("a[rel*=leanModal]").leanModal();
+			$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
+			e.target.click();
 		});
 
 	},
