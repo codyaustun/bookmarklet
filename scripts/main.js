@@ -22,11 +22,6 @@ var bookMarklet =
 
 		bookMarklet.addActions();
 
-		bookMarklet.player = new window.YT.Player('player', {
-		  events: {
-		  }
-		});
-
 		$(".bl-start").click(function(e){
 			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-start']").val(curr_time);
@@ -126,13 +121,16 @@ var bookMarklet =
 					var url = "http://www.youtube.com/embed/"+bookMarklet.vid;
 				};
 
-				// Important: loads video into iframe and starts "player" controls
-				$("#bl iframe").attr('src', url);
-
 				$(".bl-srcURL").attr('href', url);
 				$(".bl-srcURL").text(url);
 
 				bookMarklet.clearInputs();
+
+				bookMarklet.player = new window.YT.Player('bl-player', {
+				  videoId: bookMarklet.vid,
+				  events: {
+				  }
+				});
 
 			}else if($(this).attr('data-bl') === "show"){
 
@@ -141,18 +139,11 @@ var bookMarklet =
 				bookMarklet.end_time = $(this).attr('data-bl-end');
 				bookMarklet.video_type = $(this).attr('data-bl-type');
 
-				// TO DO: Generalize this
-				// Generate URL needed by iframes
-				if(bookMarklet.video_type = "yt"){
-					var url = "http://www.youtube.com/embed/"+bookMarklet.vid;
-				};
-
-				// Important: loads video into iframe and starts "playerV" controls
-				$("#bl-vid iframe").attr('src', url);
 
 			    // TO DO: Generalize this
 				// Create a YouTube player object for the modal dialog window
-				playerV = new YT.Player('playerV', {
+				bookMarklet.playerV = new YT.Player('bl-playerV', {
+				  	  videoId: bookMarklet.vid,
 			          events: {
 			          	// Once "playerV" is ready this cues the snippet to play
 			          	'onReady': bookMarklet.YTOnPlayerReady,
@@ -218,7 +209,7 @@ var bookMarklet =
 
 	generateVideoBox: function(){
 		$("<div id='bl-vid'><div class='bl-video-wrap'>"+
-			"<iframe id='playerV' frameborder='0' allowfullscreen></iframe>"				 
+			"<div id='bl-playerV'></div>"				 
 		 +"</div></div>").appendTo("body");
 	},
 
@@ -226,7 +217,7 @@ var bookMarklet =
 		$("<div id='bl'>"+
 		      "<div class='bl-top'>"+
 		        "<div class='bl-vid'>"+
-		        "<iframe id='player' frameborder='0' allowfullscreen></iframe>"
+		        "<div id='bl-player'></div>"
 		        +"</div>"+
 		        "<div class='bl-controls'>"+
 		          "<div class='bl-title'>"+
