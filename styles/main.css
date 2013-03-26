@@ -40,8 +40,33 @@ html {
     display: none;
 }
 
+#bookMarklet-overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+
 
 /* start bookMarklet Styles */
+
+.bookMarklet-answer{
+    		width: 100%;
+    		height: 200px;
+    		text-align: left;
+    		border-width: 1px;
+    		border-style: solid;
+    		border-color: #000;
+}
+
+.bookMarklet-answer img{
+	vertical-align: bottom;
+}
+
 
 
 /* start bookMarklet snippet box styles */
