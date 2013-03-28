@@ -303,9 +303,6 @@ var bookMarklet =
 					  +bookMarklet.video_type+"']";
 					  
 		$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);
-
-		// PROBLEM: adds overlay
-		$("a[rel*=leanModal]").leanModal();
 	},
 
 	YTOnPlayerReady: function(event) {
