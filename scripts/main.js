@@ -7,6 +7,7 @@ var bookMarklet =
 	video_type: "",
 	answer_class: "bookMarklet-answer",
 	reel: false,
+	modal_id: "",
 
 	start: function (){
 
@@ -17,8 +18,17 @@ var bookMarklet =
 		if($("#bl-vid").length === 0){
 			bookMarklet.generateVideoBox();
 		}
+		if($("#bookMarklet-overlay").length === 0){
+			$("<div id='bookMarklet-overlay'></div>").appendTo("body");
+		}
 
-		$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
+		$("#bookMarklet-overlay").click(function() { 
+            bookMarklet.close_modal(bookMarklet.modal_id);                    
+        });
+
+        $(".bl-done").click(function() { 
+            bookMarklet.close_modal(bookMarklet.modal_id);                    
+        });
 
 		bookMarklet.addActions();
 
@@ -45,6 +55,11 @@ var bookMarklet =
 			bookMarklet.clearInputs();
 			bookMarklet.player.loadVideoById(bookMarklet.vid, 0, "large")
 		});
+	},
+
+	close_modal: function(modal_id){
+		$("#bookMarklet-overlay").fadeOut(200);
+		$(modal_id).css({ 'display' : 'none' });
 	},
 
 	checkErrors: function(){
@@ -93,7 +108,7 @@ var bookMarklet =
 			$("."+bookMarklet.answer_class).after("<input type='button' value='Snippet'>")
 							 .next()
 							 .attr({
-							 	rel: "leanModal",
+							 	rel: "blModal",
 							 	href: "#bl",
 							 	"data-bl": "generate",
 							 	"data-bl-vid": videoid,
@@ -101,16 +116,30 @@ var bookMarklet =
 							 });
 		};
 
-		$("."+bookMarklet.answer_class).click(function(e){
-			$("[rel*=leanModal]").leanModal({closeButton: ".bl-done"});
-			e.target.click();
-		});
 
 	},
 
 	addActions: function(){
-		$(document).on("click","[rel*=leanModal]" ,function(){
-			
+		$(document).on("click","[rel*=blModal]" ,function(){
+			bookMarklet.modal_id = $(this).attr("href");
+
+            var modal_width = $(bookMarklet.modal_id).outerWidth();
+
+            $("#bookMarklet-overlay").css({'opacity' : 'block', opacity: 0});
+            $("#bookMarklet-overlay").fadeTo(200,0.5);
+
+            $(bookMarklet.modal_id).css({ 
+        			'display' : 'block',
+        			'position' : 'fixed',
+        			'opacity' : 0,
+        			'z-index': 11000,
+        			'left' : 50 + '%',
+        			'margin-left' : -(modal_width/2) + "px",
+        			'top' : "100px"
+        		
+        	});
+
+        	$(bookMarklet.modal_id).fadeTo(200,1);
 
 			if($(this).attr('data-bl') === "generate"){
 
@@ -191,7 +220,7 @@ var bookMarklet =
 				var text = start +"-"+ end;
 			}
 
-			var newLink = "<a rel='leanModal' data-bl-start='"+start_time+
+			var newLink = "<a rel='blModal' data-bl-start='"+start_time+
 						  "' data-bl-end='"+end_time+"' data-bl-type='"+
 						  bookMarklet.video_type+"' data-bl-vid='" + 
 						  bookMarklet.vid +
