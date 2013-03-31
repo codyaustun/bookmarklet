@@ -40,9 +40,6 @@ html {
     display: none;
 }
 
-
-
-
 /* start bookMarklet Styles */
 
 .bookMarklet-answer{
@@ -109,12 +106,14 @@ html {
 }
 
 .bl-controls{
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	width: 30%;
 	float: right;
 	border-left-color: rgb(221, 221, 221);
 	border-left-style: solid;
 	border-left-width: 1px;
-	box-sizing: border-box;
+
 
 }
 
@@ -154,6 +153,7 @@ html {
 
  .bl-input input{
 	width: 100px;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	border-style: solid;
 	border-width: 1px;

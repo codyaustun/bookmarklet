@@ -1,3 +1,10 @@
+// Create a YouTube player object for the modal dialog window
+function onYouTubeIframeAPIReady() {
+	$(document).ready(function(){
+		bookMarklet.start();
+	});	
+};
+
 var bookMarklet = 
 {	
 
@@ -10,7 +17,6 @@ var bookMarklet =
 	modal_id: "",
 	player: false,
 	playerV: false,
-	caretPos: 0,
 
 	start: function (){
 
@@ -46,9 +52,8 @@ var bookMarklet =
 
 
 		$(".bl-done").click(function(e){
-			bookMarklet.close_modal(bookMarklet.modal_id); 
+			bookMarklet.close_modal(bookMarklet.modal_id);  
 			bookMarklet.update(bookMarklet.generateTag());
-			
 		});
 
 		$(".bl-reset").click(function(e){
@@ -122,21 +127,10 @@ var bookMarklet =
 		};
 
 
-
 	},
 
 	addLinkActions: function(){
-		$(document).on("click", "."+bookMarklet.answer_class, function(){
-			bookMarklet.caretPos = getCaretPosition(this);
-		});
-
-		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
-			bookMarklet.caretPos = getCaretPosition(this);
-		});
-
 		$(document).on("click","[rel*=blModal]" ,function(){
-
-			// Modal Window
 			bookMarklet.modal_id = $(this).attr("data-bl-modal");
 
             var modal_width = $(bookMarklet.modal_id).outerWidth();
@@ -157,11 +151,7 @@ var bookMarklet =
 
         	$(bookMarklet.modal_id).fadeTo(200,1);
 
-
-        	// Everything else
 			if($(this).attr('data-bl') === "generate"){
-
-
 
 				bookMarklet.vid = $(this).attr('data-bl-vid');
 				bookMarklet.video_type = $(this).attr('data-bl-type');
@@ -245,7 +235,7 @@ var bookMarklet =
 
 			if(bookMarklet.reel){
 				var text = "<img alt='video snippet' src='"+
-					"images/film"+bookMarklet.reel+"Small.png"
+				"http://web.mit.edu/colemanc/www/bookmarklet/images/film"+bookMarklet.reel+"Small.png"
 				+"'>"
 			}else{
 				var text = start +"-"+ end;
@@ -274,54 +264,7 @@ var bookMarklet =
 		var srcQues = "[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
 					  +bookMarklet.video_type+"']";
 					  
-		// var currTextValue = $(srcQues).prev("."+bookMarklet.answer_class).text();
-		// var front = currTextValue.substr(0,bookMarklet.caretPos);
-		// var back = currTextValue.substring(bookMarklet.caretPos, currTextValue.length);
-
-		var currContent = $(srcQues).prev("."+bookMarklet.answer_class).contents();
-
-
-		// var textContent = currContent.filter(function(){
-		// 					return this.nodeType == 3;
-		// 				});
-
-		var newContent = [];
-		var beginPos = 0;
-		var endPos = 0;
-
-		currContent.each(function(i,e){
-			if((this.nodeType === 3) && (endPos < bookMarklet.caretPos) ){
-				var eString = e.data
-				beginPos = endPos
-				endPos = endPos + eString.length;
-
-				// console.log(eString);
-				// console.log("Element Length: "+eString.length);
-				// console.log("beginPos: "+beginPos);
-				// console.log("endPos: "+endPos);
-				// console.log("caretPos: "+bookMarklet.caretPos);
-
-				if(endPos >= bookMarklet.caretPos){
-					front = eString.substring(0, bookMarklet.caretPos - beginPos);
-					back = eString.substring(bookMarklet.caretPos - beginPos, eString.length);
-					newContent = newContent.concat(front);
-					newContent = newContent.concat(newLink);
-					newContent = newContent.concat(back);
-
-				}else{
-					newContent = newContent.concat(e);
-				}
-			}else{
-				newContent = newContent.concat(e);
-			}
-		});
-
-		// var textPos = 0;
-		
-
-		$(srcQues).prev("."+bookMarklet.answer_class).text("");
-		// $(srcQues).prev("."+bookMarklet.answer_class).append(newLink);
-		$(srcQues).prev("."+bookMarklet.answer_class).append(newContent);
+		$("."+bookMarklet.answer_class).append(newLink);
 	},
 
 	YTOnPlayerReady: function(event) {
@@ -400,54 +343,6 @@ var bookMarklet =
 
 }
 
-
-bookMarklet.setup_yt();
-// Create a YouTube player object for the modal dialog window
-function onYouTubeIframeAPIReady() {
-	$(document).ready(function(){
-		bookMarklet.start();
-	});	
-};
-
-function getCaretPosition(editableDiv) {
-    var caretPos = 0, containerEl = null, sel, range;
-    if (window.getSelection) {
-    	// console.log(window.getSelection());
-        sel = window.getSelection();
-        // console.log("sel.rangeCount: "+sel.rangeCount);
-        if (sel.rangeCount) {
-            range = sel.getRangeAt(0);
-            // console.log(range);
-            if (range.commonAncestorContainer.parentNode == editableDiv) {
-            	// console.log(range.commonAncestorContainer.parentNode);
-            	// console.log("editableDiv: "+editableDiv);
-            	// console.log("range.endOffset: "+range.endOffset);
-            	var temp1 = range.endContainer.data;
-            	// console.log(temp1);
-
-
-            	// only works in chrome. Firefox only has parentNode.innerhtml;
-            	var temp2 = range.commonAncestorContainer.parentNode.innerText;
-            	// console.log(temp2);
-            	// console.log(temp2.split(temp1)[0].length);
-                caretPos = range.endOffset + temp2.split(temp1)[0].length;
-            }
-        }
-    } 
-
-    // else if (document.selection && document.selection.createRange) {
-    //     range = document.selection.createRange();
-    //     if (range.parentElement() == editableDiv) {
-    //         var tempEl = document.createElement("span");
-    //         editableDiv.insertBefore(tempEl, editableDiv.firstChild);
-    //         var tempRange = range.duplicate();
-    //         tempRange.moveToElementText(tempEl);
-    //         tempRange.setEndPoint("EndToEnd", range);
-    //         caretPos = tempRange.text.length;
-    //     }
-    // }
-    return caretPos;
-}
 
 
 
