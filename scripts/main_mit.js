@@ -1,3 +1,11 @@
+// This exists because of bugs when implementing in MITx
+// 1. bookMarklet.update "$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);" didn't work
+// 2. for the modal window to work I couldn't use href
+// 3. YouTube iFrame API is already loaded, so I don't need to load it again.
+
+
+
+
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {
 	$(document).ready(function(){
@@ -35,7 +43,7 @@ var bookMarklet =
             bookMarklet.close_modal(bookMarklet.modal_id);                    
         });
 
-		bookMarklet.addLinkActions();
+		bookMarklet.addActions();
 
 		$(".bl-start").click(function(e){
 			var curr_time = bookMarklet.player.getCurrentTime();
@@ -129,7 +137,7 @@ var bookMarklet =
 
 	},
 
-	addLinkActions: function(){
+	addActions: function(){
 		$(document).on("click","[rel*=blModal]" ,function(){
 			bookMarklet.modal_id = $(this).attr("data-bl-modal");
 
