@@ -29,7 +29,7 @@ var bookMarklet =
             bookMarklet.close_modal(bookMarklet.modal_id);                    
         });
 
-		bookMarklet.addLinkActions();
+		bookMarklet.addActions();
 
 		$(".bl-start").click(function(e){
 			var curr_time = bookMarklet.player.getCurrentTime();
@@ -121,7 +121,7 @@ var bookMarklet =
 		}
 	},
 
-	addLinkActions: function(){
+	addActions: function(){
 		$(document).on("click", "."+bookMarklet.answer_class, function(){
 			bookMarklet.caretPos = bookMarklet.getCaretPosition(this);
 		});
