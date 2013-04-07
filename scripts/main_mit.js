@@ -1,6 +1,5 @@
 // This exists because of bugs when implementing in MITx
 // 1. bookMarklet.update "$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);" didn't work
-// 2. for the modal window to work I couldn't use href
 // 3. YouTube iFrame API is already loaded, so I don't need to load it again.
 
 
@@ -139,8 +138,8 @@ var bookMarklet =
 
 	addActions: function(){
 		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
-			var text = $(this).html();
-			$(this).prev().val(text);
+			var div_text = $(this).html();
+			$(this).prev().val(div_text);
 		});
 
 
@@ -280,8 +279,8 @@ var bookMarklet =
 					  
 		$("."+bookMarklet.answer_class).append(newLink);
 
-		var oldVal = $(srcQues).prev("."+bookMarklet.answer_class).prev().val();
-		$(srcQues).prev("."+bookMarklet.answer_class).prev().val(oldVal + newLink);
+		var oldVal = $("."+bookMarklet.answer_class).prev().val();
+		$("."+bookMarklet.answer_class).prev().val(oldVal + newLink);
 	},
 
 	YTOnPlayerReady: function(event) {
@@ -360,6 +359,13 @@ var bookMarklet =
 
 }
 
+bookMarklet.setup_yt();
+// Create a YouTube player object for the modal dialog window
+function onYouTubeIframeAPIReady() {
+	$(document).ready(function(){
+		bookMarklet.start();
+	});	
+};
 
 
 

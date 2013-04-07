@@ -95,7 +95,7 @@ var bookMarklet =
 			var content = $(this).val();
 
 			$(this).after("<div></div>")
-				// .css("display","none")
+				.css("display","none")
 				.next()
 				.attr({
 					contenteditable: "true"
@@ -128,8 +128,8 @@ var bookMarklet =
 
 		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
 			bookMarklet.caretPos = bookMarklet.getCaretPosition(this);
-			var text = $(this).html();
-			$(this).prev().val(text);
+			var div_text = $(this).html();
+			$(this).prev().val(div_text);
 		});
 
 		$(document).on("click","[rel*=blModal]" ,function(){
