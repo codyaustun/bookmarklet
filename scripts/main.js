@@ -95,7 +95,7 @@ var bookMarklet =
 			var content = $(this).val();
 
 			$(this).after("<div></div>")
-				.css("display","none")
+				// .css("display","none")
 				.next()
 				.attr({
 					contenteditable: "true"
@@ -128,6 +128,8 @@ var bookMarklet =
 
 		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
 			bookMarklet.caretPos = bookMarklet.getCaretPosition(this);
+			var text = $(this).html();
+			$(this).prev().val(text);
 		});
 
 		$(document).on("click","[rel*=blModal]" ,function(){
@@ -308,8 +310,12 @@ var bookMarklet =
 		
 
 		$(srcQues).prev("."+bookMarklet.answer_class).text("");
-		// $(srcQues).prev("."+bookMarklet.answer_class).append(newLink);
 		$(srcQues).prev("."+bookMarklet.answer_class).append(newContent);
+
+
+		var oldVal = $(srcQues).prev("."+bookMarklet.answer_class).prev().val();
+		$(srcQues).prev("."+bookMarklet.answer_class).prev().val(oldVal + newLink);
+
 	},
 
 	YTOnPlayerReady: function(event) {
