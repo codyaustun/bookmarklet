@@ -53,7 +53,7 @@ var bookMarklet =
 
 		$(".bl-reset").click(function(e){
 			bookMarklet.clearInputs();
-			bookMarklet.player.loadVideoById(bookMarklet.vid, 0, "large")
+			bookMarklet.player.loadVideoById(bookMarklet.vid, 0, "large");
 		});
 	},
 
@@ -79,7 +79,6 @@ var bookMarklet =
 			$("input[name='bl-end']").addClass("bl-incorrect");
 			return false;
 		}
-
 	},
 
 	create: function(textareaid, videotype, videoid, button, reel){
@@ -96,42 +95,39 @@ var bookMarklet =
 			var content = $(this).val();
 
 			$(this).after("<div></div>")
-				   .css("display", "none")
-				   .next()
-				   .attr({
-						contenteditable: "true"
-					})
-					.addClass(bookMarklet.answer_class)
-					.css({
-						width: w,
-						height: h
-					});
+				.css("display","none")
+				.next()
+				.attr({
+					contenteditable: "true"
+				})
+				.addClass(bookMarklet.answer_class)
+				.css({
+					width: w,
+					height: h
+				});
 
 		});
 
 		if(button){
 			$("."+bookMarklet.answer_class).after("<input type='button' value='Snippet'>")
-							 .next()
-							 .attr({
-							 	rel: "blModal",
-							 	"data-bl-modal": "#bl",
-							 	"data-bl": "generate",
-							 	"data-bl-vid": videoid,
-							 	"data-bl-type": videotype
-							 });
-		};
-
-
-
+				.next()
+				.attr({
+					rel: "blModal",
+					"data-bl-modal": "#bl",
+					"data-bl": "generate",
+					"data-bl-vid": videoid,
+					"data-bl-type": videotype
+				});
+		}
 	},
 
 	addLinkActions: function(){
 		$(document).on("click", "."+bookMarklet.answer_class, function(){
-			bookMarklet.caretPos = getCaretPosition(this);
+			bookMarklet.caretPos = bookMarklet.getCaretPosition(this);
 		});
 
 		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
-			bookMarklet.caretPos = getCaretPosition(this);
+			bookMarklet.caretPos = bookMarklet.getCaretPosition(this);
 		});
 
 		$(document).on("click","[rel*=blModal]" ,function(){
@@ -141,18 +137,17 @@ var bookMarklet =
 
             var modal_width = $(bookMarklet.modal_id).outerWidth();
 
-            $("#bookMarklet-overlay").css({'opacity' : 'block', opacity: 0});
+            $("#bookMarklet-overlay").css({'display' : 'block', opacity: 0});
             $("#bookMarklet-overlay").fadeTo(200,0.5);
 
             $(bookMarklet.modal_id).css({ 
-        			'display' : 'block',
-        			'position' : 'fixed',
-        			'opacity' : 0,
-        			'z-index': 11000,
-        			'left' : 50 + '%',
-        			'margin-left' : -(modal_width/2) + "px",
-        			'top' : "100px"
-        		
+        		'display' : 'block',
+        		'position' : 'fixed',
+        		'opacity' : 0,
+        		'z-index': 11000,
+        		'left' : 50 + '%',
+        		'margin-left' : -(modal_width/2) + "px",
+        		'top' : "100px"
         	});
 
         	$(bookMarklet.modal_id).fadeTo(200,1);
@@ -166,9 +161,11 @@ var bookMarklet =
 				bookMarklet.vid = $(this).attr('data-bl-vid');
 				bookMarklet.video_type = $(this).attr('data-bl-type');
 
-				if(bookMarklet.video_type = "yt"){
-					var url = "http://www.youtube.com/embed/"+bookMarklet.vid;
-				};
+				var url = "";
+
+				if(bookMarklet.video_type === "yt"){
+					url = "http://www.youtube.com/embed/"+bookMarklet.vid;
+				}
 
 				$(".bl-srcURL").attr('href', url);
 				$(".bl-srcURL").text(url);
@@ -177,12 +174,12 @@ var bookMarklet =
 
 				if(bookMarklet.player === false){
 					bookMarklet.player = new window.YT.Player('bl-player', {
-					  videoId: bookMarklet.vid,
-					  events: {
-					  }
+							videoId: bookMarklet.vid,
+							events: {
+						}
 					});
 				}else{
-					bookMarklet.player.cueVideoById(bookMarklet.vid, 0, "large")
+					bookMarklet.player.cueVideoById(bookMarklet.vid, 0, "large");
 				}
 
 			}else if($(this).attr('data-bl') === "show"){
@@ -193,27 +190,26 @@ var bookMarklet =
 				bookMarklet.video_type = $(this).attr('data-bl-type');
 
 
-			    // TO DO: Generalize this
+				// TO DO: Generalize this
 				// Create a YouTube player object for the modal dialog window
 				if(bookMarklet.playerV === false){
 					bookMarklet.playerV = new YT.Player('bl-playerV', {
-					  	  videoId: bookMarklet.vid,
-				          events: {
+						videoId: bookMarklet.vid,
+				    	events: {
 				          	// Once "playerV" is ready this cues the snippet to play
-				          	'onReady': bookMarklet.YTOnPlayerReady,
-				          }
+				         	'onReady': bookMarklet.YTOnPlayerReady
+				        }
 				    });
 				}else{
 					bookMarklet.playerV.cueVideoById({'videoId': bookMarklet.vid,
-	        						   'startSeconds': bookMarklet.start_time,
-	         						   'endSeconds': bookMarklet.end_time, 
-	         						   'suggestedQuality': 'large'});
+	        			'startSeconds': bookMarklet.start_time,
+	         			'endSeconds': bookMarklet.end_time, 
+	         			'suggestedQuality': 'large'});
 				}
 
 			}
 
 		});
-
 	},
 
 	clearInputs: function(){
@@ -221,7 +217,7 @@ var bookMarklet =
 		$("input[name='bl-start']").val('');
 		$("input[name='bl-start']").removeClass("bl-incorrect");
 		$("input[name='bl-end']").removeClass("bl-incorrect");
-		$(".bl-URL").text("Generate URL goes here")
+		$(".bl-URL").text("Generate URL goes here");
 	},
 
 	generateTag: function() {
@@ -243,21 +239,23 @@ var bookMarklet =
 			start = start.toTimeString().substr(3,5);
 			end = end.toTimeString().substr(3,5);
 
+			var text = "";
+
 			if(bookMarklet.reel){
-				var text = "<img alt='video snippet' src='"+
-					"images/film"+bookMarklet.reel+"Small.png"
-				+"'>"
+				text = "<img alt='video snippet' src='"+
+					"images/film"+bookMarklet.reel+"Small.png"+
+				"'>";
 			}else{
-				var text = start +"-"+ end;
+				text = start +"-"+ end;
 			}
 
 			var newLink = "<a rel='blModal' data-bl-start='"+start_time+
-						  "' data-bl-end='"+end_time+"' data-bl-type='"+
-						  bookMarklet.video_type+"' data-bl-vid='" + 
-						  bookMarklet.vid +
-						  "' href='#bl-vid' data-bl='show'"+
-						  " data-bl-modal='#bl-vid'>"+text+
-						  "</a>";
+				"' data-bl-end='"+end_time+"' data-bl-type='"+
+				bookMarklet.video_type+"' data-bl-vid='" + 
+				bookMarklet.vid +
+				"' href='#bl-vid' data-bl='show'"+
+				" data-bl-modal='#bl-vid'>"+text+
+				"</a>";
 
 			
 
@@ -271,28 +269,18 @@ var bookMarklet =
 	update: function(newLink){
 		$(".bl-URL").text(newLink);
 
-		var srcQues = "[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"
-					  +bookMarklet.video_type+"']";
-					  
-		// var currTextValue = $(srcQues).prev("."+bookMarklet.answer_class).text();
-		// var front = currTextValue.substr(0,bookMarklet.caretPos);
-		// var back = currTextValue.substring(bookMarklet.caretPos, currTextValue.length);
+		var srcQues = "[data-bl-vid='"+bookMarklet.vid+"'][data-bl-type='"+
+			bookMarklet.video_type+"']";
 
 		var currContent = $(srcQues).prev("."+bookMarklet.answer_class).contents();
-
-
-		// var textContent = currContent.filter(function(){
-		// 					return this.nodeType == 3;
-		// 				});
-
 		var newContent = [];
 		var beginPos = 0;
 		var endPos = 0;
 
 		currContent.each(function(i,e){
 			if((this.nodeType === 3) && (endPos < bookMarklet.caretPos) ){
-				var eString = e.data
-				beginPos = endPos
+				var eString = e.data;
+				beginPos = endPos;
 				endPos = endPos + eString.length;
 
 				// console.log(eString);
@@ -325,12 +313,11 @@ var bookMarklet =
 	},
 
 	YTOnPlayerReady: function(event) {
-	        event.target.cueVideoById({'videoId': bookMarklet.vid,
-	        						   'startSeconds': bookMarklet.start_time,
-	         						   'endSeconds': bookMarklet.end_time, 
-	         						   'suggestedQuality': 'large'});
+	    event.target.cueVideoById({'videoId': bookMarklet.vid,
+	        'startSeconds': bookMarklet.start_time,
+	    	'endSeconds': bookMarklet.end_time, 
+	    	'suggestedQuality': 'large'});
 	},
-
 
 	setup_yt: function(){
 		var tag = document.createElement('script');
@@ -396,6 +383,46 @@ var bookMarklet =
 		        "<a class='bl-srcURL'></a>"+
 		      "</div>"+
 		    "</div>").appendTo("body");
+	},
+
+	getCaretPosition: function(editableDiv) {
+	    var caretPos = 0, containerEl = null, sel, range;
+	    if (window.getSelection) {
+	    	// console.log(window.getSelection());
+	        sel = window.getSelection();
+	        // console.log("sel.rangeCount: "+sel.rangeCount);
+	        if (sel.rangeCount) {
+	            range = sel.getRangeAt(0);
+	            // console.log(range);
+	            if (range.commonAncestorContainer.parentNode == editableDiv) {
+	            	// console.log(range.commonAncestorContainer.parentNode);
+	            	// console.log("editableDiv: "+editableDiv);
+	            	// console.log("range.endOffset: "+range.endOffset);
+	            	var temp1 = range.endContainer.data;
+	            	// console.log(temp1);
+
+
+	            	// only works in chrome. Firefox only has parentNode.innerhtml;
+	            	var temp2 = range.commonAncestorContainer.parentNode.innerText;
+	            	// console.log(temp2);
+	            	// console.log(temp2.split(temp1)[0].length);
+	                caretPos = range.endOffset + temp2.split(temp1)[0].length;
+	            }
+	        }
+	    } 
+
+	    // else if (document.selection && document.selection.createRange) {
+	    //     range = document.selection.createRange();
+	    //     if (range.parentElement() == editableDiv) {
+	    //         var tempEl = document.createElement("span");
+	    //         editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+	    //         var tempRange = range.duplicate();
+	    //         tempRange.moveToElementText(tempEl);
+	    //         tempRange.setEndPoint("EndToEnd", range);
+	    //         caretPos = tempRange.text.length;
+	    //     }
+	    // }
+	    return caretPos;
 	}
 
 }
@@ -409,45 +436,6 @@ function onYouTubeIframeAPIReady() {
 	});	
 };
 
-function getCaretPosition(editableDiv) {
-    var caretPos = 0, containerEl = null, sel, range;
-    if (window.getSelection) {
-    	// console.log(window.getSelection());
-        sel = window.getSelection();
-        // console.log("sel.rangeCount: "+sel.rangeCount);
-        if (sel.rangeCount) {
-            range = sel.getRangeAt(0);
-            // console.log(range);
-            if (range.commonAncestorContainer.parentNode == editableDiv) {
-            	// console.log(range.commonAncestorContainer.parentNode);
-            	// console.log("editableDiv: "+editableDiv);
-            	// console.log("range.endOffset: "+range.endOffset);
-            	var temp1 = range.endContainer.data;
-            	// console.log(temp1);
-
-
-            	// only works in chrome. Firefox only has parentNode.innerhtml;
-            	var temp2 = range.commonAncestorContainer.parentNode.innerText;
-            	// console.log(temp2);
-            	// console.log(temp2.split(temp1)[0].length);
-                caretPos = range.endOffset + temp2.split(temp1)[0].length;
-            }
-        }
-    } 
-
-    // else if (document.selection && document.selection.createRange) {
-    //     range = document.selection.createRange();
-    //     if (range.parentElement() == editableDiv) {
-    //         var tempEl = document.createElement("span");
-    //         editableDiv.insertBefore(tempEl, editableDiv.firstChild);
-    //         var tempRange = range.duplicate();
-    //         tempRange.moveToElementText(tempEl);
-    //         tempRange.setEndPoint("EndToEnd", range);
-    //         caretPos = tempRange.text.length;
-    //     }
-    // }
-    return caretPos;
-}
 
 
 
