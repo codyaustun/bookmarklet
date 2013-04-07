@@ -138,6 +138,12 @@ var bookMarklet =
 	},
 
 	addActions: function(){
+		$(document).on("keyup", "."+bookMarklet.answer_class, function(){
+			var text = $(this).html();
+			$(this).prev().val(text);
+		});
+
+
 		$(document).on("click","[rel*=blModal]" ,function(){
 			bookMarklet.modal_id = $(this).attr("data-bl-modal");
 
@@ -273,6 +279,9 @@ var bookMarklet =
 					  +bookMarklet.video_type+"']";
 					  
 		$("."+bookMarklet.answer_class).append(newLink);
+
+		var oldVal = $(srcQues).prev("."+bookMarklet.answer_class).prev().val();
+		$(srcQues).prev("."+bookMarklet.answer_class).prev().val(oldVal + newLink);
 	},
 
 	YTOnPlayerReady: function(event) {
