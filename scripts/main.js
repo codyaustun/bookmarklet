@@ -414,6 +414,8 @@ var bookMarklet =
 	            		replace(/&nbsp;/g, String.fromCharCode(160));
 	            	// var temp2 = range.commonAncestorContainer.parentNode.innerText
 
+	            	temp2 = bookMarklet.stripHTML(temp2);
+
 	            	// console.log(temp2);
 	            	// console.log(temp2.split(temp1)[0].length);
 	                caretPos = range.endOffset + temp2.split(temp1)[0].length;
@@ -433,6 +435,12 @@ var bookMarklet =
 	    //     }
 	    // }
 	    return caretPos;
+	},
+
+	stripHTML: function(html){
+		var tmp = document.createElement("DIV");
+		tmp.innerHTML = html;
+		return tmp.textContent || tmp.innerText;
 	}
 
 }
