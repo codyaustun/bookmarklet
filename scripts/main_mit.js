@@ -2,6 +2,80 @@
 // 1. bookMarklet.update "$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);" didn't work
 // 3. YouTube iFrame API is already loaded, so I don't need to load it again.
 
+// OLD HTML
+// <h2 class="problem-header">
+//   Text and Snippet Input
+// </h2>
+
+// <textarea id="bl-text">
+// </textarea>
+
+// <section class="action bl-action">
+//   <input type="hidden" name="problem_id" value="Text Input">
+//   <input type="button" value="Snippet" rel="blModal" data-bl="generate" data-bl-vid="41ZDo9dhNaE" data-bl-type="yt" href="#bl" data-bl-modal= "#bl">
+// </section>
+
+// OLD CSS
+// .bl-action{
+//     margin-top: 20px; 
+//   }
+  
+//  .bl-action input{
+//   -webkit-appearance: none;
+// 	-webkit-background-clip: padding-box;
+// 	-webkit-border-image: none;
+// 	-webkit-box-align: center;
+// 	-webkit-box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset;
+// 	-webkit-font-smoothing: antialiased;
+// 	-webkit-rtl-ordering: logical;
+// 	-webkit-user-select: text;
+// 	-webkit-writing-mode: horizontal-tb;
+// 	background-clip: padding-box;
+// 	background-color: rgb(238, 238, 238);
+// 	background-image: -webkit-linear-gradient(top, rgb(238, 238, 238), rgb(210, 210, 210));
+// 	box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset;
+// 	box-sizing: border-box;
+// 	color: rgb(51, 51, 51);
+// 	cursor: pointer;
+// 	display: inline-block;
+// 	font-family: 'Open Sans', Verdana, Geneva, sans-serif;
+// 	font-size: 13px;
+// 	font-style: normal;
+// 	font-variant: normal;
+// 	font-weight: bold;
+// 	text-align: center;
+// 	text-decoration: none;
+// 	text-indent: 0px;
+// 	text-shadow: rgb(248, 248, 248) 0px 1px 0px;
+// 	text-transform: none;
+// 	vertical-align: top;
+// 	white-space: pre;
+// 	word-spacing: 0px;
+// 	writing-mode: lr-tb;
+// 	border-color: rgb(202, 202, 202);
+// 	border-radius: 3px;
+// 	height: 40px;
+//   }
+  
+//   .bl-text, #bl-text{
+//     		width: 100%;
+//     		height: 200px;
+//     		text-align: left;
+//     		border-width: 1px;
+//     		border-style: solid;
+//     		border-color: #000;
+//     	}
+  
+//   .bookMarklet-answer{
+//     box-sizing: border-box;
+// 	border-style: solid;
+// 	border-width: 1px;
+//     border-color: rgb(200, 200, 200);
+// 	border-style: solid;
+// 	border-width: 1px;
+
+  
+// }
 
 
 

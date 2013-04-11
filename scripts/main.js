@@ -409,7 +409,11 @@ var bookMarklet =
 
 
 	            	// only works in chrome. Firefox only has parentNode.innerhtml;
-	            	var temp2 = range.commonAncestorContainer.parentNode.innerText;
+	            	var temp2 = range.commonAncestorContainer.
+	            		parentNode.innerHTML.
+	            		replace(/&nbsp;/g, String.fromCharCode(160));
+	            	// var temp2 = range.commonAncestorContainer.parentNode.innerText
+
 	            	// console.log(temp2);
 	            	// console.log(temp2.split(temp1)[0].length);
 	                caretPos = range.endOffset + temp2.split(temp1)[0].length;
