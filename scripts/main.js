@@ -222,6 +222,10 @@ var bookMarklet =
 		$(".bl-URL").text("Generate URL goes here");
 	},
 
+	generateURL: function(){
+		var baseURL = "TO DO"
+	},
+
 	generateTag: function() {
 		var start_time = $("input[name='bl-start']").val();
 		var end_time = $("input[name='bl-end']").val();
