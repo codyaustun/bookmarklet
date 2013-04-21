@@ -1,5 +1,5 @@
-var bookMarklet = 
-{	
+var bookMarklet =
+{
 
 	vid: "",
 	start_time: "",
@@ -25,8 +25,8 @@ var bookMarklet =
 			$("<div id='bookMarklet-overlay'></div>").appendTo("body");
 		}
 
-		$("#bookMarklet-overlay").click(function() { 
-            bookMarklet.close_modal(bookMarklet.modal_id);                    
+		$("#bookMarklet-overlay").click(function() {
+            bookMarklet.close_modal(bookMarklet.modal_id);
         });
 
 		bookMarklet.addActions();
@@ -35,20 +35,19 @@ var bookMarklet =
 			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-start']").val(curr_time);
 			bookMarklet.checkErrors();
-		}); 
+		});
 
 
 		$(".bl-end").click(function(e){
 			var curr_time = bookMarklet.player.getCurrentTime();
 			$("input[name='bl-end']").val(curr_time);
 			bookMarklet.checkErrors();
-		}); 
+		});
 
 
 		$(".bl-done").click(function(e){
-			bookMarklet.close_modal(bookMarklet.modal_id); 
+			bookMarklet.close_modal(bookMarklet.modal_id);
 			bookMarklet.update(bookMarklet.generateTag());
-			
 		});
 
 		$(".bl-reset").click(function(e){
@@ -137,28 +136,26 @@ var bookMarklet =
 			// Modal Window
 			bookMarklet.modal_id = $(this).attr("data-bl-modal");
 
-            var modal_width = $(bookMarklet.modal_id).outerWidth();
+      var modal_width = $(bookMarklet.modal_id).outerWidth();
 
-            $("#bookMarklet-overlay").css({'display' : 'block', opacity: 0});
-            $("#bookMarklet-overlay").fadeTo(200,0.5);
+      $("#bookMarklet-overlay").css({'display' : 'block', opacity: 0});
+      $("#bookMarklet-overlay").fadeTo(200,0.5);
 
-            $(bookMarklet.modal_id).css({ 
-        		'display' : 'block',
-        		'position' : 'fixed',
-        		'opacity' : 0,
-        		'z-index': 11000,
-        		'left' : 50 + '%',
-        		'margin-left' : -(modal_width/2) + "px",
-        		'top' : "100px"
-        	});
+			$(bookMarklet.modal_id).css({
+				'display' : 'block',
+				'position' : 'fixed',
+				'opacity' : 0,
+				'z-index': 11000,
+				'left' : 50 + '%',
+				'margin-left' : -(modal_width/2) + "px",
+				'top' : "100px"
+			});
 
-        	$(bookMarklet.modal_id).fadeTo(200,1);
+			$(bookMarklet.modal_id).fadeTo(200,1);
 
 
-        	// Everything else
+			// Everything else
 			if($(this).attr('data-bl') === "generate"){
-
-
 
 				bookMarklet.vid = $(this).attr('data-bl-vid');
 				bookMarklet.video_type = $(this).attr('data-bl-type');
@@ -197,18 +194,18 @@ var bookMarklet =
 				if(bookMarklet.playerV === false){
 					bookMarklet.playerV = new YT.Player('bl-playerV', {
 						videoId: bookMarklet.vid,
-				    	events: {
-				          	// Once "playerV" is ready this cues the snippet to play
-				         	'onReady': bookMarklet.YTOnPlayerReady
-				        }
-				    });
+							events: {
+								// Once "playerV" is ready this cues the snippet to play
+								'onReady': bookMarklet.YTOnPlayerReady
+							}
+					});
 				}else{
-					bookMarklet.playerV.cueVideoById({'videoId': bookMarklet.vid,
-	        			'startSeconds': bookMarklet.start_time,
-	         			'endSeconds': bookMarklet.end_time, 
-	         			'suggestedQuality': 'large'});
+					bookMarklet.playerV.cueVideoById({
+						'videoId': bookMarklet.vid,
+						'startSeconds': bookMarklet.start_time,
+						'endSeconds': bookMarklet.end_time,
+						'suggestedQuality': 'large'});
 				}
-
 			}
 
 		});
@@ -223,7 +220,7 @@ var bookMarklet =
 	},
 
 	generateURL: function(){
-		var baseURL = "TO DO"
+		var baseURL = "TO DO";
 	},
 
 	generateTag: function() {
@@ -257,13 +254,11 @@ var bookMarklet =
 
 			var newLink = "<a rel='blModal' data-bl-start='"+start_time+
 				"' data-bl-end='"+end_time+"' data-bl-type='"+
-				bookMarklet.video_type+"' data-bl-vid='" + 
+				bookMarklet.video_type+"' data-bl-vid='" +
 				bookMarklet.vid +
 				"' href='#bl-vid' data-bl='show'"+
 				" data-bl-modal='#bl-vid'>"+text+
 				"</a>";
-
-			
 
 			return newLink;
 
@@ -310,9 +305,6 @@ var bookMarklet =
 			}
 		});
 
-		// var textPos = 0;
-		
-
 		$(srcQues).prev("."+bookMarklet.answer_class).text("");
 		$(srcQues).prev("."+bookMarklet.answer_class).append(newContent);
 
@@ -323,10 +315,10 @@ var bookMarklet =
 	},
 
 	YTOnPlayerReady: function(event) {
-	    event.target.cueVideoById({'videoId': bookMarklet.vid,
-	        'startSeconds': bookMarklet.start_time,
-	    	'endSeconds': bookMarklet.end_time, 
-	    	'suggestedQuality': 'large'});
+		event.target.cueVideoById({'videoId': bookMarklet.vid,
+			'startSeconds': bookMarklet.start_time,
+			'endSeconds': bookMarklet.end_time,
+			'suggestedQuality': 'large'});
 	},
 
 	setup_yt: function(){
@@ -338,107 +330,105 @@ var bookMarklet =
 
 	generateVideoBox: function(){
 		$("<div id='bl-vid'><div class='bl-video-wrap'>"+
-			"<div id='bl-playerV'></div>"				 
-		 +"</div></div>").appendTo("body");
+			"<div id='bl-playerV'></div>"+
+			"</div></div>").appendTo("body");
 	},
 
 	generateSnippetBox: function(){
 		$("<div id='bl'>"+
-		      "<div class='bl-top'>"+
-		        "<div class='bl-vid'>"+
-		        "<div id='bl-player'></div>"
-		        +"</div>"+
-		        "<div class='bl-controls'>"+
-		          "<div class='bl-title'>"+
-		            "<h1>Create a URL</h1>"+
-		          "</div>"+
-		          "<div class='bl-instructions'>"+
-		            "Click \"Start Time\" and \"End Time\" buttons,"+
-		            "or by type in the time in the text boxes."+
-		          "</div>"+
-		          "<table class='bl-input'>"+
-		            "<tr>"+
-		                "<td>"+
-		                  "<input class='bl-button bl-start' type='button' value='Start Time'>"+
-		                "</td>"+
-		                "<td>"+
-		                "</td>"+
-		                "<td>"+
-		                  "<input class='bl-button bl-end' type='button' value='End Time'>"+
-		                "</td>"+
-		            "</tr>"+
-		            "<tr>"+
-		                "<td>"+
-		                  "<input class='bl-data' type='text' name='bl-start'>"+
-		                "</td>"+
-		                "<td>"+
-		                  "-"+
-		                "</td>"+
-		                "<td><input class='bl-data' type='text' name='bl-end'></td>"+
-		            "</tr>"+
-		            "<tr>"+
-		                "<td><input class='bl-button bl-done' type='button' value='Done'></td>"+
-		                "<td></td>"+
-		                "<td><input class='bl-button bl-reset' type='button' value='Reset'></td>"+
-		            "</tr>"+
-		          "</table>"+
-
-		          "<textarea class='bl-URL'>"+
-		            "Generate URL goes here"+
-		          "</textarea>"+
-		        "</div>"+
-		      "</div>"+
-		      "<div class='bl-bottom'>"+
-		        "Source URL:"+ 
-		        "<a class='bl-srcURL'></a>"+
-		      "</div>"+
-		    "</div>").appendTo("body");
+			"<div class='bl-top'>"+
+			"<div class='bl-vid'>"+
+			"<div id='bl-player'></div>"+
+			"</div>"+
+			"<div class='bl-controls'>"+
+			"<div class='bl-title'>"+
+			"<h1>Create a URL</h1>"+
+			"</div>"+
+			"<div class='bl-instructions'>"+
+			"Click \"Start Time\" and \"End Time\" buttons,"+
+			"or by type in the time in the text boxes."+
+			"</div>"+
+			"<table class='bl-input'>"+
+			"<tr>"+
+			"<td>"+
+			"<input class='bl-button bl-start' type='button' value='Start Time'>"+
+			"</td>"+
+			"<td>"+
+			"</td>"+
+			"<td>"+
+			"<input class='bl-button bl-end' type='button' value='End Time'>"+
+			"</td>"+
+			"</tr>"+
+			"<tr>"+
+			"<td>"+
+			"<input class='bl-data' type='text' name='bl-start'>"+
+			"</td>"+
+			"<td>"+
+			"-"+
+			"</td>"+
+			"<td><input class='bl-data' type='text' name='bl-end'></td>"+
+			"</tr>"+
+			"<tr>"+
+			"<td><input class='bl-button bl-done' type='button' value='Done'></td>"+
+			"<td></td>"+
+			"<td><input class='bl-button bl-reset' type='button' value='Reset'></td>"+
+			"</tr>"+
+			"</table>"+
+			"<textarea class='bl-URL'>"+
+			"Generate URL goes here"+
+			"</textarea>"+
+			"</div>"+
+			"</div>"+
+			"<div class='bl-bottom'>"+
+			"Source URL:"+
+			"<a class='bl-srcURL'></a>"+
+			"</div>"+
+			"</div>").appendTo("body");
 	},
 
 	getCaretPosition: function(editableDiv) {
-	    var caretPos = 0, containerEl = null, sel, range;
-	    if (window.getSelection) {
-	    	// console.log(window.getSelection());
-	        sel = window.getSelection();
-	        // console.log("sel.rangeCount: "+sel.rangeCount);
-	        if (sel.rangeCount) {
-	            range = sel.getRangeAt(0);
-	            // console.log(range);
-	            if (range.commonAncestorContainer.parentNode == editableDiv) {
-	            	// console.log(range.commonAncestorContainer.parentNode);
-	            	// console.log("editableDiv: "+editableDiv);
-	            	// console.log("range.endOffset: "+range.endOffset);
-	            	var temp1 = range.endContainer.data;
-	            	// console.log(temp1);
+		var caretPos = 0, containerEl = null, sel, range;
+		if (window.getSelection) {
+			// console.log(window.getSelection());
+			sel = window.getSelection();
+			// console.log("sel.rangeCount: "+sel.rangeCount);
+			if (sel.rangeCount) {
+				range = sel.getRangeAt(0);
+				// console.log(range);
+				if (range.commonAncestorContainer.parentNode == editableDiv) {
+					// console.log(range.commonAncestorContainer.parentNode);
+					// console.log("editableDiv: "+editableDiv);
+					// console.log("range.endOffset: "+range.endOffset);
+					var temp1 = range.endContainer.data;
+					// console.log(temp1);
 
 
-	            	// only works in chrome. Firefox only has parentNode.innerhtml;
-	            	var temp2 = range.commonAncestorContainer.
-	            		parentNode.innerHTML.
-	            		replace(/&nbsp;/g, String.fromCharCode(160));
-	            	// var temp2 = range.commonAncestorContainer.parentNode.innerText
+					// only works in chrome. Firefox only has parentNode.innerhtml;
+					var temp2 = range.commonAncestorContainer.
+					parentNode.innerHTML.
+					replace(/&nbsp;/g, String.fromCharCode(160));
+					// var temp2 = range.commonAncestorContainer.parentNode.innerText
+					temp2 = bookMarklet.stripHTML(temp2);
 
-	            	temp2 = bookMarklet.stripHTML(temp2);
+					// console.log(temp2);
+					// console.log(temp2.split(temp1)[0].length);
+					caretPos = range.endOffset + temp2.split(temp1)[0].length;
+				}
+			}
+		}
 
-	            	// console.log(temp2);
-	            	// console.log(temp2.split(temp1)[0].length);
-	                caretPos = range.endOffset + temp2.split(temp1)[0].length;
-	            }
-	        }
-	    } 
-
-	    // else if (document.selection && document.selection.createRange) {
-	    //     range = document.selection.createRange();
-	    //     if (range.parentElement() == editableDiv) {
-	    //         var tempEl = document.createElement("span");
-	    //         editableDiv.insertBefore(tempEl, editableDiv.firstChild);
-	    //         var tempRange = range.duplicate();
-	    //         tempRange.moveToElementText(tempEl);
-	    //         tempRange.setEndPoint("EndToEnd", range);
-	    //         caretPos = tempRange.text.length;
-	    //     }
-	    // }
-	    return caretPos;
+		// else if (document.selection && document.selection.createRange) {
+		//     range = document.selection.createRange();
+		//     if (range.parentElement() == editableDiv) {
+		//         var tempEl = document.createElement("span");
+		//         editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+		//         var tempRange = range.duplicate();
+		//         tempRange.moveToElementText(tempEl);
+		//         tempRange.setEndPoint("EndToEnd", range);
+		//         caretPos = tempRange.text.length;
+		//     }
+		// }
+		return caretPos;
 	},
 
 	stripHTML: function(html){
@@ -447,16 +437,15 @@ var bookMarklet =
 		return tmp.textContent || tmp.innerText;
 	}
 
-}
-
+};
 
 bookMarklet.setup_yt();
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {
 	$(document).ready(function(){
 		bookMarklet.start();
-	});	
-};
+	});
+}
 
 
 

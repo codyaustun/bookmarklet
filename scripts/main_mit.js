@@ -1,6 +1,15 @@
 // This exists because of bugs when implementing in MITx
 // 1. bookMarklet.update "$(srcQues).prev("."+bookMarklet.answer_class).append(newLink);" didn't work
-// 3. YouTube iFrame API is already loaded, so I don't need to load it again.
+// 2. YouTube iFrame API is already loaded, so I don't need to load it again.
+
+// Issues:
+// 1. Styling input div
+// 2. MITx add weird url
+// 3. MITx removes all data-bl* attributes when I submit and reload the page.
+
+// Notes:
+// 1. for textlines add hidden="jsinput"
+// 2. 
 
 // OLD HTML
 // <h2 class="problem-header">
