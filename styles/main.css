@@ -231,6 +231,7 @@ html {
 #bl-vid iframe {
 	width: 100%;
 	height: 330px;
+	border: none;
 }
 
 #bl-vid{
