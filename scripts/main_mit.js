@@ -329,10 +329,19 @@ var bookMarklet =
 			start = start.toTimeString().substr(3,5);
 			end = end.toTimeString().substr(3,5);
 
+			var tempLink = "<a rel='blModal' data-bl-start='"+start_time+
+						  "' data-bl-end='"+end_time+"' data-bl-type='"+
+						  bookMarklet.video_type+"' data-bl-vid='" + 
+						  bookMarklet.vid +
+						  "' href='#bl-vid' data-bl='show'"+
+						  " data-bl-modal='#bl-vid'>"+
+						  "</a>";
+
 			if(bookMarklet.reel){
 				var text = "<img alt='video snippet' src='"+
 				"http://web.mit.edu/colemanc/www/bookmarklet/images/film"+bookMarklet.reel+"Small.png"
-				+"'>"
+				+"' info='"+
+				tempLink+"''>"
 			}else{
 				var text = start +"-"+ end;
 			}

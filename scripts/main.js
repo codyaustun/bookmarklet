@@ -110,21 +110,125 @@ var bookMarklet = (function() {
 
 			});
 
+			var dataString = this.generateBLDataString({type: 'generate',
+				vid: videoid,
+				vtype: videotype});
+
+			var blDataEncoded = encodeURI(dataString);
+
 			if(button){
 				$("."+answer_class).after("<input type='button' value='Snippet'>")
 					.next()
 					.attr({
-						rel: "blModal",
-						"data-bl-modal": "#bl",
-						"data-bl": "generate",
-						"data-bl-vid": videoid,
-						"data-bl-type": videotype
+						"data-bl": blDataEncoded,
+						rel: "blModal"
 					});
 			}
 		},
 
+		getBLData: function(el){
+			var blData;
+
+			if(typeof($(el).attr('data-bl')) !== 'undefined'){
+				blData = $.parseJSON(decodeURI($(el).attr("data-bl")));
+
+			}else{
+				blData = $.parseJSON(decodeURI($("img", el).attr("info")));
+			}
+
+			return blData;
+		},
+
+		modalOpen: function(el){
+
+			var that = this;
+
+			var blData = that.getBLData(el);
+
+			// Everything else
+			if(blData.type === "generate"){
+
+				vid = blData.video.id;
+				video_type = blData.video.type;
+
+				var url = "";
+
+				if(video_type === "yt"){
+					url = "http://www.youtube.com/embed/"+vid;
+				}
+
+				$(".bl-srcURL").attr('href', url);
+				$(".bl-srcURL").text(url);
+
+				that.clearInputs();
+
+				if(player === false){
+					player = new window.YT.Player('bl-player', {
+							videoId: vid,
+							events: {
+						}
+					});
+				}else{
+					player.cueVideoById(vid, 0, "large");
+				}
+
+			}else{
+
+				vid = blData.video.id;
+				start_time = blData.start;
+				end_time = blData.end;
+				video_type = blData.video.type;
+
+				console.log(vid);
+				console.log(video_type);
+				console.log(end_time);
+				console.log(start_time);
+
+
+				// TO DO: Generalize this
+				// Create a YouTube player object for the modal dialog window
+				if(playerV === false){
+					playerV = new YT.Player('bl-playerV', {
+						videoId: vid,
+							events: {
+								// Once "playerV" is ready this cues the snippet to play
+								'onReady': that.YTOnPlayerReady
+							}
+					});
+				}else{
+					playerV.cueVideoById({
+						'videoId': vid,
+						'startSeconds': start_time,
+						'endSeconds': end_time,
+						'suggestedQuality': 'large'});
+				}
+			}
+
+
+			// Modal Window
+			modal_id = blData.modal;
+			var modal_width = $(modal_id).outerWidth();
+
+			$("#bookMarklet-overlay").css({'display' : 'block', opacity: 0});
+			$("#bookMarklet-overlay").fadeTo(200,0.5);
+
+			$(modal_id).css({
+				'display' : 'block',
+				'position' : 'fixed',
+				'opacity' : 0,
+				'z-index': 11000,
+				'left' : 50 + '%',
+				'margin-left' : -(modal_width/2) + "px",
+				'top' : "100px"
+			});
+
+			$(modal_id).fadeTo(200,1);
+		},
+
 		addActions: function(){
 			var that = this;
+
+			// Caret Position
 			$(document).on("click", "."+answer_class, function(){
 				caretPos = that.getCaretPosition(this);
 			});
@@ -136,82 +240,7 @@ var bookMarklet = (function() {
 			});
 
 			$(document).on("click","[rel*=blModal]" ,function(){
-
-				// Modal Window
-				modal_id = $(this).attr("data-bl-modal");
-
-				var modal_width = $(modal_id).outerWidth();
-
-				$("#bookMarklet-overlay").css({'display' : 'block', opacity: 0});
-				$("#bookMarklet-overlay").fadeTo(200,0.5);
-
-				$(modal_id).css({
-					'display' : 'block',
-					'position' : 'fixed',
-					'opacity' : 0,
-					'z-index': 11000,
-					'left' : 50 + '%',
-					'margin-left' : -(modal_width/2) + "px",
-					'top' : "100px"
-				});
-
-				$(modal_id).fadeTo(200,1);
-
-
-				// Everything else
-				if($(this).attr('data-bl') === "generate"){
-
-					vid = $(this).attr('data-bl-vid');
-					video_type = $(this).attr('data-bl-type');
-
-					var url = "";
-
-					if(video_type === "yt"){
-						url = "http://www.youtube.com/embed/"+vid;
-					}
-
-					$(".bl-srcURL").attr('href', url);
-					$(".bl-srcURL").text(url);
-
-					that.clearInputs();
-
-					if(player === false){
-						player = new window.YT.Player('bl-player', {
-								videoId: vid,
-								events: {
-							}
-						});
-					}else{
-						player.cueVideoById(vid, 0, "large");
-					}
-
-				}else if($(this).attr('data-bl') === "show"){
-
-					vid = $(this).attr('data-bl-vid');
-					start_time = $(this).attr('data-bl-start');
-					end_time = $(this).attr('data-bl-end');
-					video_type = $(this).attr('data-bl-type');
-
-
-					// TO DO: Generalize this
-					// Create a YouTube player object for the modal dialog window
-					if(playerV === false){
-						playerV = new YT.Player('bl-playerV', {
-							videoId: vid,
-								events: {
-									// Once "playerV" is ready this cues the snippet to play
-									'onReady': that.YTOnPlayerReady
-								}
-						});
-					}else{
-						playerV.cueVideoById({
-							'videoId': vid,
-							'startSeconds': start_time,
-							'endSeconds': end_time,
-							'suggestedQuality': 'large'});
-					}
-				}
-
+				that.modalOpen(this);
 			});
 		},
 
@@ -223,59 +252,11 @@ var bookMarklet = (function() {
 			$(".bl-URL").text("Generate URL goes here");
 		},
 
-		generateURL: function(){
-			var baseURL = "TO DO";
-		},
-
-		generateTag: function() {
-			var start_time = $("input[name='bl-start']").val();
-			var end_time = $("input[name='bl-end']").val();
-			if (this.checkErrors()) {
-				$("input[name='bl-start']").removeClass("bl-incorrect");
-				$("input[name='bl-end']").removeClass("bl-incorrect");
-
-
-				if(end_time === ""){
-					end_time = player.getDuration();
-				}
-
-				var start = new Date(null);
-				var end = new Date(null);
-				start.setSeconds(start_time);
-				end.setSeconds(end_time);
-				start = start.toTimeString().substr(3,5);
-				end = end.toTimeString().substr(3,5);
-
-				var text = "";
-
-				if(reel){
-					text = "<img alt='video snippet' src='"+
-						"images/film"+reel+"Small.png"+
-					"'>";
-				}else{
-					text = start +"-"+ end;
-				}
-
-				var newLink = "<a rel='blModal' data-bl-start='"+start_time+
-					"' data-bl-end='"+end_time+"' data-bl-type='"+
-					video_type+"' data-bl-vid='" +
-					vid +
-					"' href='#bl-vid' data-bl='show'"+
-					" data-bl-modal='#bl-vid'>"+text+
-					"</a>";
-
-				return newLink;
-
-			}else{
-				return "";
-			}
-		},
-
 		update: function(newLink){
 			$(".bl-URL").text(newLink);
 
-			var srcQues = "[data-bl-vid='"+vid+"'][data-bl-type='"+
-				video_type+"']";
+			var blData = encodeURI(this.generateBLDataString({type: "generate"}));
+			var srcQues = "[data-bl='"+blData+"']";
 
 			var currContent = $(srcQues).prev("."+answer_class).contents();
 			var newContent = [];
@@ -318,6 +299,7 @@ var bookMarklet = (function() {
 
 		},
 
+		// YT specific
 		YTOnPlayerReady: function(event) {
 			event.target.cueVideoById({'videoId': vid,
 				'startSeconds': start_time,
@@ -330,6 +312,85 @@ var bookMarklet = (function() {
 			tag.src = "https://www.youtube.com/iframe_api";
 			var firstScriptTag = document.getElementsByTagName('script')[0];
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+
+		generateURL: function(){
+			var baseURL = "TO DO";
+		},
+
+		generateTag: function() {
+			start_time = $("input[name='bl-start']").val();
+			end_time = $("input[name='bl-end']").val();
+
+			if (this.checkErrors()) {
+				$("input[name='bl-start']").removeClass("bl-incorrect");
+				$("input[name='bl-end']").removeClass("bl-incorrect");
+
+
+				if(end_time === ""){
+					end_time = player.getDuration();
+				}
+
+				var start = new Date(null);
+				var end = new Date(null);
+				start.setSeconds(start_time);
+				end.setSeconds(end_time);
+				start = start.toTimeString().substr(3,5);
+				end = end.toTimeString().substr(3,5);
+
+
+				var display = "";
+				var dataString = this.generateBLDataString({type:"show"});
+				var blDataEncoded = encodeURI(dataString);
+
+				if(reel){
+					display = "<img alt='video snippet' src='"+
+						"images/film"+reel+"Small.png"+
+						"' info='"+
+						blDataEncoded+"'>";
+				}else{
+					display = start +"-"+ end;
+				}
+
+				var newLink = "<a rel='blModal' href='#bl-vid'>"+display+"</a>";
+
+				return newLink;
+
+			}else{
+				return "";
+			}
+		},
+
+		generateBLDataString: function(obj){
+			var dataString = "";
+			var dataVid = obj.vid || vid;
+			var dataVType = obj.vtype || video_type;
+
+			if(obj.type === 'generate'){
+
+				dataString = '{"type": "generate", "modal": "#bl",'+
+					'"video": {'+
+					'"id": "'+dataVid+
+					'", "type": "'+dataVType+
+					'"}}';
+
+			}else if(obj.type === 'show'){
+				var dataStart = obj.start || start_time;
+				var dataEnd = obj.end || end_time;
+
+				dataString = '{"start": "'+dataStart+
+					'", "end": "'+dataEnd+
+					'", "type": "show'+
+					'", "modal": "#bl-vid'+
+					'", "video": {'+
+					'"id": "'+dataVid+
+					'", "type": "'+dataVType+
+					'"}}';
+
+
+			}
+
+			return dataString;
 		},
 
 		generateVideoBox: function(){
