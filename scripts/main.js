@@ -13,10 +13,11 @@ var bookMarklet = (function() {
 	var caretPos = 0;
 
 	return {
-		start: function (){
+		init: function (){
 
 			var that = this;
 
+			// Add HTML
 			if($("#bl").length === 0){
 				this.generateSnippetBox();
 			}
@@ -32,8 +33,23 @@ var bookMarklet = (function() {
 				that.close_modal(modal_id);
 			});
 
-			this.addActions();
+			// Caret Position events
+			$(document).on("click", "."+answer_class, function(){
+				caretPos = that.getCaretPosition(this);
+			});
 
+			$(document).on("keyup", "."+answer_class, function(){
+				caretPos = that.getCaretPosition(this);
+				var div_text = $(this).html();
+				$(this).prev().val(div_text);
+			});
+
+			// Add modal events
+			$(document).on("click","[rel*=blModal]" ,function(){
+				that.modalOpen(this);
+			});
+
+			// Add snipper box events
 			$(".bl-start").click(function(e){
 				var curr_time = player.getCurrentTime();
 				$("input[name='bl-start']").val(curr_time);
@@ -84,7 +100,6 @@ var bookMarklet = (function() {
 		},
 
 		create: function(textareaid, videotype, videoid, button, reelPic){
-
 			// reel = 1 -> film
 			// reel = 2 -> director thing
 			// reel = 3 -> film reel
@@ -145,7 +160,8 @@ var bookMarklet = (function() {
 
 			var blData = that.getBLData(el);
 
-			// Everything else
+			// Determine which modal window to open
+			// Get data
 			if(blData.type === "generate"){
 
 				vid = blData.video.id;
@@ -178,11 +194,6 @@ var bookMarklet = (function() {
 				start_time = blData.start;
 				end_time = blData.end;
 				video_type = blData.video.type;
-
-				console.log(vid);
-				console.log(video_type);
-				console.log(end_time);
-				console.log(start_time);
 
 
 				// TO DO: Generalize this
@@ -225,25 +236,6 @@ var bookMarklet = (function() {
 			$(modal_id).fadeTo(200,1);
 		},
 
-		addActions: function(){
-			var that = this;
-
-			// Caret Position
-			$(document).on("click", "."+answer_class, function(){
-				caretPos = that.getCaretPosition(this);
-			});
-
-			$(document).on("keyup", "."+answer_class, function(){
-				caretPos = that.getCaretPosition(this);
-				var div_text = $(this).html();
-				$(this).prev().val(div_text);
-			});
-
-			$(document).on("click","[rel*=blModal]" ,function(){
-				that.modalOpen(this);
-			});
-		},
-
 		clearInputs: function(){
 			$("input[name='bl-end']").val('');
 			$("input[name='bl-start']").val('');
@@ -263,32 +255,37 @@ var bookMarklet = (function() {
 			var beginPos = 0;
 			var endPos = 0;
 
-			currContent.each(function(i,e){
-				if((this.nodeType === 3) && (endPos < caretPos) ){
-					var eString = e.data;
-					beginPos = endPos;
-					endPos = endPos + eString.length;
+			if(currContent.length === 0){
+				newContent = newLink;
+			}else{
+				currContent.each(function(i,e){
+					console.log("here");
+					if((this.nodeType === 3) && (endPos < caretPos) ){
+						var eString = e.data;
+						beginPos = endPos;
+						endPos = endPos + eString.length;
 
-					// console.log(eString);
-					// console.log("Element Length: "+eString.length);
-					// console.log("beginPos: "+beginPos);
-					// console.log("endPos: "+endPos);
-					// console.log("caretPos: "+caretPos);
+						// console.log(eString);
+						// console.log("Element Length: "+eString.length);
+						// console.log("beginPos: "+beginPos);
+						// console.log("endPos: "+endPos);
+						// console.log("caretPos: "+caretPos);
 
-					if(endPos >= caretPos){
-						var front = eString.substring(0, caretPos - beginPos);
-						var back = eString.substring(caretPos - beginPos, eString.length);
-						newContent = newContent.concat(front);
-						newContent = newContent.concat(newLink);
-						newContent = newContent.concat(back);
+						if(endPos >= caretPos){
+							var front = eString.substring(0, caretPos - beginPos);
+							var back = eString.substring(caretPos - beginPos, eString.length);
+							newContent = newContent.concat(front);
+							newContent = newContent.concat(newLink);
+							newContent = newContent.concat(back);
 
+						}else{
+							newContent = newContent.concat(e);
+						}
 					}else{
 						newContent = newContent.concat(e);
 					}
-				}else{
-					newContent = newContent.concat(e);
-				}
-			});
+				});
+			}
 
 			$(srcQues).prev("."+answer_class).text("");
 			$(srcQues).prev("."+answer_class).append(newContent);
@@ -506,11 +503,11 @@ var bookMarklet = (function() {
 
 }());
 
-bookMarklet.setup_yt();
+
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {
 	$(document).ready(function(){
-		bookMarklet.start();
+		bookMarklet.init();
 	});
 }
 
