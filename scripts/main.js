@@ -259,7 +259,6 @@ var bookMarklet = (function() {
 				newContent = newLink;
 			}else{
 				currContent.each(function(i,e){
-					console.log("here");
 					if((this.nodeType === 3) && (endPos < caretPos) ){
 						var eString = e.data;
 						beginPos = endPos;
@@ -288,11 +287,12 @@ var bookMarklet = (function() {
 			}
 
 			$(srcQues).prev("."+answer_class).text("");
-			$(srcQues).prev("."+answer_class).append(newContent);
+			$(newContent).each(function(i,e){
+				$(srcQues).prev("."+answer_class).append(e);
+			});
 
-
-			var oldVal = $(srcQues).prev("."+answer_class).prev().val();
-			$(srcQues).prev("."+answer_class).prev().val(oldVal + newLink);
+			var newVal = $(srcQues).prev("."+answer_class).html();
+			$(srcQues).prev("."+answer_class).prev().val(newVal);
 
 		},
 
