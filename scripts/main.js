@@ -311,8 +311,19 @@ var bookMarklet = (function() {
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 		},
 
-		generateURL: function(){
-			var baseURL = "TO DO";
+		generateURL: function(obj){
+
+			obj = obj || {};
+
+			var vidURL = "http://www.youtube.com/v/";
+			var videoID = obj.vid || vid;
+			var startTime = obj.start || start_time;
+			var endTime = obj.end || end_time;
+
+			vidURL = vidURL + videoID + '&start=' +
+				startTime + '&end=' + endTime + "&version=3";
+
+			return vidURL;
 		},
 
 		generateTag: function() {
@@ -351,6 +362,8 @@ var bookMarklet = (function() {
 
 				var newLink = "<a rel='blModal' href='#bl-vid'>"+display+"</a>";
 
+
+				console.log(this.generateURL());
 				return newLink;
 
 			}else{
@@ -359,6 +372,8 @@ var bookMarklet = (function() {
 		},
 
 		generateBLDataString: function(obj){
+			obj = obj || {};
+
 			var dataString = "";
 			var dataVid = obj.vid || vid;
 			var dataVType = obj.vtype || video_type;
@@ -437,7 +452,7 @@ var bookMarklet = (function() {
 				"</tr>"+
 				"</table>"+
 				"<textarea class='bl-URL'>"+
-				"Generate URL goes here"+
+				"Generated URL goes here"+
 				"</textarea>"+
 				"</div>"+
 				"</div>"+
