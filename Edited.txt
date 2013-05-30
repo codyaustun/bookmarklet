@@ -1,0 +1,14 @@
+Edited:
+
+(BAD) lms/static/sass/application.scss
+lms/static/sass/application.css
+lms/static/coffee/src/staff_grading/staff_grading.js
+(BAD) lms/static/coffee/src/staff_grading/staff_grading.coffee
+
+Created:
+
+lms/static/sass/shared/_bm.scss
+(Bad) lms/static/js/bm.js
+
+
+(BAD) -> All preprocessing wasn't working

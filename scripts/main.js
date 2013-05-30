@@ -146,9 +146,8 @@ var bookMarklet = (function() {
 
 			if(typeof($(el).attr('data-bl')) !== 'undefined'){
 				blData = $.parseJSON(decodeURI($(el).attr("data-bl")));
-
-			}else{
-				blData = $.parseJSON(decodeURI($("img", el).attr("info")));
+			}else if(typeof($(el).text()) !== 'undefined'){
+				blData = $.parseJSON(decodeURI($(el).text()));
 			}
 
 			return blData;
@@ -293,7 +292,6 @@ var bookMarklet = (function() {
 
 			var newVal = $(srcQues).prev("."+answer_class).html();
 			$(srcQues).prev("."+answer_class).prev().val(newVal);
-
 		},
 
 		// YT specific
@@ -347,24 +345,14 @@ var bookMarklet = (function() {
 				end = end.toTimeString().substr(3,5);
 
 
-				var display = "";
+				var newTag = "";
 				var dataString = this.generateBLDataString({type:"show"});
 				var blDataEncoded = encodeURI(dataString);
 
-				if(reel){
-					display = "<img alt='video snippet' src='"+
-						"images/film"+reel+"Small.png"+
-						"' info='"+
-						blDataEncoded+"'>";
-				}else{
-					display = start +"-"+ end;
-				}
-
-				var newLink = "<a rel='blModal' href='#bl-vid'>"+display+"</a>";
-
+				newTag = "<span><a rel='blModal' href='#bl-vid' class='bl'>"+blDataEncoded+"</a></span>";
 
 				console.log(this.generateURL());
-				return newLink;
+				return newTag;
 
 			}else{
 				return "";
