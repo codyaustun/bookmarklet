@@ -240,7 +240,7 @@ var bookMarklet = (function() {
 			$("input[name='bl-start']").val('');
 			$("input[name='bl-start']").removeClass("bl-incorrect");
 			$("input[name='bl-end']").removeClass("bl-incorrect");
-			$(".bl-URL").text("Generate URL goes here");
+			$(".bl-URL").text("Generated URL goes here");
 		},
 
 		update: function(newLink){
@@ -258,8 +258,16 @@ var bookMarklet = (function() {
 				newContent = newLink;
 			}else{
 				currContent.each(function(i,e){
-					if((this.nodeType === 3) && (endPos < caretPos) ){
-						var eString = e.data;
+
+					if(((this.nodeType === 3) || (this.nodeType === 1)) && (endPos < caretPos)){
+
+						var eString = "";
+						if(this.nodeType === 3){
+							eString = e.data;
+						}else{
+							eString = e.text;
+						}
+
 						beginPos = endPos;
 						endPos = endPos + eString.length;
 
@@ -349,9 +357,9 @@ var bookMarklet = (function() {
 				var dataString = this.generateBLDataString({type:"show"});
 				var blDataEncoded = encodeURI(dataString);
 
-				newTag = "<span><a rel='blModal' href='#bl-vid' class='bl'>"+blDataEncoded+"</a></span>";
+				newTag = "<a rel='blModal' href='#bl-vid' class='bl'>"+blDataEncoded+"</a>";
 
-				console.log(this.generateURL());
+				// console.log(this.generateURL());
 				return newTag;
 
 			}else{
@@ -467,12 +475,9 @@ var bookMarklet = (function() {
 						var temp1 = range.endContainer.data;
 						// console.log(temp1);
 
-
-						// only works in chrome. Firefox only has parentNode.innerhtml;
 						var temp2 = range.commonAncestorContainer.
 						parentNode.innerHTML.
 						replace(/&nbsp;/g, String.fromCharCode(160));
-						// var temp2 = range.commonAncestorContainer.parentNode.innerText
 						temp2 = this.stripHTML(temp2);
 
 						// console.log(temp2);
