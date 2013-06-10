@@ -99,12 +99,9 @@ var bookMarklet = (function() {
 			}
 		},
 
-		create: function(textareaid, videotype, videoid, button, reelPic){
-			// reel = 1 -> film
-			// reel = 2 -> director thing
-			// reel = 3 -> film reel
-			// reel = false || undefined -> "Start Time"-"End Time"
-			reel = reelPic;
+		create: function(textareaid, videotype, videoid, button){
+
+			reel = 3;
 
 			$("#"+textareaid).each(function(index){
 				var w = $(this).width();
@@ -249,7 +246,8 @@ var bookMarklet = (function() {
 			var blData = encodeURI(this.generateBLDataString({type: "generate"}));
 			var srcQues = "[data-bl='"+blData+"']";
 
-			var currContent = $(srcQues).prev("."+answer_class).contents();
+			// var currContent = $(srcQues).prev("."+answer_class).contents();
+			var currContent = $("."+answer_class).contents();
 			var newContent = [];
 			var beginPos = 0;
 			var endPos = 0;
@@ -293,13 +291,23 @@ var bookMarklet = (function() {
 				});
 			}
 
-			$(srcQues).prev("."+answer_class).text("");
+
+			// prev doesn't work live
+			// $(srcQues).prev("."+answer_class).text("");
+			// $(newContent).each(function(i,e){
+			// $(srcQues).prev("."+answer_class).append(e);
+			// });
+
+			// var newVal = $(srcQues).prev("."+answer_class).html();
+			// $(srcQues).prev("."+answer_class).prev().val(newVal);
+
+			$("."+answer_class).text("");
 			$(newContent).each(function(i,e){
-				$(srcQues).prev("."+answer_class).append(e);
+				$("."+answer_class).append(e);
 			});
 
-			var newVal = $(srcQues).prev("."+answer_class).html();
-			$(srcQues).prev("."+answer_class).prev().val(newVal);
+			var newVal = $("."+answer_class).html();
+			$("."+answer_class).prev().val(newVal);
 		},
 
 		// YT specific
@@ -355,6 +363,10 @@ var bookMarklet = (function() {
 
 				var newTag = "";
 				var dataString = this.generateBLDataString({type:"show"});
+
+				// MITx only
+				// Logger.log('video_clip', $.parseJSON(dataString));
+
 				var blDataEncoded = encodeURI(dataString);
 
 				newTag = "<a rel='blModal' href='#bl-vid' class='bl'>"+blDataEncoded+"</a>";
@@ -510,7 +522,6 @@ var bookMarklet = (function() {
 	};
 
 }());
-
 
 // Create a YouTube player object for the modal dialog window
 function onYouTubeIframeAPIReady() {

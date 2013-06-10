@@ -5,7 +5,7 @@
       MITx Bookmarklet Test
     </title>
     <script type="text/javascript" src="scripts/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="scripts/main.js"></script>
+    <script type="text/javascript" src="coffee/clip_video.js"></script>
 
     <link rel="stylesheet" type="text/css" href="styles/main.css"></link>
     <style>
@@ -33,12 +33,16 @@
     	}
     </style>
 
-
-
     <script type="text/javascript">
+      // Create a YouTube player object for the modal dialog window
+      function onYouTubeIframeAPIReady() {
+        $(document).ready(function(){
+          VideoClipper.setup();
+        });
+      }
     	$(document).ready(function(){
-        bookMarklet.setup_yt();
-    		bookMarklet.create("bl-text", "yt", "8f7wj_RcqYk", true, 2);
+        VideoClipper.setup_yt();
+    		VideoClipper.create("bl-text", "yt", "8f7wj_RcqYk", true);
     	});
     </script>
   </head>
