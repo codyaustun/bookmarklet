@@ -41,9 +41,7 @@
 
       function onYouTubeIframeAPIReady() {
         $(document).ready(function(){
-          var temp = new VideoClipper();
-          temp.setup();
-      		temp.create("bl-text", "yt", "8f7wj_RcqYk", true);
+          var temp = new VideoClipper({textareaid: "bl-text", videoType: "yt", vid: "8f7wj_RcqYk", button: true});
     	 });
       }
     </script>

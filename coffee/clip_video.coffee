@@ -1,28 +1,34 @@
-# Create a YouTube player object for the modal dialog window
-
-
 class window.VideoClipper
 
-  vid: "" # video id
   start_time: ""
   end_time: ""
-  video_type: "" # YouTube, TechTV etc.
-  answer_class: "bookMarklet-answer"
-  reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
   modal_id: ""
   player: false
   playerV: false
   caretPos: 0
 
+  reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
+  answer_class: "bookMarklet-answer"
+  button: true
+  vid: "" # video id
+  video_type: "" # YouTube, TechTV etc.
+
   constructor: (obj)->
     obj = obj or {}
     @reel = obj.reel or @reel
     @answer_class = obj.answerClass or @answer_class
+    @textareaid = obj.textareaid
+    @button = obj.button or @button
+    @vid = obj.vid or @vid
+    @video_type = obj.videoType or @video_type
+
+
+    @setup()
 
 
   # Set up event listeners and elements for video clipping
   setup: =>
-    console.log "here"
+    @generateOutputBox()
     that = this
     @generateSnippetBox()  if $("#bl").length is 0
     @generateVideoBox()  if $("#bl-vid").length is 0
@@ -85,8 +91,8 @@ class window.VideoClipper
       $("input[name='bl-end']").addClass "bl-incorrect"
       false
 
-  create: (textareaid, videotype, videoid, button) =>
-    $("#" + textareaid).each (index, element) =>
+  generateOutputBox: () =>
+    $("#" + @textareaid).each (index, element) =>
       w = $(element).width()
       h = $(element).height()
       content = $(element).val()
@@ -98,11 +104,11 @@ class window.VideoClipper
 
     dataString = @generateBLDataString(
       type: "generate"
-      vid: videoid
-      vtype: videotype
+      vid: @videoid
+      vtype: @video_type
     )
     blDataEncoded = encodeURI(dataString)
-    if button
+    if @button
       $("." + @answer_class).after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
