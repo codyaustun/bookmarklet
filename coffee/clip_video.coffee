@@ -19,20 +19,19 @@ class window.VideoClipper
 
   # Set up event listeners and elements for video clipping
   @setup: =>
-    console.log('setting up...'+@answer_class)
     that = this
     @generateSnippetBox()  if $("#bl").length is 0
     @generateVideoBox()  if $("#bl-vid").length is 0
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
-    $("#bookMarklet-overlay").click ->
-      that.close_modal @modal_id
+    $("#bookMarklet-overlay").click =>
+      @close_modal @modal_id
 
     $(document).on "click", "." + @answer_class, ->
-      @caretPos = that.getCaretPosition(this)
+      that.caretPos = that.getCaretPosition(this)
       return
 
     $(document).on "keyup", "." + @answer_class, ->
-      @caretPos = that.getCaretPosition(this)
+      that.caretPos = that.getCaretPosition(this)
       div_text = $(this).html()
       $(this).prev().val div_text
       return
@@ -41,32 +40,32 @@ class window.VideoClipper
       that.modalOpen this
       return
 
-    $(".bl-start").click (e) ->
+    $(".bl-start").click (e) =>
       curr_time = @player.getCurrentTime()
       $("input[name='bl-start']").val curr_time
       that.checkErrors()
       return
 
-    $(".bl-end").click (e) ->
+    $(".bl-end").click (e) =>
       curr_time = @player.getCurrentTime()
       $("input[name='bl-end']").val curr_time
       that.checkErrors()
       return
 
-    $(".bl-done").click (e) ->
+    $(".bl-done").click (e) =>
       that.close_modal @modal_id
       that.update that.generateTag()
       return
 
-    $(".bl-reset").click (e) ->
+    $(".bl-reset").click (e) =>
       that.clearInputs()
       @player.loadVideoById @vid, 0, "large"
       return
 
-  @close_modal: (@modal_id) =>
+  @close_modal: (modal_id) =>
     $("#bookMarklet-overlay").fadeOut 200
-    $(@modal_id).css display: "none"
-    if @modal_id is "#bl"
+    $(modal_id).css display: "none"
+    if modal_id is "#bl"
       @player.stopVideo()
     else @playerV.stopVideo()  if @modal_id is "#bl-vid"
 
@@ -84,11 +83,11 @@ class window.VideoClipper
 
   @create: (textareaid, videotype, videoid, button) =>
     @reel = 3
-    $("#" + textareaid).each (index) =>
-      w = $(this).width()
-      h = $(this).height()
-      content = $(this).val()
-      $(this).after("<div></div>").css("display", "none").next().attr(contenteditable: "true").addClass(@answer_class).css
+    $("#" + textareaid).each (index, element) =>
+      w = $(element).width()
+      h = $(element).height()
+      content = $(element).val()
+      $(element).after("<div></div>").css("display", "none").next().attr(contenteditable: "true").addClass(@answer_class).css
         width: w
         height: h
       return
@@ -185,15 +184,16 @@ class window.VideoClipper
     if currContent.length is 0
       newContent = newLink
     else
-      currContent.each (i, e) ->
-        if ((@nodeType is 3) or (@nodeType is 1)) and (endPos < @caretPos)
+      currContent.each (i, e) =>
+        if ((e.nodeType is 3) or (e.nodeType is 1)) and (endPos < @caretPos)
           eString = ""
-          if @nodeType is 3
+          if e.nodeType is 3
             eString = e.data
           else
             eString = e.text
           beginPos = endPos
           endPos = endPos + eString.length
+
           if endPos >= @caretPos
             front = eString.substring(0, @caretPos - beginPos)
             back = eString.substring(@caretPos - beginPos, eString.length)
@@ -209,7 +209,7 @@ class window.VideoClipper
           return
 
     $("." + @answer_class).text ""
-    $(newContent).each (i, e) ->
+    $(newContent).each (i, e) =>
       $("." + @answer_class).append e
 
     newVal = $("." + @answer_class).html()
@@ -239,25 +239,38 @@ class window.VideoClipper
     vidURL
 
   @generateTag: =>
+
+    # Get in and out points
     @start_time = $("input[name='bl-start']").val()
     @end_time = $("input[name='bl-end']").val()
+
+    # Check for errors and proceed
     if @checkErrors()
+
+      # Remove incorrect class from inputs
       $("input[name='bl-start']").removeClass "bl-incorrect"
       $("input[name='bl-end']").removeClass "bl-incorrect"
+
+      # Default for end_time is an empty string
       @end_time = @player.getDuration()  if @end_time is ""
+
+      # Converts number of seconds to MM:SS
       start = new Date(null)
       end = new Date(null)
       start.setSeconds @start_time
       end.setSeconds @end_time
       start = start.toTimeString().substr(3, 5)
       end = end.toTimeString().substr(3, 5)
+
+      # Generate an anchor tag with encoded JSON as text
       newTag = ""
       dataString = @generateBLDataString(type: "show")
       blDataEncoded = encodeURI(dataString)
-      newTag = "<a rel='blModal' href='#bl-vid' class='bl'>" + blDataEncoded + "</a>"
-      newTag
+      newTag = "<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>"
+      return newTag
     else
-      ""
+      # If there are errors with the start and end times return an empty string
+      return ""
 
   @generateBLDataString: (obj) =>
     obj = obj or {}
