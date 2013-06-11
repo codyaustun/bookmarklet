@@ -36,11 +36,11 @@ class window.VideoClipper
     $("#bookMarklet-overlay").click =>
       @close_modal @modal_id
 
-    $(document).on "click", @outputBox, ->
+    $(document).on "click", "." + @answer_class, ->
       that.caretPos = that.getCaretPosition(this)
       return
 
-    $(document).on "keyup", @outputBox, ->
+    $(document).on "keyup", "." + @answer_class, ->
       that.caretPos = that.getCaretPosition(this)
       div_text = $(this).html()
       $(this).prev().val div_text
@@ -112,7 +112,6 @@ class window.VideoClipper
       @outputBox.after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
-
 
   getBLData: (el) =>
     blData = undefined
