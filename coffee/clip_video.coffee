@@ -36,11 +36,11 @@ class window.VideoClipper
     $("#bookMarklet-overlay").click =>
       @close_modal @modal_id
 
-    $(document).on "click", "." + @answer_class, ->
+    $(document).on "click", @outputBox, ->
       that.caretPos = that.getCaretPosition(this)
       return
 
-    $(document).on "keyup", "." + @answer_class, ->
+    $(document).on "keyup", @outputBox, ->
       that.caretPos = that.getCaretPosition(this)
       div_text = $(this).html()
       $(this).prev().val div_text
@@ -92,15 +92,15 @@ class window.VideoClipper
       false
 
   generateOutputBox: () =>
-    $("#" + @textareaid).each (index, element) =>
-      w = $(element).width()
-      h = $(element).height()
-      content = $(element).val()
-      $(element).after("<div></div>").css("display", "none").next().attr(contenteditable: "true").addClass(@answer_class).css
-        width: w
-        height: h
-      return
+    element = $("#"+@textareaid)
+    w = element.width()
+    h = element.height()
+    content = element.val()
+    @outputBox = element.after("<div></div>").css("display", "none").next()
 
+    @outputBox.attr(contenteditable: "true").addClass(@answer_class).css
+      width: w
+      height: h
 
     dataString = @generateBLDataString(
       type: "generate"
@@ -109,7 +109,7 @@ class window.VideoClipper
     )
     blDataEncoded = encodeURI(dataString)
     if @button
-      $("." + @answer_class).after("<input type='button' value='Snippet'>").next().attr
+      @outputBox.after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
 
@@ -230,7 +230,6 @@ class window.VideoClipper
       startSeconds: @start_time
       endSeconds: @end_time
       suggestedQuality: "large"
-
 
   @setup_yt: ->
     tag = document.createElement("script")
