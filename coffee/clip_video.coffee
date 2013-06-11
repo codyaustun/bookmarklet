@@ -3,22 +3,26 @@
 
 class window.VideoClipper
 
-  @vid: "" # video id
-  @start_time: ""
-  @end_time: ""
-  @video_type: "" # YouTube, TechTV etc.
-  @answer_class: "bookMarklet-answer"
-  @reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
-  @modal_id: ""
-  @player: false
-  @playerV: false
-  @caretPos: 0
+  vid: "" # video id
+  start_time: ""
+  end_time: ""
+  video_type: "" # YouTube, TechTV etc.
+  answer_class: "bookMarklet-answer"
+  reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
+  modal_id: ""
+  player: false
+  playerV: false
+  caretPos: 0
 
-  constructor: ()->
+  constructor: (obj)->
+    obj = obj or {}
+    @reel = obj.reel or @reel
+    @answer_class = obj.answerClass or @answer_class
 
 
   # Set up event listeners and elements for video clipping
-  @setup: =>
+  setup: =>
+    console.log "here"
     that = this
     @generateSnippetBox()  if $("#bl").length is 0
     @generateVideoBox()  if $("#bl-vid").length is 0
@@ -62,14 +66,14 @@ class window.VideoClipper
       @player.loadVideoById @vid, 0, "large"
       return
 
-  @close_modal: (modal_id) =>
+  close_modal: (modal_id) =>
     $("#bookMarklet-overlay").fadeOut 200
     $(modal_id).css display: "none"
     if modal_id is "#bl"
       @player.stopVideo()
     else @playerV.stopVideo()  if @modal_id is "#bl-vid"
 
-  @checkErrors: =>
+  checkErrors: =>
     @start_time = parseFloat($("input[name='bl-start']").val())
     @end_time = parseFloat($("input[name='bl-end']").val())
     if (@start_time < @end_time or isNaN(@end_time)) and (not isNaN(@start_time))
@@ -81,7 +85,7 @@ class window.VideoClipper
       $("input[name='bl-end']").addClass "bl-incorrect"
       false
 
-  @create: (textareaid, videotype, videoid, button) =>
+  create: (textareaid, videotype, videoid, button) =>
     $("#" + textareaid).each (index, element) =>
       w = $(element).width()
       h = $(element).height()
@@ -104,14 +108,14 @@ class window.VideoClipper
         rel: "blModal"
 
 
-  @getBLData: (el) =>
+  getBLData: (el) =>
     blData = undefined
     if typeof ($(el).attr("data-bl")) isnt "undefined"
       blData = $.parseJSON(decodeURI($(el).attr("data-bl")))
     else blData = $.parseJSON(decodeURI($(el).text()))  if typeof ($(el).text()) isnt "undefined"
     blData
 
-  @modalOpen: (el) =>
+  modalOpen: (el) =>
     that = this
     blData = that.getBLData(el)
     if blData.type is "generate"
@@ -165,14 +169,14 @@ class window.VideoClipper
 
     $(@modal_id).fadeTo 200, 1
 
-  @clearInputs: =>
+  clearInputs: =>
     $("input[name='bl-end']").val ""
     $("input[name='bl-start']").val ""
     $("input[name='bl-start']").removeClass "bl-incorrect"
     $("input[name='bl-end']").removeClass "bl-incorrect"
     $(".bl-URL").text "Generated URL goes here"
 
-  @update: (newLink) =>
+  update: (newLink) =>
     $(".bl-URL").text newLink
     blData = encodeURI(@generateBLDataString(type: "generate"))
     srcQues = "[data-bl='" + blData + "']"
@@ -214,7 +218,7 @@ class window.VideoClipper
     newVal = $("." + @answer_class).html()
     $("." + @answer_class).prev().val newVal
 
-  @YTOnPlayerReady: (event) =>
+  YTOnPlayerReady: (event) =>
     event.target.cueVideoById
       videoId: @vid
       startSeconds: @start_time
@@ -228,7 +232,7 @@ class window.VideoClipper
     firstScriptTag = document.getElementsByTagName("script")[0]
     firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-  @generateURL: (obj) =>
+  generateURL: (obj) =>
     obj = obj or {}
     vidURL = "http://www.youtube.com/v/"
     videoID = obj.vid or @vid
@@ -237,7 +241,7 @@ class window.VideoClipper
     vidURL = vidURL + videoID + "&start=" + startTime + "&end=" + endTime + "&version=3"
     vidURL
 
-  @generateTag: =>
+  generateTag: =>
 
     # Get in and out points
     @start_time = $("input[name='bl-start']").val()
@@ -272,7 +276,7 @@ class window.VideoClipper
       # If there are errors with the start and end times return an empty string
       return ""
 
-  @generateBLDataString: (obj) =>
+  generateBLDataString: (obj) =>
     obj = obj or {}
     dataString = ""
     dataVid = obj.vid or @vid
@@ -285,13 +289,13 @@ class window.VideoClipper
       dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
     dataString
 
-  @generateVideoBox: =>
+  generateVideoBox: =>
     $("<div id='bl-vid'><div class='bl-video-wrap'>" + "<div id='bl-playerV'></div>" + "</div></div>").appendTo "body"
 
-  @generateSnippetBox: =>
+  generateSnippetBox: =>
     $("<div id='bl'>" + "<div class='bl-top'>" + "<div class='bl-vid'>" + "<div id='bl-player'></div>" + "</div>" + "<div class='bl-controls'>" + "<div class='bl-title'>" + "<h1>Create a URL</h1>" + "</div>" + "<div class='bl-instructions'>" + "Click \"Start Time\" and \"End Time\" buttons," + "or by type in the time in the text boxes." + "</div>" + "<table class='bl-input'>" + "<tr>" + "<td>" + "<input class='bl-button bl-start' type='button' value='Start Time'>" + "</td>" + "<td>" + "</td>" + "<td>" + "<input class='bl-button bl-end' type='button' value='End Time'>" + "</td>" + "</tr>" + "<tr>" + "<td>" + "<input class='bl-data' type='text' name='bl-start'>" + "</td>" + "<td>" + "-" + "</td>" + "<td><input class='bl-data' type='text' name='bl-end'></td>" + "</tr>" + "<tr>" + "<td><input class='bl-button bl-done' type='button' value='Done'></td>" + "<td></td>" + "<td><input class='bl-button bl-reset' type='button' value='Reset'></td>" + "</tr>" + "</table>" + "<textarea class='bl-URL'>" + "Generated URL goes here" + "</textarea>" + "</div>" + "</div>" + "<div class='bl-bottom'>" + "Source URL:" + "<a class='bl-srcURL'></a>" + "</div>" + "</div>").appendTo "body"
 
-  @getCaretPosition: (editableDiv) =>
+  getCaretPosition: (editableDiv) =>
     @caretPos = 0
     containerEl = null
     sel = undefined
@@ -307,7 +311,7 @@ class window.VideoClipper
           @caretPos = range.endOffset + temp2.split(temp1)[0].length
     @caretPos
 
-  @stripHTML: (html) ->
+  stripHTML: (html) ->
     tmp = document.createElement("DIV")
     tmp.innerHTML = html
     tmp.textContent or tmp.innerText

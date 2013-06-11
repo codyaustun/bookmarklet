@@ -35,11 +35,15 @@
 
     <script type="text/javascript">
       // Create a YouTube player object for the modal dialog window
+      $(document).ready(function(){
+          VideoClipper.setup_yt();
+      });
+
       function onYouTubeIframeAPIReady() {
         $(document).ready(function(){
-          VideoClipper.setup();
-          VideoClipper.setup_yt();
-      		VideoClipper.create("bl-text", "yt", "8f7wj_RcqYk", true);
+          var temp = new VideoClipper();
+          temp.setup();
+      		temp.create("bl-text", "yt", "8f7wj_RcqYk", true);
     	 });
       }
     </script>
