@@ -8,7 +8,7 @@ class window.VideoClipper
   @end_time: ""
   @video_type: "" # YouTube, TechTV etc.
   @answer_class: "bookMarklet-answer"
-  @reel: false
+  @reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
   @modal_id: ""
   @player: false
   @playerV: false
@@ -82,7 +82,6 @@ class window.VideoClipper
       false
 
   @create: (textareaid, videotype, videoid, button) =>
-    @reel = 3
     $("#" + textareaid).each (index, element) =>
       w = $(element).width()
       h = $(element).height()
@@ -266,7 +265,8 @@ class window.VideoClipper
       newTag = ""
       dataString = @generateBLDataString(type: "show")
       blDataEncoded = encodeURI(dataString)
-      newTag = "<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>"
+      newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>").css
+        'background-image': @reel
       return newTag
     else
       # If there are errors with the start and end times return an empty string

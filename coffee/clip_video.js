@@ -11,7 +11,7 @@
 
     VideoClipper.answer_class = "bookMarklet-answer";
 
-    VideoClipper.reel = false;
+    VideoClipper.reel = 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png';
 
     VideoClipper.modal_id = "";
 
@@ -26,7 +26,6 @@
     VideoClipper.setup = function() {
       var that;
 
-      console.log('setting up...' + VideoClipper.answer_class);
       that = VideoClipper;
       if ($("#bl").length === 0) {
         VideoClipper.generateSnippetBox();
@@ -38,15 +37,15 @@
         $("<div id='bookMarklet-overlay'></div>").appendTo("body");
       }
       $("#bookMarklet-overlay").click(function() {
-        return that.close_modal(this.modal_id);
+        return VideoClipper.close_modal(VideoClipper.modal_id);
       });
       $(document).on("click", "." + VideoClipper.answer_class, function() {
-        this.caretPos = that.getCaretPosition(this);
+        that.caretPos = that.getCaretPosition(this);
       });
       $(document).on("keyup", "." + VideoClipper.answer_class, function() {
         var div_text;
 
-        this.caretPos = that.getCaretPosition(this);
+        that.caretPos = that.getCaretPosition(this);
         div_text = $(this).html();
         $(this).prev().val(div_text);
       });
@@ -56,34 +55,33 @@
       $(".bl-start").click(function(e) {
         var curr_time;
 
-        curr_time = this.player.getCurrentTime();
+        curr_time = VideoClipper.player.getCurrentTime();
         $("input[name='bl-start']").val(curr_time);
         that.checkErrors();
       });
       $(".bl-end").click(function(e) {
         var curr_time;
 
-        curr_time = this.player.getCurrentTime();
+        curr_time = VideoClipper.player.getCurrentTime();
         $("input[name='bl-end']").val(curr_time);
         that.checkErrors();
       });
       $(".bl-done").click(function(e) {
-        that.close_modal(this.modal_id);
+        that.close_modal(VideoClipper.modal_id);
         that.update(that.generateTag());
       });
       return $(".bl-reset").click(function(e) {
         that.clearInputs();
-        this.player.loadVideoById(this.vid, 0, "large");
+        VideoClipper.player.loadVideoById(VideoClipper.vid, 0, "large");
       });
     };
 
     VideoClipper.close_modal = function(modal_id) {
-      VideoClipper.modal_id = modal_id;
       $("#bookMarklet-overlay").fadeOut(200);
-      $(VideoClipper.modal_id).css({
+      $(modal_id).css({
         display: "none"
       });
-      if (VideoClipper.modal_id === "#bl") {
+      if (modal_id === "#bl") {
         return VideoClipper.player.stopVideo();
       } else {
         if (VideoClipper.modal_id === "#bl-vid") {
@@ -109,14 +107,13 @@
     VideoClipper.create = function(textareaid, videotype, videoid, button) {
       var blDataEncoded, dataString;
 
-      VideoClipper.reel = 3;
-      $("#" + textareaid).each(function(index) {
+      $("#" + textareaid).each(function(index, element) {
         var content, h, w;
 
-        w = $(VideoClipper).width();
-        h = $(VideoClipper).height();
-        content = $(VideoClipper).val();
-        $(VideoClipper).after("<div></div>").css("display", "none").next().attr({
+        w = $(element).width();
+        h = $(element).height();
+        content = $(element).val();
+        $(element).after("<div></div>").css("display", "none").next().attr({
           contenteditable: "true"
         }).addClass(VideoClipper.answer_class).css({
           width: w,
@@ -240,18 +237,18 @@
         currContent.each(function(i, e) {
           var back, eString, front;
 
-          if (((this.nodeType === 3) || (this.nodeType === 1)) && (endPos < this.caretPos)) {
+          if (((e.nodeType === 3) || (e.nodeType === 1)) && (endPos < VideoClipper.caretPos)) {
             eString = "";
-            if (this.nodeType === 3) {
+            if (e.nodeType === 3) {
               eString = e.data;
             } else {
               eString = e.text;
             }
             beginPos = endPos;
             endPos = endPos + eString.length;
-            if (endPos >= this.caretPos) {
-              front = eString.substring(0, this.caretPos - beginPos);
-              back = eString.substring(this.caretPos - beginPos, eString.length);
+            if (endPos >= VideoClipper.caretPos) {
+              front = eString.substring(0, VideoClipper.caretPos - beginPos);
+              back = eString.substring(VideoClipper.caretPos - beginPos, eString.length);
               newContent = newContent.concat(front);
               newContent = newContent.concat(newLink);
               newContent = newContent.concat(back);
@@ -265,7 +262,7 @@
       }
       $("." + VideoClipper.answer_class).text("");
       $(newContent).each(function(i, e) {
-        return $("." + this.answer_class).append(e);
+        return $("." + VideoClipper.answer_class).append(e);
       });
       newVal = $("." + VideoClipper.answer_class).html();
       return $("." + VideoClipper.answer_class).prev().val(newVal);
@@ -323,7 +320,9 @@
           type: "show"
         });
         blDataEncoded = encodeURI(dataString);
-        newTag = "<a rel='blModal' href='#bl-vid' class='bl'>" + blDataEncoded + "</a>";
+        newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>" + blDataEncoded + "</a>").css({
+          'background-image': VideoClipper.reel
+        });
         return newTag;
       } else {
         return "";
