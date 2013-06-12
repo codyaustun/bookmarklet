@@ -237,15 +237,6 @@ class window.VideoClipper
         "data-bl": blDataEncoded
         rel: "blModal"
 
-  generateURL: (obj) =>
-    obj = obj or {}
-    vidURL = "http://www.youtube.com/v/"
-    videoID = obj.vid or @vid
-    startTime = obj.start or @start_time
-    endTime = obj.end or @end_time
-    vidURL = vidURL + videoID + "&start=" + startTime + "&end=" + endTime + "&version=3"
-    vidURL
-
   generateTag: =>
 
     # Get in and out points
