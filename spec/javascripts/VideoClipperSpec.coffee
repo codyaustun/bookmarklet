@@ -239,9 +239,22 @@ describe "VideoClipper", ->
     it "should store an encoded data string in the button", ->
       expect('pending').toEqual('completed')
 
-  describe "when generating URL", ->
-
   describe "when generating clip a tag", ->
+
+    it "should get start and end times from snippet box", ->
+      expect('pending').toEqual('completed')
+
+    it "should check for errors in the start and end times", ->
+      expect('pending').toEqual('completed')
+
+    describe "with correct values", ->
+
+      it "should "
+
+    describe "without correct values", ->
+
+      it "should return and empty string", ->
+        expect('pending').toEqual('completed')
 
   describe "when generating JSON clip data", ->
 
