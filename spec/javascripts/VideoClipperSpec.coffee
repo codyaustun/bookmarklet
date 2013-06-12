@@ -23,3 +23,27 @@ describe "VideoClipper", ->
 
   describe "when getting data from an element", ->
 
+  describe "when clearing start and end time inputs", ->
+
+  describe "when updating output box", ->
+
+  describe "when YouTube clip player is ready"
+
+  describe "when setting up for YouTube Videos", ->
+
+  describe "when generating output box", ->
+
+  describe "when generating URL", ->
+
+  describe "when generating clip a tag", ->
+
+  describe "when generating JSON clip data", ->
+
+  describe "when generating video box", ->
+
+  describe "when generating clipping box", ->
+
+  describe "when getting caret position", ->
+
+  describe "when stripping html", ->
+
