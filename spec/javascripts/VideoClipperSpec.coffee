@@ -177,13 +177,67 @@ describe "VideoClipper", ->
     it "should remove the incorrect highlighting class from the input boxes", ->
       expect('pending').toEqual('completed')
 
-  describe "when updating output box", ->
+  describe "when updating output box", -> 
+
+    it "should generate a string representing the JSON data object", ->
+      expect('pending').toEqual('completed')
+
+    it "should encoded the data string", ->
+      expect('pending').toEqual('completed') 
+
+    it "should find the source question", ->
+      expect('pending').toEqual('completed')
+
+    it "should get the question's current contents", ->
+      expect('pending').toEqual('completed')
+
+    it "should iterate through the question's text and html", ->
+      expect('pending').toEqual('completed')
+
+    it "should place the new link at the caret position", ->
+      expect('pending').toEqual('completed')
+
+    it "should replace the question's content with the new content", ->
+      expect('pending').toEqual('completed')
+
+    it "should update the question's textarea", ->
+      expect('pending').toEqual('completed')
 
   describe "when YouTube clip player is ready", ->
+    it "should cue the video in the video box at the correct start and end times", ->
+      expect('pending').toEqual('completed')
 
   describe "when setting up for YouTube Videos", ->
+    it "should create a script element", ->
+      expect('pending').toEqual('completed')
+
+    it "should set the script element's source to YouTube iframe API", ->
+      expect('pending').toEqual('completed')
+
+    it "should the first script tag", ->
+      expect('pending').toEqual('completed')
+
+    it "should insert the new script tag before the first script tag", ->
+      expect('pending').toEqual('completed') 
 
   describe "when generating output box", ->
+    it "should find the textarea by id", ->
+      expect('pending').toEqual('completed')
+
+    it "should get the textarea's width, height and value", ->
+      expect('pending').toEqual('completed')
+
+    it "should insert an div after the textarea area and hide the textarea", ->
+      expect('pending').toEqual('completed')
+
+    it "should give the new div the same height, width and value", ->
+      expect('pending').toEqual('completed')
+
+    it "should add an input button after the div", ->
+      expect('pending').toEqual('completed')
+
+    it "should store an encoded data string in the button", ->
+      expect('pending').toEqual('completed')
 
   describe "when generating URL", ->
 
