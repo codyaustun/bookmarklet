@@ -19,7 +19,7 @@ class window.VideoClipper
     @answer_class = obj.answerClass or @answer_class
     @textareaid = obj.textareaid
     @button = obj.button or @button
-    @vid = obj.vid or @vid
+    @vid = obj.videoID or @vid
     @video_type = obj.videoType or @video_type
 
 
