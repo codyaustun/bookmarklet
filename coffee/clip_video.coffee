@@ -47,7 +47,7 @@ class window.VideoClipper
       return
 
     $(document).on "click", "[rel*=blModal]", ->
-      that.modalOpen this
+      that.open_modal this
       return
 
     $(".bl-start").click (e) =>
@@ -79,48 +79,7 @@ class window.VideoClipper
       @player.stopVideo()
     else @playerV.stopVideo()  if @modal_id is "#bl-vid"
 
-  checkErrors: =>
-    @start_time = parseFloat($("input[name='bl-start']").val())
-    @end_time = parseFloat($("input[name='bl-end']").val())
-    if (@start_time < @end_time or isNaN(@end_time)) and (not isNaN(@start_time))
-      $("input[name='bl-start']").removeClass "bl-incorrect"
-      $("input[name='bl-end']").removeClass "bl-incorrect"
-      true
-    else
-      $("input[name='bl-start']").addClass "bl-incorrect"
-      $("input[name='bl-end']").addClass "bl-incorrect"
-      false
-
-  generateOutputBox: () =>
-    element = $("#"+@textareaid)
-    w = element.width()
-    h = element.height()
-    content = element.val()
-    @outputBox = element.after("<div></div>").css("display", "none").next()
-
-    @outputBox.attr(contenteditable: "true").addClass(@answer_class).css
-      width: w
-      height: h
-
-    dataString = @generateBLDataString(
-      type: "generate"
-      vid: @videoid
-      vtype: @video_type
-    )
-    blDataEncoded = encodeURI(dataString)
-    if @button
-      @outputBox.after("<input type='button' value='Snippet'>").next().attr
-        "data-bl": blDataEncoded
-        rel: "blModal"
-
-  getBLData: (el) =>
-    blData = undefined
-    if typeof ($(el).attr("data-bl")) isnt "undefined"
-      blData = $.parseJSON(decodeURI($(el).attr("data-bl")))
-    else blData = $.parseJSON(decodeURI($(el).text()))  if typeof ($(el).text()) isnt "undefined"
-    blData
-
-  modalOpen: (el) =>
+  open_modal: (el) =>
     that = this
     blData = that.getBLData(el)
     if blData.type is "generate"
@@ -173,6 +132,26 @@ class window.VideoClipper
       top: "100px"
 
     $(@modal_id).fadeTo 200, 1
+
+  checkErrors: =>
+    @start_time = parseFloat($("input[name='bl-start']").val())
+    @end_time = parseFloat($("input[name='bl-end']").val())
+    if (@start_time < @end_time or isNaN(@end_time)) and (not isNaN(@start_time))
+      $("input[name='bl-start']").removeClass "bl-incorrect"
+      $("input[name='bl-end']").removeClass "bl-incorrect"
+      true
+    else
+      $("input[name='bl-start']").addClass "bl-incorrect"
+      $("input[name='bl-end']").addClass "bl-incorrect"
+      false
+
+  getBLData: (el) =>
+    blData = undefined
+    if typeof ($(el).attr("data-bl")) isnt "undefined"
+      blData = $.parseJSON(decodeURI($(el).attr("data-bl")))
+    else blData = $.parseJSON(decodeURI($(el).text()))  if typeof ($(el).text()) isnt "undefined"
+    blData
+
 
   clearInputs: =>
     $("input[name='bl-end']").val ""
@@ -235,6 +214,28 @@ class window.VideoClipper
     tag.src = "https://www.youtube.com/iframe_api"
     firstScriptTag = document.getElementsByTagName("script")[0]
     firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  generateOutputBox: () =>
+    element = $("#"+@textareaid)
+    w = element.width()
+    h = element.height()
+    content = element.val()
+    @outputBox = element.after("<div></div>").css("display", "none").next()
+
+    @outputBox.attr(contenteditable: "true").addClass(@answer_class).css
+      width: w
+      height: h
+
+    dataString = @generateBLDataString(
+      type: "generate"
+      vid: @videoid
+      vtype: @video_type
+    )
+    blDataEncoded = encodeURI(dataString)
+    if @button
+      @outputBox.after("<input type='button' value='Snippet'>").next().attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
 
   generateURL: (obj) =>
     obj = obj or {}
