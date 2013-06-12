@@ -254,12 +254,12 @@ class window.VideoClipper
       @end_time = @player.getDuration()  if @end_time is ""
 
       # Converts number of seconds to MM:SS
-      start = new Date(null)
-      end = new Date(null)
-      start.setSeconds @start_time
-      end.setSeconds @end_time
-      start = start.toTimeString().substr(3, 5)
-      end = end.toTimeString().substr(3, 5)
+      # start = new Date(null)
+      # end = new Date(null)
+      # start.setSeconds @start_time
+      # end.setSeconds @end_time
+      # start = start.toTimeString().substr(3, 5)
+      # end = end.toTimeString().substr(3, 5)
 
       # Generate an anchor tag with encoded JSON as text
       newTag = ""
