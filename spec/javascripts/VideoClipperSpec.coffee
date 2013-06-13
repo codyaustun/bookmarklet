@@ -21,7 +21,7 @@ describe "VideoClipper", ->
 
       expect(clippy2.reel).toEqual(reelString)
 
-    it "should give answerClass a default but allow it to be se", ->
+    it "should give answerClass a default but allow it to be set", ->
       expect(clippy.answer_class).not.toBeFalsy
 
       answer_class = "VC-answer"
@@ -249,7 +249,20 @@ describe "VideoClipper", ->
 
     describe "with correct values", ->
 
-      it "should "
+      it "should make sure there is a correct value for end_time", ->
+        expect('pending').toEqual('completed')
+
+      it "should generate a show data JSON string", ->
+        expect('pending').toEqual('completed')
+
+      it "should encode the data string", ->
+        expect('pending').toEqual('completed')
+
+      it "should create an a tag with the encodedData in the text", ->
+        expect('pending').toEqual('completed')
+
+      it "should return the tag", ->
+        expect('pending').toEqual('completed')
 
     describe "without correct values", ->
 
@@ -258,11 +271,47 @@ describe "VideoClipper", ->
 
   describe "when generating JSON clip data", ->
 
-  describe "when generating video box", ->
+    it "should check for data in the argument and default to instance values if needed", ->
+      expect('pending').toEqual('completed')
+
+    it "should return a data string according to the type in the argument", ->
+      expect('pending').toEqual('completed')
+
+    describe "without a type", ->
+
+      it "should return an empty string", ->
+        expect('pending').toEqual('completed')
+
+  describe "when generating video box", -> 
+
+    it "should create a div with an id of bl-vid", ->
+      expect('pending').toEqual('completed')
+
+    it "should have a div with the id of bl-playerV inside", ->
+      expect('pending').toEqual('completed')
 
   describe "when generating clipping box", ->
 
+    it "should create a div with an id of bl", ->
+      expect('pending').toEqual('completed')
+
+    it "should have a div with the id of bl-player inside", ->
+      expect('pending').toEqual('completed')
+
   describe "when getting caret position", ->
 
+    it "should have a spec", ->
+      expect('pending').toEqual('completed')
+
+
   describe "when stripping html", ->
+
+    it "should create a div", ->
+      expect('pending').toEqual('completed')
+
+    it "should put the html into the div's innerHTML", ->
+      expect('pending').toEqual('completed')
+
+    it "should return div's textContent or innerText", ->
+      expect('pending').toEqual('completed')
 
