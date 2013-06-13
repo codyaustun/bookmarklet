@@ -274,10 +274,71 @@ class window.VideoClipper
     dataString
 
   generateVideoBox: =>
-    $("<div id='bl-vid'><div class='bl-video-wrap'>" + "<div id='bl-playerV'></div>" + "</div></div>").appendTo "body"
+    $("""
+      <div id='bl-vid'>
+        <div class='bl-video-wrap'>
+          <div id='bl-playerV'></div>
+        </div>
+      </div>
+      """).appendTo "body"
 
   generateSnippetBox: =>
-    $("<div id='bl'>" + "<div class='bl-top'>" + "<div class='bl-vid'>" + "<div id='bl-player'></div>" + "</div>" + "<div class='bl-controls'>" + "<div class='bl-title'>" + "<h1>Create a URL</h1>" + "</div>" + "<div class='bl-instructions'>" + "Click \"Start Time\" and \"End Time\" buttons," + "or by type in the time in the text boxes." + "</div>" + "<table class='bl-input'>" + "<tr>" + "<td>" + "<input class='bl-button bl-start' type='button' value='Start Time'>" + "</td>" + "<td>" + "</td>" + "<td>" + "<input class='bl-button bl-end' type='button' value='End Time'>" + "</td>" + "</tr>" + "<tr>" + "<td>" + "<input class='bl-data' type='text' name='bl-start'>" + "</td>" + "<td>" + "-" + "</td>" + "<td><input class='bl-data' type='text' name='bl-end'></td>" + "</tr>" + "<tr>" + "<td><input class='bl-button bl-done' type='button' value='Done'></td>" + "<td></td>" + "<td><input class='bl-button bl-reset' type='button' value='Reset'></td>" + "</tr>" + "</table>" + "<textarea class='bl-URL'>" + "Generated URL goes here" + "</textarea>" + "</div>" + "</div>" + "<div class='bl-bottom'>" + "Source URL:" + "<a class='bl-srcURL'></a>" + "</div>" + "</div>").appendTo "body"
+    $("""
+      <div id='bl'>
+        <div class='bl-top'>
+          <div class='bl-vid'>
+            <div id='bl-player'></div>
+          </div>
+          <div class='bl-controls'>
+            <div class='bl-title'>
+              <h1>Create a URL</h1>
+            </div>
+            <div class='bl-instructions'>
+              Click \"Start Time\" and \"End Time\" buttons,or by type in the time in the text boxes.
+            </div>
+            <table class='bl-input'>
+              <tr>
+                <td>
+                  <input class='bl-button bl-start' type='button' value='Start Time'>
+                </td>
+                <td>
+                </td>
+                <td>
+                  <input class='bl-button bl-end' type='button' value='End Time'>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input class='bl-data' type='text' name='bl-start'>
+                </td>
+                <td>
+                  -
+                </td>
+                <td>
+                  <input class='bl-data' type='text' name='bl-end'>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input class='bl-button bl-done' type='button' value='Done'>
+                </td>
+                <td>
+                </td>
+                <td>
+                  <input class='bl-button bl-reset' type='button' value='Reset'>
+                </td>
+              </tr>
+            </table>
+            <textarea class='bl-URL'>
+              Generated URL goes here
+            </textarea>
+          </div>
+        </div>
+        <div class='bl-bottom'>
+          Source URL:<a class='bl-srcURL'></a>
+        </div>
+      </div>
+      """).appendTo "body"
 
   getCaretPosition: (editableDiv) =>
     @caretPos = 0
