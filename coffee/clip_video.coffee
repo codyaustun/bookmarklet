@@ -1,4 +1,4 @@
-class window.VideoClipper
+class @VideoClipper
 
   start_time: ""
   end_time: ""
