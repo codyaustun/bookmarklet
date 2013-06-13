@@ -246,20 +246,8 @@ class window.VideoClipper
     # Check for errors and proceed
     if @checkErrors()
 
-      # Remove incorrect class from inputs
-      $("input[name='bl-start']").removeClass "bl-incorrect"
-      $("input[name='bl-end']").removeClass "bl-incorrect"
-
       # Default for end_time is an empty string
       @end_time = @player.getDuration()  if @end_time is ""
-
-      # Converts number of seconds to MM:SS
-      # start = new Date(null)
-      # end = new Date(null)
-      # start.setSeconds @start_time
-      # end.setSeconds @end_time
-      # start = start.toTimeString().substr(3, 5)
-      # end = end.toTimeString().substr(3, 5)
 
       # Generate an anchor tag with encoded JSON as text
       newTag = ""
