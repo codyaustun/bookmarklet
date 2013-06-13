@@ -11,7 +11,8 @@ describe "VideoClipper", ->
   it "should have VideoClipper class", ->
     expect(clippy).toBeDefined()
 
-  describe "when constructing", ->
+  # Not sure if a constructor actually makes sense yet
+  xdescribe "when constructing", ->
     it "should give reel a default but allow it to be set", ->
       expect(clippy.reel).not.toBeFalsy
 
