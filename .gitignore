@@ -1,3 +1,4 @@
 coffee/*.js
 spec/javascripts/*.js
+docs/*
 
