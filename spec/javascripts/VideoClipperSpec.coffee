@@ -20,13 +20,13 @@ describe "VideoClipper", ->
   #     expect(clippy2.reel).toEqual(reelString)
 
   #   it "should give answerClass a default but allow it to be set", ->
-  #     expect(clippy.answer_class).not.toBeFalsy
+  #     expect(clippy.answerClass).not.toBeFalsy
 
-  #     answer_class = "VC-answer"
+  #     answerClass = "VC-answer"
   #     clippy2 = new VideoClipper
-  #       answerClass: answer_class 
+  #       answerClass: answerClass 
 
-  #     expect(clippy2.answer_class).toEqual(answer_class)
+  #     expect(clippy2.answerClass).toEqual(answerClass)
 
   #   it "should require vid to be set", ->
   #     vid = "d_z2CA-o13U"
@@ -38,16 +38,16 @@ describe "VideoClipper", ->
   #     # Should throw error
   #     expect('pending').toEqual('completed')
 
-  #   it "should require video_type to be set", ->
-  #     video_type = "yt"
+  #   it "should require videoType to be set", ->
+  #     videoType = "yt"
   #     clippy2 = new VideoClipper
-  #       videoType: video_type
+  #       videoType: videoType
 
-  #     expect(clippy2.video_type).toEqual(video_type)
+  #     expect(clippy2.videoType).toEqual(videoType)
   #     # Should throw error
   #     expect('pending').toEqual('completed')
 
-  #   it "should require textareaid to be set", ->
+  #   it "should require textareaID to be set", ->
   #     expect('pending').toEqual('completed')
 
   #   it "should allow button to be turned off", ->
@@ -55,22 +55,22 @@ describe "VideoClipper", ->
 
   describe 'when generating the output box', ->
     beforeEach ->
-      VideoClipper.clean_up()
+      VideoClipper.cleanUp()
       loadFixtures('question.html')
-      VideoClipper.setup_yt()
-      textareaid = 'bl-text'
-      @selector = '#'+textareaid
+      VideoClipper.setupYT()
+      textareaID = 'bl-text'
+      @selector = '#'+textareaID
 
       clippy = new VideoClipper
-        textareaid: textareaid
+        textareaID: textareaID
         videoID: '8f7wj_RcqYk'
         videoType: 'yt'
         generate: false
 
-    it 'should only have one element specified by textareaid', ->
+    it 'should only have one element specified by textareaID', ->
       expect($(@selector).length).toBe(1)
         
-    it 'should get height of the element with textareaid', ->
+    it 'should get height of the element with textareaID', ->
       heightSpy = spyOn($.fn, 'height')
       spyOn(clippy, 'generateOutputBox').andCallThrough()
       clippy.generateOutputBox()
@@ -78,23 +78,23 @@ describe "VideoClipper", ->
       expect($.fn.height).toHaveBeenCalled()
       expect(heightSpy.mostRecentCall.object.selector).toEqual(@selector)
 
-    it 'should get width of the element with textareaid', ->
+    it 'should get width of the element with textareaID', ->
       widthSpy = spyOn($.fn, 'width')
       clippy.generateOutputBox()
       expect($.fn.width).toHaveBeenCalled()
       expect(widthSpy.mostRecentCall.object.selector).toEqual @selector
 
-    it 'should get the value of the element with textareaid', ->
+    it 'should get the value of the element with textareaID', ->
       valSpy = spyOn $.fn, 'val'
       clippy.generateOutputBox()
       expect($.fn.val).toHaveBeenCalled()
       expect(valSpy.mostRecentCall.object.selector).toEqual @selector
 
-    it 'should insert of an answer_class div after the textarea', ->
+    it 'should insert of an answerClass div after the textarea', ->
       clippy.generateOutputBox()
       textarea = $(@selector)
       expect(textarea.next()).toBe 'div'
-      expect(textarea.next()).toHaveClass clippy.answer_class
+      expect(textarea.next()).toHaveClass clippy.answerClass
 
     it 'should make the divcontenteditable', ->
       clippy.generateOutputBox()
@@ -114,7 +114,7 @@ describe "VideoClipper", ->
       expect(clippy.generateBLDataString).toHaveBeenCalledWith
         type: 'generate'
         vid: clippy.vid
-        vtype: clippy.video_type
+        vtype: clippy.videoType
 
     describe 'without a buttonid specified', ->
       it 'should create a button after the outputbox div', ->
@@ -134,35 +134,35 @@ describe "VideoClipper", ->
         blData = clippy.generateBLDataString
           type: 'generate'
           vid: clippy.vid
-          vtype: clippy.video_type
+          vtype: clippy.videoType
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
     describe 'with a buttonid specified', ->
       beforeEach ->
-        @testid = "button-test"
-        textareaid = 'bl-text'
+        @testID = "button-test"
+        textareaID = 'bl-text'
 
         clippy = new VideoClipper
-          textareaid: textareaid
+          textareaID: textareaID
           videoID: '8f7wj_RcqYk'
           videoType: 'yt'
-          buttonid: @testid
+          buttonID: @testID
           generate: false
 
       it "should set the rel attribute of the button to 'blModal'", ->
         clippy.generateOutputBox()
-        button = $('#'+@testid)
+        button = $('#'+@testID)
         expect(button).toHaveAttr 'rel', 'blModal'
 
       it 'should store the encoded BLDataString in the bl-data attribute', ->
         clippy.generateOutputBox()
-        button = $('#'+@testid)
+        button = $('#'+@testID)
 
         blData = clippy.generateBLDataString
           type: 'generate'
           vid: clippy.vid
-          vtype: clippy.video_type
+          vtype: clippy.videoType
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
@@ -172,12 +172,12 @@ describe "VideoClipper", ->
 
   describe "when setting up", ->
     beforeEach ->
-      VideoClipper.clean_up()
+      VideoClipper.cleanUp()
       loadFixtures('question.html')
-      VideoClipper.setup_yt()
+      VideoClipper.setupYT()
 
       clippy = new VideoClipper
-        textareaid: 'bl-text'
+        textareaID: 'bl-text'
         videoID: '8f7wj_RcqYk'
         videoType: 'yt'
         generate: false
@@ -210,10 +210,10 @@ describe "VideoClipper", ->
         clippy.setup()
 
       it 'should make the output box respond to clicks', ->
-        expect($("."+clippy.answer_class)).toHandle('click')
+        expect($("."+clippy.answerClass)).toHandle('click')
 
       it 'should make the output box respond to keyups', ->
-        expect($("."+clippy.answer_class)).toHandle('keyup')
+        expect($("."+clippy.answerClass)).toHandle('keyup')
 
     describe "with a valid snippet box", ->
       beforeEach ->

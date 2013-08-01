@@ -1,30 +1,30 @@
 class @VideoClipper
 
-  start_time: ""
-  end_time: ""
-  modal_id: ""
+  startTime: ""
+  endTime: ""
+  modalID: ""
   player: false
   playerV: false
   caretPos: 0
 
   reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
-  answer_class: "bookMarklet-answer"
+  answerClass: "bookMarklet-answer"
   button: ""
   vid: "" # video id
-  video_type: "" # YouTube, TechTV etc.
+  videoType: "" # YouTube, TechTV etc.
   generate: true
 
   constructor: (obj)->
     obj = obj or {}
     @reel = obj.reel or @reel
-    @answer_class = obj.answerClass or @answer_class
-    @textareaid = obj.textareaid
+    @answerClass = obj.answerClass or @answerClass
+    @textareaID = obj.textareaID
     @vid = obj.videoID or @vid
-    @video_type = obj.videoType or @video_type
+    @videoType = obj.videoType or @videoType
 
 
     @generate = if obj.generate != undefined then obj.generate else @generate
-    @buttonid = if obj.buttonid != undefined then obj.buttonid else "bl-"+@video_type + @vid
+    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @vid
 
     @setup() if @generate
 
@@ -38,34 +38,34 @@ class @VideoClipper
     @generateVideoBox()
     @generateOverlay()
 
-    $("." + @answer_class).click (e) ->
+    $("." + @answerClass).click (e) ->
       that.caretPos = that.getCaretPosition(this)
       return
 
-    $("." + @answer_class).keyup (e) ->
+    $("." + @answerClass).keyup (e) ->
       that.caretPos = that.getCaretPosition(this)
-      div_text = $(this).html()
-      $(this).prev().val div_text
+      divText = $(this).html()
+      $(this).prev().val divText
       return
 
     $(document).on "click", "[rel*=blModal]", ->
-      that.open_modal this
+      that.openModal this
       return
 
     $(".bl-start").click (e) =>
-      curr_time = @player.getCurrentTime()
-      $("input[name='bl-start']").val curr_time
+      currTime = @player.getCurrentTime()
+      $("input[name='bl-start']").val currTime
       that.checkErrors()
       return
 
     $(".bl-end").click (e) =>
-      curr_time = @player.getCurrentTime()
-      $("input[name='bl-end']").val curr_time
+      currTime = @player.getCurrentTime()
+      $("input[name='bl-end']").val currTime
       that.checkErrors()
       return
 
     $(".bl-done").click (e) =>
-      that.close_modal @modal_id
+      that.closeModal @modalID
       that.update that.generateTag()
       return
 
@@ -74,29 +74,29 @@ class @VideoClipper
       @player.loadVideoById @vid, 0, "large"
       return
 
-  @clean_up: =>
+  @cleanUp: =>
     $('#bl').remove()
     $('#bl-vid').remove()
     $("#bookMarklet-overlay").remove()
     return
     # add removeOutputBox Function
 
-  close_modal: (modal_id) =>
+  closeModal: (modalID) =>
     $("#bookMarklet-overlay").fadeOut 200
-    $(modal_id).css display: "none"
-    if modal_id is "#bl"
+    $(modalID).css display: "none"
+    if modalID is "#bl"
       @player.stopVideo()
-    else @playerV.stopVideo()  if @modal_id is "#bl-vid"
+    else @playerV.stopVideo()  if @modalID is "#bl-vid"
 
-  open_modal: (el) =>
+  openModal: (el) =>
     that = this
     blData = that.getBLData(el)
 
     if blData.type is "generate"
       @vid = blData.video.id
-      @video_type = blData.video.type
+      @videoType = blData.video.type
       url = ""
-      url = "http://www.youtube.com/embed/" + @vid  if @video_type is "yt"
+      url = "http://www.youtube.com/embed/" + @vid  if @videoType is "yt"
       $(".bl-srcURL").attr "href", url
       $(".bl-srcURL").text url
       that.clearInputs()
@@ -109,9 +109,9 @@ class @VideoClipper
         @player.cueVideoById @vid, 0, "large"
     else
       @vid = blData.video.id
-      @start_time = blData.start
-      @end_time = blData.end
-      @video_type = blData.video.type
+      @startTime = blData.start
+      @endTime = blData.end
+      @videoType = blData.video.type
 
       if @playerV is false
         @playerV = new YT.Player("bl-playerV",
@@ -124,32 +124,32 @@ class @VideoClipper
         # This is working. It isn't loading video start and end points
         @playerV.cueVideoById
           videoId: @vid
-          startSeconds: @start_time
-          endSeconds: @end_time
+          startSeconds: @startTime
+          endSeconds: @endTime
           suggestedQuality: "large"
 
-    @modal_id = blData.modal
-    modal_width = $(@modal_id).outerWidth()
+    @modalID = blData.modal
+    modalWidth = $(@modalID).outerWidth()
     $("#bookMarklet-overlay").css
       display: "block"
       opacity: 0
 
     $("#bookMarklet-overlay").fadeTo 200, 0.5
-    $(@modal_id).css
+    $(@modalID).css
       display: "block"
       position: "fixed"
       opacity: 0
       "z-index": 11000
       left: 50 + "%"
-      "margin-left": -(modal_width / 2) + "px"
+      "margin-left": -(modalWidth / 2) + "px"
       top: "100px"
 
-    $(@modal_id).fadeTo 200, 1
+    $(@modalID).fadeTo 200, 1
 
   checkErrors: =>
-    @start_time = parseFloat($("input[name='bl-start']").val())
-    @end_time = parseFloat($("input[name='bl-end']").val())
-    if (@start_time < @end_time or isNaN(@end_time)) and (not isNaN(@start_time))
+    @startTime = parseFloat($("input[name='bl-start']").val())
+    @endTime = parseFloat($("input[name='bl-end']").val())
+    if (@startTime < @endTime or isNaN(@endTime)) and (not isNaN(@startTime))
       $("input[name='bl-start']").removeClass "bl-incorrect"
       $("input[name='bl-end']").removeClass "bl-incorrect"
       true
@@ -177,7 +177,7 @@ class @VideoClipper
     $(".bl-URL").text newLink
     blData = encodeURI(@generateBLDataString(type: "generate"))
     srcQues = "[data-bl='" + blData + "']"
-    currContent = $("." + @answer_class).contents()
+    currContent = $("." + @answerClass).contents()
     newContent = []
     beginPos = 0
     endPos = 0
@@ -208,65 +208,65 @@ class @VideoClipper
           newContent = newContent.concat(e)
           return
 
-    $("." + @answer_class).text ""
+    $("." + @answerClass).text ""
     $(newContent).each (i, e) =>
-      $("." + @answer_class).append e
+      $("." + @answerClass).append e
 
-    newVal = $("." + @answer_class).html()
-    $("." + @answer_class).prev().val newVal
+    newVal = $("." + @answerClass).html()
+    $("." + @answerClass).prev().val newVal
 
   YTOnPlayerReady: (event) =>
     event.target.cueVideoById
       videoId: @vid
-      startSeconds: @start_time
-      endSeconds: @end_time
+      startSeconds: @startTime
+      endSeconds: @endTime
       suggestedQuality: "large"
 
-  @setup_yt: ->
+  @setupYT: ->
     tag = document.createElement("script")
     tag.src = "https://www.youtube.com/iframe_api"
     firstScriptTag = document.getElementsByTagName("script")[0]
     firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
   generateOutputBox: () =>
-    element = $("#"+@textareaid)
+    element = $("#"+@textareaID)
     w = element.width()
     h = element.height()
     content = element.val()
     @outputBox = element.after("<div></div>").css("display", "none").next()
 
-    @outputBox.attr(contenteditable: "true").addClass(@answer_class).css
+    @outputBox.attr(contenteditable: "true").addClass(@answerClass).css
       width: w
       height: h
 
     dataString = @generateBLDataString(
       type: "generate"
       vid: @vid
-      vtype: @video_type
+      vtype: @videoType
     )
     blDataEncoded = encodeURI(dataString)
 
-    if $('#'+@buttonid).length > 0
-      $('#'+@buttonid).attr
+    if $('#'+@buttonID).length > 0
+      $('#'+@buttonID).attr
         "data-bl": blDataEncoded
         rel: "blModal"
     else
       @outputBox.after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
-        id: @buttonid
+        id: @buttonID
 
   generateTag: =>
 
     # Get in and out points
-    @start_time = $("input[name='bl-start']").val()
-    @end_time = $("input[name='bl-end']").val()
+    @startTime = $("input[name='bl-start']").val()
+    @endTime = $("input[name='bl-end']").val()
 
     # Check for errors and proceed
     if @checkErrors()
 
-      # Default for end_time is an empty string
-      @end_time = @player.getDuration()  if @end_time is ""
+      # Default for endTime is an empty string
+      @endTime = @player.getDuration()  if @endTime is ""
 
       # Generate an anchor tag with encoded JSON as text
       newTag = ""
@@ -283,12 +283,12 @@ class @VideoClipper
     obj = obj or {}
     dataString = ""
     dataVid = obj.vid or @vid
-    dataVType = obj.vtype or @video_type
+    dataVType = obj.vtype or @videoType
     if obj.type is "generate"
       dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
     else if obj.type is "show"
-      dataStart = obj.start or @start_time
-      dataEnd = obj.end or @end_time
+      dataStart = obj.start or @startTime
+      dataEnd = obj.end or @endTime
       dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
     dataString
 
@@ -304,7 +304,7 @@ class @VideoClipper
   generateOverlay: =>
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
     $("#bookMarklet-overlay").click =>
-      @close_modal @modal_id
+      @closeModal @modalID
 
 
   generateSnippetBox: =>
