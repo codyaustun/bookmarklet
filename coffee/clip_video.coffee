@@ -12,6 +12,7 @@ class @VideoClipper
   button: true
   vid: "" # video id
   video_type: "" # YouTube, TechTV etc.
+  generate: true
 
   constructor: (obj)->
     obj = obj or {}
@@ -21,15 +22,17 @@ class @VideoClipper
     @button = obj.button or @button
     @vid = obj.videoID or @vid
     @video_type = obj.videoType or @video_type
+    @generate = obj.generate or @generate
 
 
-    @setup()
+    @setup() if @generate
 
 
   # Set up event listeners and elements for video clipping
   setup: =>
-    @generateOutputBox()
     that = this
+
+    @generateOutputBox()
     @generateSnippetBox()  if $("#bl").length is 0
     @generateVideoBox()  if $("#bl-vid").length is 0
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
@@ -82,6 +85,7 @@ class @VideoClipper
   open_modal: (el) =>
     that = this
     blData = that.getBLData(el)
+
     if blData.type is "generate"
       @vid = blData.video.id
       @video_type = blData.video.type
@@ -102,13 +106,16 @@ class @VideoClipper
       @start_time = blData.start
       @end_time = blData.end
       @video_type = blData.video.type
+
       if @playerV is false
         @playerV = new YT.Player("bl-playerV",
           videoId: @vid
           events:
-            onReady: that.YTOnPlayerReady
+            onReady: @YTOnPlayerReady
         )
       else
+
+        # This is working. It isn't loading video start and end points
         @playerV.cueVideoById
           videoId: @vid
           startSeconds: @start_time
@@ -352,11 +359,11 @@ class @VideoClipper
         if range.commonAncestorContainer.parentNode is editableDiv
           temp1 = range.endContainer.data
           temp2 = range.commonAncestorContainer.parentNode.innerHTML.replace(/&nbsp;/g, String.fromCharCode(160))
-          temp2 = @stripHTML(temp2)
+          temp2 = VideoClipper.stripHTML(temp2)
           @caretPos = range.endOffset + temp2.split(temp1)[0].length
     @caretPos
 
-  stripHTML: (html) ->
+  @stripHTML: (html) ->
     tmp = document.createElement("DIV")
     tmp.innerHTML = html
     tmp.textContent or tmp.innerText
