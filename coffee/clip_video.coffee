@@ -9,7 +9,7 @@ class @VideoClipper
 
   reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
   answer_class: "bookMarklet-answer"
-  button: true
+  button: ""
   vid: "" # video id
   video_type: "" # YouTube, TechTV etc.
   generate: true
@@ -24,7 +24,7 @@ class @VideoClipper
 
 
     @generate = if obj.generate != undefined then obj.generate else @generate
-    @button = if obj.button != undefined then obj.button else @button
+    @buttonid = if obj.buttonid != undefined then obj.buttonid else "bl-"+@video_type + @vid
 
     @setup() if @generate
 
@@ -241,14 +241,20 @@ class @VideoClipper
 
     dataString = @generateBLDataString(
       type: "generate"
-      vid: @videoid
+      vid: @vid
       vtype: @video_type
     )
     blDataEncoded = encodeURI(dataString)
-    if @button
+
+    if $('#'+@buttonid).length > 0
+      $('#'+@buttonid).attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
+    else
       @outputBox.after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
+        id: @buttonid
 
   generateTag: =>
 

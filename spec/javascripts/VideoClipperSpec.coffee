@@ -55,21 +55,116 @@ describe "VideoClipper", ->
 
   describe 'when generating the output box', ->
     beforeEach ->
+      VideoClipper.clean_up()
       loadFixtures('question.html')
       VideoClipper.setup_yt()
-      @textareaid = 'bl-text'
+      textareaid = 'bl-text'
+      @selector = '#'+textareaid
 
       clippy = new VideoClipper
-        textareaid: @textareaid
-        vid: '8f7wj_RcqYk'
+        textareaid: textareaid
+        videoID: '8f7wj_RcqYk'
+        videoType: 'yt'
         generate: false
+
+    it 'should only have one element specified by textareaid', ->
+      expect($(@selector).length).toBe(1)
         
     it 'should get height of the element with textareaid', ->
-      element = $('#'+@textareaid)
-      expect(element.length).toBe(1)
-      spyOn(element, 'height').andCallThrough()
-      clippy.setup()
-      expect(element.height).toHaveBeenCalled()
+      heightSpy = spyOn($.fn, 'height')
+      spyOn(clippy, 'generateOutputBox').andCallThrough()
+      clippy.generateOutputBox()
+      expect(clippy.generateOutputBox).toHaveBeenCalled()
+      expect($.fn.height).toHaveBeenCalled()
+      expect(heightSpy.mostRecentCall.object.selector).toEqual(@selector)
+
+    it 'should get width of the element with textareaid', ->
+      widthSpy = spyOn($.fn, 'width')
+      clippy.generateOutputBox()
+      expect($.fn.width).toHaveBeenCalled()
+      expect(widthSpy.mostRecentCall.object.selector).toEqual @selector
+
+    it 'should get the value of the element with textareaid', ->
+      valSpy = spyOn $.fn, 'val'
+      clippy.generateOutputBox()
+      expect($.fn.val).toHaveBeenCalled()
+      expect(valSpy.mostRecentCall.object.selector).toEqual @selector
+
+    it 'should insert of an answer_class div after the textarea', ->
+      clippy.generateOutputBox()
+      textarea = $(@selector)
+      expect(textarea.next()).toBe 'div'
+      expect(textarea.next()).toHaveClass clippy.answer_class
+
+    it 'should make the divcontenteditable', ->
+      clippy.generateOutputBox()
+      textarea = $(@selector)
+      expect(textarea.next()).toHaveAttr 'contenteditable', 'true'
+
+    it 'should make the div have the same height and width as the textarea', ->
+      clippy.generateOutputBox()
+      textarea = $(@selector)
+      div = textarea.next()
+      expect(div.height()).toEqual textarea.height()
+      expect(div.width()).toEqual textarea.width()
+
+    it 'should generate a bl data string', ->
+      spyOn(clippy, 'generateBLDataString')
+      clippy.generateOutputBox()
+      expect(clippy.generateBLDataString).toHaveBeenCalledWith
+        type: 'generate'
+        vid: clippy.vid
+        vtype: clippy.video_type
+
+    describe 'without a buttonid specified', ->
+      it 'should create a button after the outputbox div', ->
+        clippy.generateOutputBox()
+        div = $(@selector).next()
+        expect(div.next()).toBe 'input[type=button]'
+
+      it "should set the rel attribute of the button to 'blModal'", ->
+        clippy.generateOutputBox()
+        button = $(@selector).next().next()
+        expect(button).toHaveAttr 'rel', 'blModal'
+
+      it 'should store the encoded BLDataString in the bl-data attribute', ->
+        clippy.generateOutputBox()
+        button = $(@selector).next().next()
+
+        blData = clippy.generateBLDataString
+          type: 'generate'
+          vid: clippy.vid
+          vtype: clippy.video_type
+        encoded = encodeURI(blData)
+        expect(button).toHaveAttr 'data-bl', encoded
+
+    describe 'with a buttonid specified', ->
+      beforeEach ->
+        @testid = "button-test"
+        textareaid = 'bl-text'
+
+        clippy = new VideoClipper
+          textareaid: textareaid
+          videoID: '8f7wj_RcqYk'
+          videoType: 'yt'
+          buttonid: @testid
+          generate: false
+
+      it "should set the rel attribute of the button to 'blModal'", ->
+        clippy.generateOutputBox()
+        button = $('#'+@testid)
+        expect(button).toHaveAttr 'rel', 'blModal'
+
+      it 'should store the encoded BLDataString in the bl-data attribute', ->
+        clippy.generateOutputBox()
+        button = $('#'+@testid)
+
+        blData = clippy.generateBLDataString
+          type: 'generate'
+          vid: clippy.vid
+          vtype: clippy.video_type
+        encoded = encodeURI(blData)
+        expect(button).toHaveAttr 'data-bl', encoded
 
 
   # xdescribe 'when generating an overlay' ->
@@ -83,7 +178,8 @@ describe "VideoClipper", ->
 
       clippy = new VideoClipper
         textareaid: 'bl-text'
-        vid: '8f7wj_RcqYk'
+        videoID: '8f7wj_RcqYk'
+        videoType: 'yt'
         generate: false
 
     it "should generate a video box if it doesnt't exist", ->
