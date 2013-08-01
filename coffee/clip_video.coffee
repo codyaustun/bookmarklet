@@ -19,11 +19,12 @@ class @VideoClipper
     @reel = obj.reel or @reel
     @answer_class = obj.answerClass or @answer_class
     @textareaid = obj.textareaid
-    @button = obj.button or @button
     @vid = obj.videoID or @vid
     @video_type = obj.videoType or @video_type
-    @generate = obj.generate or @generate
 
+
+    @generate = if obj.generate != undefined then obj.generate else @generate
+    @button = if obj.button != undefined then obj.button else @button
 
     @setup() if @generate
 
@@ -33,17 +34,15 @@ class @VideoClipper
     that = this
 
     @generateOutputBox()
-    @generateSnippetBox()  if $("#bl").length is 0
-    @generateVideoBox()  if $("#bl-vid").length is 0
-    $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
-    $("#bookMarklet-overlay").click =>
-      @close_modal @modal_id
+    @generateSnippetBox()
+    @generateVideoBox()
+    @generateOverlay()
 
-    $(document).on "click", "." + @answer_class, ->
+    $("." + @answer_class).click (e) ->
       that.caretPos = that.getCaretPosition(this)
       return
 
-    $(document).on "keyup", "." + @answer_class, ->
+    $("." + @answer_class).keyup (e) ->
       that.caretPos = that.getCaretPosition(this)
       div_text = $(this).html()
       $(this).prev().val div_text
@@ -74,6 +73,13 @@ class @VideoClipper
       that.clearInputs()
       @player.loadVideoById @vid, 0, "large"
       return
+
+  @clean_up: =>
+    $('#bl').remove()
+    $('#bl-vid').remove()
+    $("#bookMarklet-overlay").remove()
+    return
+    # add removeOutputBox Function
 
   close_modal: (modal_id) =>
     $("#bookMarklet-overlay").fadeOut 200
@@ -287,7 +293,13 @@ class @VideoClipper
           <div id='bl-playerV'></div>
         </div>
       </div>
-      """).appendTo "body"
+      """).appendTo("body") if $("#bl-vid").length is 0
+
+  generateOverlay: =>
+    $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
+    $("#bookMarklet-overlay").click =>
+      @close_modal @modal_id
+
 
   generateSnippetBox: =>
     $("""
@@ -345,7 +357,7 @@ class @VideoClipper
           Source URL:<a class='bl-srcURL'></a>
         </div>
       </div>
-      """).appendTo "body"
+      """).appendTo("body") if $("#bl").length is 0
 
   getCaretPosition: (editableDiv) =>
     @caretPos = 0
