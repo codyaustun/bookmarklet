@@ -167,8 +167,45 @@ describe "VideoClipper", ->
         expect(button).toHaveAttr 'data-bl', encoded
 
 
-  # xdescribe 'when generating an overlay' ->
+  describe 'when generating an overlay', ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      VideoClipper.setupYT()
 
+      clippy = new VideoClipper
+        textareaID: 'bl-text'
+        videoID: '8f7wj_RcqYk'
+        videoType: 'yt'
+        generate: false
+
+    it "should create a bookMarklet-overlay div if doesn't exist", ->
+      expect($("#bookMarklet-overlay").length).toEqual 0
+      appendSpy = spyOn($.fn, 'appendTo').andCallThrough()
+      clippy.generateOverlay()
+      expect($("#bookMarklet-overlay").length).toEqual 1
+      expect($.fn.appendTo).toHaveBeenCalled()
+
+    describe 'and one already exists', ->
+
+      it 'should not create another overlay', ->
+        clippy.generateOverlay()
+        expect($("#bookMarklet-overlay").length).toEqual 1
+        appendSpy = spyOn($.fn, 'appendTo').andCallThrough()
+        clippy.generateOverlay()
+        expect($("#bookMarklet-overlay").length).toEqual 1
+        expect($.fn.appendTo).not.toHaveBeenCalled()
+
+    it 'should make the overlay respond to click', ->
+      clippy.generateOverlay()
+      expect($("#bookMarklet-overlay")).toHandle('click')
+
+    describe 'and the overlay is clicked', ->
+      it 'should call closeModal', ->
+        clippy.generateOverlay()
+        spyOn(clippy, "closeModal").andCallThrough
+        $("#bookMarklet-overlay").click()
+        expect(clippy.closeModal).toHaveBeenCalledWith(clippy.modalID)
 
   describe "when setting up", ->
     beforeEach ->
