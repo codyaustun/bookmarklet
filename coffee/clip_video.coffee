@@ -101,8 +101,10 @@ class @VideoClipper
       $(".bl-srcURL").text url
       that.clearInputs()
       if @player is false
-        @player = new window.YT.Player("bl-player",
+        @player = new OmniPlayer(
+          elementId: "bl-player"
           videoId: @vid
+          type: 'YT'
           events: {}
         )
       else
@@ -114,10 +116,12 @@ class @VideoClipper
       @videoType = blData.video.type
 
       if @playerV is false
-        @playerV = new YT.Player("bl-playerV",
+        @playerV = new OmniPlayer(
+          elementId: "bl-playerV"
           videoId: @vid
-          events:
-            onReady: @YTOnPlayerReady
+          type: 'YT'
+          startSeconds: @startTime
+          endSeconds: @endTime
         )
       else
 
