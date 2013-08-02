@@ -207,11 +207,16 @@ describe "VideoClipper", ->
         $("#bookMarklet-overlay").click()
         expect(clippy.closeModal).toHaveBeenCalledWith(clippy.modalID)
 
+  describe "when generating snippet box", ->
+    # Do I need to test this?
+
+  describe "when generating video box", ->
+    # Do I need to test this?
+
   describe "when setting up", ->
     beforeEach ->
       VideoClipper.cleanUp()
       loadFixtures('question.html')
-      VideoClipper.setupYT()
 
       clippy = new VideoClipper
         textareaID: 'bl-text'
@@ -259,25 +264,138 @@ describe "VideoClipper", ->
       it "should make the start button respond to clicks", ->
         expect($('.bl-start')).toHandle("click")
 
+      describe "and the start button is clicked", ->
+    
+        it "should get the current time from the player", ->
+          spyOn(clippy.player, 'getCurrentTime').andCallThrough()
+          $('.bl-start').click()
+          expect(clippy.player.getCurrentTime).toHaveBeenCalled()
+
+        it "should set the bl-start input to the current time", ->
+          spyOn(clippy.player, 'getCurrentTime').andReturn(300)
+          inputSelector = "input[name='bl-start']"
+          valSpy = spyOn($.fn, 'val').andCallThrough()
+          $('.bl-start').click()
+          expect($.fn.val).toHaveBeenCalledWith(300)
+          expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
+
+        it "should check for errors", ->
+          spyOn(clippy, 'checkErrors')
+          $('.bl-start').click()
+          expect(clippy.checkErrors).toHaveBeenCalled()
+
+
       it "should make the end button respond to clicks", ->
         expect($('.bl-end')).toHandle("click")
+
+      describe 'and end button is clicked', ->
+        it "should get the current time from the player", ->
+          spyOn(clippy.player, 'getCurrentTime').andCallThrough()
+          $('.bl-end').click()
+          expect(clippy.player.getCurrentTime).toHaveBeenCalled()
+
+        it "should set the bl-start input to the current time", ->
+          spyOn(clippy.player, 'getCurrentTime').andReturn(300)
+          inputSelector = "input[name='bl-end']"
+          valSpy = spyOn($.fn, 'val').andCallThrough()
+          $('.bl-end').click()
+          expect($.fn.val).toHaveBeenCalledWith(300)
+          expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
+
+        it "should check for errors", ->
+          spyOn(clippy, 'checkErrors')
+          $('.bl-end').click()
+          expect(clippy.checkErrors).toHaveBeenCalled()
 
       it "should make the reset button respond to clicks", ->
         expect($(".bl-reset")).toHandle("click")
 
+      describe 'and the reset button is clicked', ->
+        it 'should clear the snippet box inputs', ->
+          spyOn(clippy, 'clearInputs')
+          $('.bl-reset').click()
+          expect(clippy.clearInputs).toHaveBeenCalled
+
+        it 'should load the video by id', ->
+          spyOn(clippy.player, 'loadVideoById')
+          $('.bl-reset').click()
+          expect(clippy.player.loadVideoById).toHaveBeenCalledWith(clippy.vid, 0, "large")
+
       it "should make the done button respond to clicks", ->
         expect($('.bl-done')).toHandle("click")
 
-  # describe "when closing a modal window", ->
+      describe 'and the done button is clicked', ->
+        it 'should close the modal', ->
+          spyOn(clippy, 'closeModal')
+          $('.bl-done').click()
+          expect(clippy.closeModal).toHaveBeenCalledWith(clippy.modalID)
 
-  #   it "should hide overlay", ->
-  #     expect('pending').toEqual('completed')
+        it 'should generate a new tag', ->
+          spyOn(clippy, 'generateTag')
+          $('.bl-done').click()
+          expect(clippy.generateTag).toHaveBeenCalled()
 
-  #   it "should stop the video player", ->
-  #     expect('pending').toEqual('completed')
+        it 'should use the generated tag to update', ->
+          testString = 'Testing 1 2 3'
+          spyOn(clippy, 'generateTag').andReturn(testString)
+          spyOn(clippy, 'update')
+          $('.bl-done').click()
+          expect(clippy.update).toHaveBeenCalledWith(testString)
 
-  #   it "should hide the modal window", ->
-  #     expect('pending').toEqual('completed')
+  describe 'when cleaning up', ->
+    beforeEach ->
+      @testID = "button-test"
+      textareaID = 'bl-text'
+
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'yt'
+        buttonID: @testID
+
+    it 'should remove the div with id of bl', ->
+      expect($('#bl')).toExist()
+      VideoClipper.cleanUp()
+      expect($('#bl')).not.toExist()
+
+    it 'should remove the div with id of bl-vid', ->
+      expect($('#bl-vid')).toExist()
+      VideoClipper.cleanUp()
+      expect($('#bl-vid')).not.toExist()
+
+    it 'should remove the div with id of bookMarklet-overlay', ->
+      expect($('#bookMarklet-overlay')).toExist()
+      VideoClipper.cleanUp()
+      expect($('#bookMarklet-overlay')).not.toExist()
+
+  describe "when closing a modal window", ->
+    beforeEach ->
+      @testID = "button-test"
+      textareaID = 'bl-text'
+
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'yt'
+        buttonID: @testID
+
+      $('#'+@testID).click()
+
+    it "should fade out the overlay", ->
+      fadeSpy = spyOn($.fn, 'fadeOut')
+      clippy.closeModal(clippy.modalID)
+      expect($.fn.fadeOut).toHaveBeenCalled()
+      expect(fadeSpy.mostRecentCall.object.selector).toEqual "#bookMarklet-overlay"
+
+    it "should hide the modal window", ->
+      expect($(clippy.modalID)).toBeVisible()
+      clippy.closeModal(clippy.modalID)
+      expect($(clippy.modalID)).toBeHidden()
+
+    it "should stop the video player", ->
+      spyOn(clippy.player, 'stopVideo')
+      clippy.closeModal(clippy.modalID)
+      expect(clippy.player.stopVideo).toHaveBeenCalled()
 
   # describe "when opening a modal window", ->
 

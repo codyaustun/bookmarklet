@@ -228,34 +228,6 @@ class @VideoClipper
     firstScriptTag = document.getElementsByTagName("script")[0]
     firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-  generateOutputBox: () =>
-    element = $("#"+@textareaID)
-    w = element.width()
-    h = element.height()
-    content = element.val()
-    @outputBox = element.after("<div></div>").css("display", "none").next()
-
-    @outputBox.attr(contenteditable: "true").addClass(@answerClass).css
-      width: w
-      height: h
-
-    dataString = @generateBLDataString(
-      type: "generate"
-      vid: @vid
-      vtype: @videoType
-    )
-    blDataEncoded = encodeURI(dataString)
-
-    if $('#'+@buttonID).length > 0
-      $('#'+@buttonID).attr
-        "data-bl": blDataEncoded
-        rel: "blModal"
-    else
-      @outputBox.after("<input type='button' value='Snippet'>").next().attr
-        "data-bl": blDataEncoded
-        rel: "blModal"
-        id: @buttonID
-
   generateTag: =>
 
     # Get in and out points
@@ -306,6 +278,33 @@ class @VideoClipper
     $("#bookMarklet-overlay").click =>
       @closeModal @modalID
 
+  generateOutputBox: () =>
+    element = $("#"+@textareaID)
+    w = element.width()
+    h = element.height()
+    content = element.val()
+    @outputBox = element.after("<div></div>").css("display", "none").next()
+
+    @outputBox.attr(contenteditable: "true").addClass(@answerClass).css
+      width: w
+      height: h
+
+    dataString = @generateBLDataString(
+      type: "generate"
+      vid: @vid
+      vtype: @videoType
+    )
+    blDataEncoded = encodeURI(dataString)
+
+    if $('#'+@buttonID).length > 0
+      $('#'+@buttonID).attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
+    else
+      @outputBox.after("<input type='button' value='Snippet'>").next().attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
+        id: @buttonID
 
   generateSnippetBox: =>
     $("""
