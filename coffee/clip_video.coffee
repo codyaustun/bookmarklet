@@ -96,7 +96,7 @@ class @VideoClipper
       @vid = blData.video.id
       @videoType = blData.video.type
       url = ""
-      url = "http://www.youtube.com/embed/" + @vid  if @videoType is "yt"
+      url = "http://www.youtube.com/embed/" + @vid  if @videoType is "YT"
       $(".bl-srcURL").attr "href", url
       $(".bl-srcURL").text url
       that.clearInputs()
@@ -104,7 +104,7 @@ class @VideoClipper
         @player = new OmniPlayer(
           elementId: "bl-player"
           videoId: @vid
-          type: 'YT'
+          type: @videoType
           events: {}
         )
       else
@@ -119,7 +119,7 @@ class @VideoClipper
         @playerV = new OmniPlayer(
           elementId: "bl-playerV"
           videoId: @vid
-          type: 'YT'
+          type: @videoType
           startSeconds: @startTime
           endSeconds: @endTime
         )
