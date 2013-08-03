@@ -6,65 +6,64 @@ describe "VideoClipper", ->
     expect(clippy).toBeDefined()
 
   # Not sure if a constructor actually makes sense yet
-  # xdescribe "when constructing", ->
-  #   beforeEach ->
-  #     clippy = new VideoClipper
+  xdescribe "when constructing", ->
+    beforeEach ->
+      clippy = new VideoClipper
 
-  #   it "should give reel a default but allow it to be set", ->
-  #     expect(clippy.reel).not.toBeFalsy
+    it "should give reel a default but allow it to be set", ->
+      expect(clippy.reel).not.toBeFalsy
 
-  #     reelString = "http://web.mit.edu/colemanc/www/bookmarklet/images/film2Small.png"
-  #     clippy2 = new VideoClipper
-  #       reel: reelString
+      reelString = "http://web.mit.edu/colemanc/www/bookmarklet/images/film2Small.png"
+      clippy2 = new VideoClipper
+        reel: reelString
 
-  #     expect(clippy2.reel).toEqual(reelString)
+      expect(clippy2.reel).toEqual(reelString)
 
-  #   it "should give answerClass a default but allow it to be set", ->
-  #     expect(clippy.answerClass).not.toBeFalsy
+    it "should give answerClass a default but allow it to be set", ->
+      expect(clippy.answerClass).not.toBeFalsy
 
-  #     answerClass = "VC-answer"
-  #     clippy2 = new VideoClipper
-  #       answerClass: answerClass 
+      answerClass = "VC-answer"
+      clippy2 = new VideoClipper
+        answerClass: answerClass 
 
-  #     expect(clippy2.answerClass).toEqual(answerClass)
+      expect(clippy2.answerClass).toEqual(answerClass)
 
-  #   it "should require vid to be set", ->
-  #     vid = "d_z2CA-o13U"
-  #     clippy2 = new VideoClipper
-  #       videoID: vid 
+    it "should require vid to be set", ->
+      vid = "d_z2CA-o13U"
+      clippy2 = new VideoClipper
+        videoID: vid 
 
-  #     expect(clippy2.vid).toEqual(vid)
+      expect(clippy2.vid).toEqual(vid)
 
-  #     # Should throw error
-  #     expect('pending').toEqual('completed')
+      # Should throw error
+      expect('pending').toEqual('completed')
 
-  #   it "should require videoType to be set", ->
-  #     videoType = "yt"
-  #     clippy2 = new VideoClipper
-  #       videoType: videoType
+    it "should require videoType to be set", ->
+      videoType = "yt"
+      clippy2 = new VideoClipper
+        videoType: videoType
 
-  #     expect(clippy2.videoType).toEqual(videoType)
-  #     # Should throw error
-  #     expect('pending').toEqual('completed')
+      expect(clippy2.videoType).toEqual(videoType)
+      # Should throw error
+      expect('pending').toEqual('completed')
 
-  #   it "should require textareaID to be set", ->
-  #     expect('pending').toEqual('completed')
+    it "should require textareaID to be set", ->
+      expect('pending').toEqual('completed')
 
-  #   it "should allow button to be turned off", ->
-  #     expect('pending').toEqual('completed')
+    it "should allow button to be turned off", ->
+      expect('pending').toEqual('completed')
 
   describe 'when generating the output box', ->
     beforeEach ->
       VideoClipper.cleanUp()
       loadFixtures('question.html')
-      VideoClipper.setupYT()
       textareaID = 'bl-text'
       @selector = '#'+textareaID
 
       clippy = new VideoClipper
         textareaID: textareaID
         videoID: '8f7wj_RcqYk'
-        videoType: 'yt'
+        videoType: 'TEST'
         generate: false
 
     it 'should only have one element specified by textareaID', ->
@@ -146,7 +145,7 @@ describe "VideoClipper", ->
         clippy = new VideoClipper
           textareaID: textareaID
           videoID: '8f7wj_RcqYk'
-          videoType: 'yt'
+          videoType: 'TEST'
           buttonID: @testID
           generate: false
 
@@ -176,7 +175,7 @@ describe "VideoClipper", ->
       clippy = new VideoClipper
         textareaID: 'bl-text'
         videoID: '8f7wj_RcqYk'
-        videoType: 'yt'
+        videoType: 'TEST'
         generate: false
 
     it "should create a bookMarklet-overlay div if doesn't exist", ->
@@ -217,20 +216,23 @@ describe "VideoClipper", ->
     beforeEach ->
       VideoClipper.cleanUp()
       loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
 
       clippy = new VideoClipper
-        textareaID: 'bl-text'
+        textareaID: textareaID
         videoID: '8f7wj_RcqYk'
-        videoType: 'yt'
+        videoType: 'TEST'
+        buttonID: @testID
         generate: false
 
-    it "should generate a video box if it doesnt't exist", ->
+    it "should generate a video box", ->
       expect($('#bl-vid').length).toBe(0)
       spyOn(clippy, 'generateVideoBox')
       clippy.setup()
       expect(clippy.generateVideoBox).toHaveBeenCalled()
 
-    it "should generate a snippet box if it doesn't exist", ->
+    it "should generate a snippet box", ->
       expect($('#bl').length).toBe(0)
       spyOn(clippy, 'generateSnippetBox')
       clippy.setup()
@@ -241,7 +243,7 @@ describe "VideoClipper", ->
       clippy.setup()
       expect(clippy.generateOutputBox).toHaveBeenCalled()
 
-    it "should generate the video clipper overlay it it doesn't exist", ->
+    it "should generate the video clipper overlay", ->
       expect($('#bookmarklet-overlay').length).toBe(0)
       spyOn(clippy, 'generateOverlay')
       clippy.setup()
@@ -257,9 +259,13 @@ describe "VideoClipper", ->
       it 'should make the output box respond to keyups', ->
         expect($("."+clippy.answerClass)).toHandle('keyup')
 
+      it 'should make blModal links respond to clicks', ->
+        expect($('#'+@testID)).toHandle 'click'
+
     describe "with a valid snippet box", ->
       beforeEach ->
         clippy.setup()
+        $('#'+@testID).click()
 
       it "should make the start button respond to clicks", ->
         expect($('.bl-start')).toHandle("click")
@@ -268,11 +274,13 @@ describe "VideoClipper", ->
     
         it "should get the current time from the player", ->
           spyOn(clippy.player, 'getCurrentTime').andCallThrough()
+          spyOn(clippy, 'checkErrors')
           $('.bl-start').click()
           expect(clippy.player.getCurrentTime).toHaveBeenCalled()
 
         it "should set the bl-start input to the current time", ->
           spyOn(clippy.player, 'getCurrentTime').andReturn(300)
+          spyOn(clippy, 'checkErrors')
           inputSelector = "input[name='bl-start']"
           valSpy = spyOn($.fn, 'val').andCallThrough()
           $('.bl-start').click()
@@ -291,11 +299,13 @@ describe "VideoClipper", ->
       describe 'and end button is clicked', ->
         it "should get the current time from the player", ->
           spyOn(clippy.player, 'getCurrentTime').andCallThrough()
+          spyOn(clippy, 'checkErrors')
           $('.bl-end').click()
           expect(clippy.player.getCurrentTime).toHaveBeenCalled()
 
         it "should set the bl-start input to the current time", ->
           spyOn(clippy.player, 'getCurrentTime').andReturn(300)
+          spyOn(clippy, 'checkErrors')
           inputSelector = "input[name='bl-end']"
           valSpy = spyOn($.fn, 'val').andCallThrough()
           $('.bl-end').click()
@@ -344,13 +354,15 @@ describe "VideoClipper", ->
 
   describe 'when cleaning up', ->
     beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
       @testID = "button-test"
       textareaID = 'bl-text'
 
       clippy = new VideoClipper
         textareaID: textareaID
         videoID: '8f7wj_RcqYk'
-        videoType: 'yt'
+        videoType: 'TEST'
         buttonID: @testID
 
     it 'should remove the div with id of bl', ->
@@ -370,13 +382,15 @@ describe "VideoClipper", ->
 
   describe "when closing a modal window", ->
     beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
       @testID = "button-test"
       textareaID = 'bl-text'
 
       clippy = new VideoClipper
         textareaID: textareaID
         videoID: '8f7wj_RcqYk'
-        videoType: 'yt'
+        videoType: 'TEST'
         buttonID: @testID
 
       $('#'+@testID).click()
@@ -397,43 +411,77 @@ describe "VideoClipper", ->
       clippy.closeModal(clippy.modalID)
       expect(clippy.player.stopVideo).toHaveBeenCalled()
 
-  # describe "when opening a modal window", ->
+  describe "when opening a modal window", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
 
-  #   it "should get the data from the element", ->
-  #     expect('pending').toEqual('completed')
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'TEST'
+        buttonID: @testID
 
-  #   it "should determine which modal window to open", ->
-  #     expect('pending').toEqual('completed')
+      @el = $('#'+@testID)
+      @blData = clippy.getBLData @el
 
-  #   describe "with a snippet box", ->
-  #     it "should get video type and id", ->
-  #       expect('pending').toEqual('completed')
+    it "should get the data from the element", ->
+      spyOn(clippy, 'getBLData').andReturn @blData
+      clippy.openModal @el
+      expect(clippy.getBLData).toHaveBeenCalledWith @el
 
-  #     it "should clear inputs", ->
-  #       expect('pending').toEqual('completed')
+    describe "with a snippet box", ->
+      beforeEach ->
+        spyOn(clippy, 'getBLData').andReturn @blData
+        clippy.openModal @el
 
-  #     it "should create a video player if it doesn't exist", ->
-  #       expect('pending').toEqual('completed')
+      afterEach ->
+        clippy.closeModal clippy.modalID
 
-  #     it "should show snippet box", ->
-  #       expect('pending').toEqual('completed')
+      it "should get video type and id", ->
+        expect(clippy.vid).toEqual @blData.video.id
 
-  #     it "should show overlay", ->
-  #       expect('pending').toEqual('completed')
+      it "should clear inputs", ->
+        expect(clippy.videoType).toEqual @blData.video.type
 
-  #   describe "with a video box", ->
+      it "should create a video player if it doesn't exist", ->
+        expect(clippy.player).toEqual jasmine.any(OmniPlayer)
 
-  #     it "should get video type, id, start time and end time", ->
-  #       expect('pending').toEqual('completed')
+      it "should show snippet box", ->
+        fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
+        clippy.openModal @el
+        expect($.fn.fadeTo).toHaveBeenCalled()
+        expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl')
 
-  #     it "should create a video player if it doesn't exist", ->
-  #       expect('pending').toEqual('completed')
+      
 
-  #     it "should show video box", ->
-  #       expect('pending').toEqual('completed')
+    describe "with a video box", ->
+      beforeEach ->
+        clippy.startTime = 200
+        clippy.endTime = 300
+        @blData = $.parseJSON(clippy.generateBLDataString({type: 'show'}))
+        spyOn(clippy, 'getBLData').andReturn @blData
 
-  #     it "should show overlay", ->
-  #       expect('pending').toEqual('completed')
+      it "should get video type, id, start time and end time", ->
+
+      it "should create a video player if it doesn't exist", ->
+
+      it "should show video box", ->
+        fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
+        clippy.openModal @el
+        expect($.fn.fadeTo).toHaveBeenCalled()
+        expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl-vid')
+
+    it "should show overlay", ->
+      fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
+      clippy.openModal @el
+      expect($.fn.fadeTo).toHaveBeenCalled()
+      expect(fadeSpy.calls[0].object.selector).toEqual('#bookMarklet-overlay')
+      clippy.closeModal clippy.modalID
+
+
 
   # describe "when checking for errors", ->
   #   it "should parse floats from the input box", ->
