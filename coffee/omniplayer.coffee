@@ -17,7 +17,8 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
-    this[@type]()
+    console.log this
+    this[@type].createPlayer.apply(this)
 
   getDuration: ->
     return 0
@@ -34,40 +35,62 @@ class @OmniPlayer
   loadVideoById: (options) -> 
     return 0
 
-  YT: ->
-    @internal = new window.YT.Player(@elementId,
-      videoId: @videoId
-      events: {
-        onReady: (event) =>
-          if @startSeconds || @endSeconds
-            event.target.cueVideoById
-              videoId: @videoId
-              startSeconds: @startSeconds
-              endSeconds: @endSeconds
-              suggestedQuality: "large"
-          else
-            @startSeconds = 0 
-            @endSeconds = @endSeconds or @getDuration()
-      }
-    )
+  YT: 
+    ready: false
+    setup: ->
+      tag = document.createElement("script")
+      tag.src = "https://www.youtube.com/iframe_api"
+      firstScriptTag = document.getElementsByTagName("script")[0]
+      firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-    # Encapsulate YouTube API functions
-    @getDuration = () ->
-      @internal.getDuration()
 
-    @getCurrentTime = () ->
-      @internal.getCurrentTime()
+    build: ->
+      @internal = new window.YT.Player(@elementId,
+        videoId: @videoId
+        events: {
+          onReady: (event) =>
+            if @startSeconds || @endSeconds
+              event.target.cueVideoById
+                videoId: @videoId
+                startSeconds: @startSeconds
+                endSeconds: @endSeconds
+                suggestedQuality: "large"
+            else
+              @startSeconds = 0 
+              @endSeconds = @endSeconds or @getDuration()
+        }
+      )
 
-    @stopVideo = () ->
-      @internal.stopVideo()
+      # Encapsulate YouTube API functions
+      @getDuration = () ->
+        @internal.getDuration()
 
-    @cueVideoById = (options) ->
-      @internal.cueVideoById.apply(this, options)
+      @getCurrentTime = () ->
+        @internal.getCurrentTime()
 
-    @loadVideoById = (options) ->
-      @internal.loadVideoById.apply(this, options)
+      @stopVideo = () ->
+        @internal.stopVideo()
 
-    console.log this
+      @cueVideoById = (options) ->
+        @internal.cueVideoById.apply(this, options)
 
-  TEST: ->
+      @loadVideoById = (options) ->
+        @internal.loadVideoById.apply(this, options)
+
+
+    createPlayer: ->
+
+      that = this
+
+      if @YT.ready
+        @YT.build.apply this
+      else
+        window.onYouTubeIframeAPIReady = () ->
+          that.YT.ready = true
+          that.YT.build.apply that
+
+        @YT.setup()
+
+  TEST:
+    createPlayer: ->
 

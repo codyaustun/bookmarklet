@@ -495,35 +495,76 @@ describe "VideoClipper", ->
 
 
 
-  # describe "when checking for errors", ->
-  #   it "should parse floats from the input box", ->
-  #     expect('pending').toEqual('completed')
+  describe "when checking for errors", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
 
-  #   it "should remove incorrect highlighting class if correct", ->
-  #      expect('pending').toEqual('completed')
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'TEST'
+        buttonID: @testID
 
-  #   it "should add incorrect highlighting class if incorrect", ->
-  #     expect('pending').toEqual('completed') 
+    it "should parse floats from the  start input box", ->
+      $("input[name='bl-start']").val("300")
+      clippy.checkErrors()
+      expect(clippy.startTime).toEqual 300
 
-  # describe "when getting data from an element", ->
-  #   it "should check if it has a data-bl attribute", ->
-  #     expect('pending').toEqual('completed') 
+    it "should parse floats from the  end input box", ->
+      $("input[name='bl-end']").val("300")
+      clippy.checkErrors()
+      expect(clippy.endTime).toEqual 300
 
-  #   describe "with a data-bl attribute", ->
+    describe 'if correct', ->
+      beforeEach ->
+        $("input[name='bl-start']").val("300")
+        $("input[name='bl-end']").val("400")
 
-  #     it "should parse a JSON object from the data-bl attribute", ->
-  #       expect('pending').toEqual('completed')
+      it "should remove incorrect highlighting class", ->
+        $("input[name='bl-start']").addClass "bl-incorrect"
+        $("input[name='bl-end']").addClass "bl-incorrect"
+        clippy.checkErrors()
+        expect($("input[name='bl-start']")).not.toHaveClass "bl-incorrect"
+        expect($("input[name='bl-end']")).not.toHaveClass "bl-incorrect"
 
-  #     it "should produce a valid JSON object with the correct data", ->
-  #       expect('pending').toEqual('completed')
+      it "should return true", ->
+        expect(clippy.checkErrors()).toBeTruthy()      
 
-  #   describe "without a data-bl attribute", ->
 
-  #     it "should parse a JSON object from the elements text", ->
-  #       expect('pending').toEqual('completed')
+    describe 'if incorrect', ->
+      beforeEach ->
+        $("input[name='bl-start']").val("400")
+        $("input[name='bl-end']").val("300")
 
-  #     it "should produce a valid JSON object with the correct data", ->
-  #       expect('pending').toEqual('completed')
+      it "should add incorrect highlighting class", -> 
+        clippy.checkErrors()
+        expect($("input[name='bl-start']")).toHaveClass "bl-incorrect"
+        expect($("input[name='bl-end']")).toHaveClass "bl-incorrect"
+
+      it 'should return false', ->
+        expect(clippy.checkErrors()).toBeFalsy() 
+
+  describe "when getting data from an element", ->
+    it "should check if it has a data-bl attribute", -> 
+
+    describe "with a data-bl attribute", ->
+
+      it "should parse a JSON object from the data-bl attribute", ->
+
+
+      it "should produce a valid JSON object with the correct data", ->
+
+
+    describe "without a data-bl attribute", ->
+
+      it "should parse a JSON object from the elements text", ->
+
+
+      it "should produce a valid JSON object with the correct data", ->
+
 
   # describe "when clearing start and end time inputs", ->
   #   it "should clear values for input box in the snippet box", ->
@@ -559,42 +600,6 @@ describe "VideoClipper", ->
   #     expect('pending').toEqual('completed')
 
   #   it "should update the question's textarea", ->
-  #     expect('pending').toEqual('completed')
-
-  # describe "when YouTube clip player is ready", ->
-  #   it "should cue the video in the video box at the correct start and end times", ->
-  #     expect('pending').toEqual('completed')
-
-  # describe "when setting up for YouTube Videos", ->
-  #   it "should create a script element", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should set the script element's source to YouTube iframe API", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should the first script tag", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should insert the new script tag before the first script tag", ->
-  #     expect('pending').toEqual('completed') 
-
-  # describe "when generating output box", ->
-  #   it "should find the textarea by id", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should get the textarea's width, height and value", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should insert an div after the textarea area and hide the textarea", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should give the new div the same height, width and value", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should add an input button after the div", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should store an encoded data string in the button", ->
   #     expect('pending').toEqual('completed')
 
   # describe "when generating clip a tag", ->
@@ -639,22 +644,6 @@ describe "VideoClipper", ->
 
   #     it "should return an empty string", ->
   #       expect('pending').toEqual('completed')
-
-  # describe "when generating video box", -> 
-
-  #   it "should create a div with an id of bl-vid", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should have a div with the id of bl-playerV inside", ->
-  #     expect('pending').toEqual('completed')
-
-  # describe "when generating clipping box", ->
-
-  #   it "should create a div with an id of bl", ->
-  #     expect('pending').toEqual('completed')
-
-  #   it "should have a div with the id of bl-player inside", ->
-  #     expect('pending').toEqual('completed')
 
   # describe "when getting caret position", ->
 
