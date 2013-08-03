@@ -435,18 +435,22 @@ describe "VideoClipper", ->
     describe "with a snippet box", ->
       beforeEach ->
         spyOn(clippy, 'getBLData').andReturn @blData
-        clippy.openModal @el
 
       afterEach ->
         clippy.closeModal clippy.modalID
 
       it "should get video type and id", ->
+        clippy.openModal @el
         expect(clippy.vid).toEqual @blData.video.id
-
-      it "should clear inputs", ->
         expect(clippy.videoType).toEqual @blData.video.type
 
+      it "should clear inputs", ->
+        spyOn(clippy, 'clearInputs').andCallThrough()
+        clippy.openModal @el
+        expect(clippy.clearInputs).toHaveBeenCalled()
+
       it "should create a video player if it doesn't exist", ->
+        clippy.openModal @el
         expect(clippy.player).toEqual jasmine.any(OmniPlayer)
 
       it "should show snippet box", ->
@@ -455,8 +459,6 @@ describe "VideoClipper", ->
         expect($.fn.fadeTo).toHaveBeenCalled()
         expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl')
 
-      
-
     describe "with a video box", ->
       beforeEach ->
         clippy.startTime = 200
@@ -464,9 +466,19 @@ describe "VideoClipper", ->
         @blData = $.parseJSON(clippy.generateBLDataString({type: 'show'}))
         spyOn(clippy, 'getBLData').andReturn @blData
 
+      afterEach ->
+        clippy.closeModal clippy.modalID
+
       it "should get video type, id, start time and end time", ->
+        clippy.openModal @el
+        expect(clippy.vid).toEqual @blData.video.id
+        expect(clippy.videoType).toEqual @blData.video.type
+        expect(clippy.startTime).toEqual @blData.start
+        expect(clippy.endTime).toEqual @blData.end
 
       it "should create a video player if it doesn't exist", ->
+        clippy.openModal @el
+        expect(clippy.playerV).toEqual jasmine.any(OmniPlayer)
 
       it "should show video box", ->
         fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
