@@ -17,7 +17,7 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
-    this[@type].createPlayer.apply(this, obj)
+    this[@type].createPlayer.apply(this, [obj])
 
   getDuration: ->
     return 0
@@ -82,7 +82,7 @@ class @OmniPlayer
 
       that = this
 
-      if obj.loaded == true
+      if obj.loaded?
         that.YT.ready = true
 
       if @YT.ready

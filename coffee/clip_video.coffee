@@ -65,7 +65,7 @@ class @VideoClipper
       return
 
     $(".bl-done").click (e) =>
-      that.closeModal @modalID
+      that.closeModal()
       that.update that.generateTag()
       return
 
@@ -82,11 +82,12 @@ class @VideoClipper
     # add removeOutputBox Function
 
   closeModal: (modalID) =>
+    modalID = modalID or @modalID
     $("#bookMarklet-overlay").fadeOut 200
     $(modalID).css display: "none"
     if modalID is "#bl"
       @player.stopVideo()
-    else @playerV.stopVideo()  if @modalID is "#bl-vid"
+    else @playerV.stopVideo()  if modalID is "#bl-vid"
 
   openModal: (el) =>
     that = this
@@ -180,7 +181,6 @@ class @VideoClipper
   update: (newLink) =>
     $(".bl-URL").text newLink
     blData = encodeURI(@generateBLDataString(type: "generate"))
-    srcQues = "[data-bl='" + blData + "']"
     currContent = $("." + @answerClass).contents()
     newContent = []
     beginPos = 0
@@ -229,7 +229,7 @@ class @VideoClipper
     if @checkErrors()
 
       # Default for endTime is an empty string
-      @endTime = @player.getDuration()  if @endTime is ""
+      @endTime = @player.getDuration() if isNaN parseFloat @endTime 
 
       # Generate an anchor tag with encoded JSON as text
       newTag = ""
@@ -269,7 +269,7 @@ class @VideoClipper
   generateOverlay: =>
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
     $("#bookMarklet-overlay").click =>
-      @closeModal @modalID
+      @closeModal()
 
   generateOutputBox: () =>
     element = $("#"+@textareaID)
