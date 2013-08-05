@@ -219,19 +219,6 @@ class @VideoClipper
     newVal = $("." + @answerClass).html()
     $("." + @answerClass).prev().val newVal
 
-  YTOnPlayerReady: (event) =>
-    event.target.cueVideoById
-      videoId: @vid
-      startSeconds: @startTime
-      endSeconds: @endTime
-      suggestedQuality: "large"
-
-  @setupYT: ->
-    tag = document.createElement("script")
-    tag.src = "https://www.youtube.com/iframe_api"
-    firstScriptTag = document.getElementsByTagName("script")[0]
-    firstScriptTag.parentNode.insertBefore tag, firstScriptTag
-
   generateTag: =>
 
     # Get in and out points

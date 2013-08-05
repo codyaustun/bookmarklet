@@ -165,12 +165,10 @@ describe "VideoClipper", ->
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
-
   describe 'when generating an overlay', ->
     beforeEach ->
       VideoClipper.cleanUp()
       loadFixtures('question.html')
-      VideoClipper.setupYT()
 
       clippy = new VideoClipper
         textareaID: 'bl-text'
@@ -493,8 +491,6 @@ describe "VideoClipper", ->
       expect(fadeSpy.calls[0].object.selector).toEqual('#bookMarklet-overlay')
       clippy.closeModal clippy.modalID
 
-
-
   describe "when checking for errors", ->
     beforeEach ->
       VideoClipper.cleanUp()
@@ -548,7 +544,26 @@ describe "VideoClipper", ->
         expect(clippy.checkErrors()).toBeFalsy() 
 
   describe "when getting data from an element", ->
-    it "should check if it has a data-bl attribute", -> 
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
+
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'TEST'
+        buttonID: @testID
+
+      @testData = encodeURI(clippy.generateBLDataString('generate'))
+      $('body').append("<div id='test'></div>")
+
+    it "should check if it has a data-bl attribute", ->
+      el = $('#test').attr('data-bl', @testData)
+      attrSpy = spyOn($.fn, 'attr').andCallThrough()
+      clippy.getBLData(el)
+      expect($.fn.attr).toHaveBeenCalledWith('data-bl')
 
     describe "with a data-bl attribute", ->
 

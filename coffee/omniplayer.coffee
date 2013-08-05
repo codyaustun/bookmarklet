@@ -17,7 +17,6 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
-    console.log this
     this[@type].createPlayer.apply(this)
 
   getDuration: ->
@@ -37,6 +36,7 @@ class @OmniPlayer
 
   YT: 
     ready: false
+    
     setup: ->
       tag = document.createElement("script")
       tag.src = "https://www.youtube.com/iframe_api"
