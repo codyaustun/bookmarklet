@@ -617,12 +617,37 @@ describe "VideoClipper", ->
 
 
   describe "when clearing start and end time inputs", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
+
+      clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'TEST'
+        buttonID: @testID
+
     it "should clear values for input box in the snippet box", ->
-      
+      $("input[name='bl-end']").val 200
+      $("input[name='bl-start']").val 300
+      clippy.clearInputs()
+      expect($("input[name='bl-end']").val()).toEqual ""
+      expect($("input[name='bl-start']").val()).toEqual ""      
 
     it "should clear values for the textarea in the snippet box", ->
+      $(".bl-URL").text "Testing 1.. 2.. 3.."
+      clippy.clearInputs()
+      expect($(".bl-URL").text()).toEqual "Generated URL goes here"
 
     it "should remove the incorrect highlighting class from the input boxes", ->
+      $("input[name='bl-end']").addClass "bl-incorrect"
+      $("input[name='bl-start']").addClass "bl-incorrect"
+      clippy.clearInputs()
+      expect($("input[name='bl-start']")).not.toHaveClass "bl-incorrect"
+      expect($("input[name='bl-end']")).not.toHaveClass "bl-incorrect"
+
 
   # describe "when updating output box", -> 
 
