@@ -17,7 +17,7 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
-    this[@type].createPlayer.apply(this)
+    this[@type].createPlayer.apply(this, obj)
 
   getDuration: ->
     return 0
@@ -78,9 +78,12 @@ class @OmniPlayer
         @internal.loadVideoById.apply(this, options)
 
 
-    createPlayer: ->
+    createPlayer: (obj)->
 
       that = this
+
+      if obj.loaded == true
+        that.YT.ready = true
 
       if @YT.ready
         @YT.build.apply this
@@ -92,5 +95,5 @@ class @OmniPlayer
         @YT.setup()
 
   TEST:
-    createPlayer: ->
+    createPlayer: (obj)->
 

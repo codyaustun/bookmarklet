@@ -234,6 +234,8 @@ class @VideoClipper
       # Generate an anchor tag with encoded JSON as text
       newTag = ""
       dataString = @generateBLDataString(type: "show")
+      # Logging for edX
+      # Logger.log('video_clip', $.parseJSON(dataString));
       blDataEncoded = encodeURI(dataString)
       newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>").css
         'background-image': @reel

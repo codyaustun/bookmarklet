@@ -556,40 +556,73 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         buttonID: @testID
 
-      @testData = encodeURI(clippy.generateBLDataString('generate'))
+      @testDataGenerate = encodeURI clippy.generateBLDataString
+        type: 'generate'
+
+      @testDataShow = encodeURI clippy.generateBLDataString
+        type: 'show'
+        start: '200'
+        end: '300'
+      
       $('body').append("<div id='test'></div>")
 
+    afterEach ->
+      $('#test').remove()
+
     it "should check if it has a data-bl attribute", ->
-      el = $('#test').attr('data-bl', @testData)
+      el = $('#test').attr('data-bl', @testDataGenerate)
       attrSpy = spyOn($.fn, 'attr').andCallThrough()
       clippy.getBLData(el)
       expect($.fn.attr).toHaveBeenCalledWith('data-bl')
+      expect(attrSpy.calls[0].object).toEqual(el)
 
     describe "with a data-bl attribute", ->
+      beforeEach ->
+        @el = $('#test').attr 'data-bl', @testDataGenerate
+
+      it 'should get the encoded data from the data-bl attribute', ->
+        attrSpy = spyOn($.fn, 'attr').andCallThrough()
+        clippy.getBLData @el
+        expect($.fn.attr.calls.length).toEqual 2
+        expect(attrSpy.calls[1].object).toEqual @el
 
       it "should parse a JSON object from the data-bl attribute", ->
-
+        spyOn($, 'parseJSON')
+        clippy.getBLData @el
+        expect($.parseJSON).toHaveBeenCalledWith decodeURI @testDataGenerate
 
       it "should produce a valid JSON object with the correct data", ->
-
+        blData = clippy.getBLData @el
+        expect(blData).toEqual $.parseJSON decodeURI @testDataGenerate
 
     describe "without a data-bl attribute", ->
+      beforeEach ->
+        @el = $('#test').text @testDataShow
+
+      it 'should get the encoded data from the elements tesxt', ->
+        textSpy = spyOn($.fn, 'text').andCallThrough()
+        clippy.getBLData @el
+        expect($.fn.text).toHaveBeenCalled()
+        expect(textSpy.calls[0].object).toEqual(@el)
+
 
       it "should parse a JSON object from the elements text", ->
-
+        spyOn($, 'parseJSON')
+        clippy.getBLData @el
+        expect($.parseJSON).toHaveBeenCalledWith decodeURI @testDataShow
 
       it "should produce a valid JSON object with the correct data", ->
+        blData = clippy.getBLData @el
+        expect(blData).toEqual $.parseJSON decodeURI @testDataShow
 
 
-  # describe "when clearing start and end time inputs", ->
-  #   it "should clear values for input box in the snippet box", ->
-  #     expect('pending').toEqual('completed')
+  describe "when clearing start and end time inputs", ->
+    it "should clear values for input box in the snippet box", ->
+      
 
-  #   it "should clear values for the textarea in the snippet box", ->
-  #     expect('pending').toEqual('completed')
+    it "should clear values for the textarea in the snippet box", ->
 
-  #   it "should remove the incorrect highlighting class from the input boxes", ->
-  #     expect('pending').toEqual('completed')
+    it "should remove the incorrect highlighting class from the input boxes", ->
 
   # describe "when updating output box", -> 
 
