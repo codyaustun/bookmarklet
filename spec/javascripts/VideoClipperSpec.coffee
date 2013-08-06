@@ -136,6 +136,10 @@ describe "VideoClipper", ->
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
+      it 'should make the button respond to clicks', ->
+        @clippy.generateOutputBox()
+        expect($("#"+@clippy.buttonID)).toHandle('click')
+
     describe 'with a buttonid specified', ->
       beforeEach ->
         @testID = "button-test"
@@ -163,6 +167,10 @@ describe "VideoClipper", ->
           vtype: @clippy.videoType
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
+
+      it 'should make the button respond to clicks', ->
+        @clippy.generateOutputBox()
+        expect($("#"+@clippy.buttonID)).toHandle('click')
 
   describe 'when generating an overlay', ->
     beforeEach ->
@@ -204,7 +212,107 @@ describe "VideoClipper", ->
         expect(@clippy.closeModal).toHaveBeenCalled()
 
   describe "when generating snippet box", ->
-    # Do I need to test this?
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaID = 'bl-text'
+
+      @clippy = new VideoClipper
+        textareaID: textareaID
+        videoID: '8f7wj_RcqYk'
+        videoType: 'TEST'
+        buttonID: @testID
+        generate: false
+
+      @clippy.player = new OmniPlayer
+        type: "TEST"
+      @clippy.generateSnippetBox()
+
+    it "should make the start button respond to clicks", ->
+      expect($('.bl-start')).toHandle("click")
+
+    describe "and the start button is clicked", ->
+  
+      it "should get the current time from the player", ->
+        spyOn(@clippy.player, 'getCurrentTime').andCallThrough()
+        spyOn(@clippy, 'checkErrors')
+        $('.bl-start').click()
+        expect(@clippy.player.getCurrentTime).toHaveBeenCalled()
+
+      it "should set the bl-start input to the current time", ->
+        spyOn(@clippy.player, 'getCurrentTime').andReturn(300)
+        spyOn(@clippy, 'checkErrors')
+        inputSelector = "input[name='bl-start']"
+        valSpy = spyOn($.fn, 'val').andCallThrough()
+        $('.bl-start').click()
+        expect($.fn.val).toHaveBeenCalledWith(300)
+        expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
+
+      it "should check for errors", ->
+        spyOn(@clippy, 'checkErrors')
+        $('.bl-start').click()
+        expect(@clippy.checkErrors).toHaveBeenCalled()
+
+
+    it "should make the end button respond to clicks", ->
+      expect($('.bl-end')).toHandle("click")
+
+    describe 'and end button is clicked', ->
+      it "should get the current time from the player", ->
+        spyOn(@clippy.player, 'getCurrentTime').andCallThrough()
+        spyOn(@clippy, 'checkErrors')
+        $('.bl-end').click()
+        expect(@clippy.player.getCurrentTime).toHaveBeenCalled()
+
+      it "should set the bl-start input to the current time", ->
+        spyOn(@clippy.player, 'getCurrentTime').andReturn(300)
+        spyOn(@clippy, 'checkErrors')
+        inputSelector = "input[name='bl-end']"
+        valSpy = spyOn($.fn, 'val').andCallThrough()
+        $('.bl-end').click()
+        expect($.fn.val).toHaveBeenCalledWith(300)
+        expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
+
+      it "should check for errors", ->
+        spyOn(@clippy, 'checkErrors')
+        $('.bl-end').click()
+        expect(@clippy.checkErrors).toHaveBeenCalled()
+
+    it "should make the reset button respond to clicks", ->
+      expect($(".bl-reset")).toHandle("click")
+
+    describe 'and the reset button is clicked', ->
+      it 'should clear the snippet box inputs', ->
+        spyOn(@clippy, 'clearInputs')
+        $('.bl-reset').click()
+        expect(@clippy.clearInputs).toHaveBeenCalled
+
+      it 'should load the video by id', ->
+        spyOn(@clippy.player, 'loadVideoById')
+        $('.bl-reset').click()
+        expect(@clippy.player.loadVideoById).toHaveBeenCalledWith(@clippy.vid, 0, "large")
+
+    it "should make the done button respond to clicks", ->
+      expect($('.bl-done')).toHandle("click")
+
+    describe 'and the done button is clicked', ->
+      it 'should close the modal', ->
+        spyOn(@clippy, 'closeModal')
+        $('.bl-done').click()
+        expect(@clippy.closeModal).toHaveBeenCalled()
+
+      it 'should generate a new tag', ->
+        spyOn(@clippy, 'generateTag')
+        $('.bl-done').click()
+        expect(@clippy.generateTag).toHaveBeenCalled()
+
+      it 'should use the generated tag to update', ->
+        testString = 'Testing 1 2 3'
+        spyOn(@clippy, 'generateTag').andReturn(testString)
+        spyOn(@clippy, 'update')
+        $('.bl-done').click()
+        expect(@clippy.update).toHaveBeenCalledWith(testString)
 
   describe "when generating video box", ->
     # Do I need to test this?
@@ -248,6 +356,7 @@ describe "VideoClipper", ->
 
     describe 'with a valid output box', ->
       beforeEach ->
+        onSpy = spyOn($.fn,'on').andCallThrough()
         @clippy.setup()
 
       it 'should make the output box respond to clicks', ->
@@ -256,98 +365,6 @@ describe "VideoClipper", ->
       it 'should make the output box respond to keyups', ->
         expect($("."+@clippy.answerClass)).toHandle('keyup')
 
-      it 'should make blModal links respond to clicks', ->
-        expect($("[rel*=blModal]")).toHandle 'click'
-
-    describe "with a valid snippet box", ->
-      beforeEach ->
-        @clippy.setup()
-        $('#'+@testID).click()
-
-      it "should make the start button respond to clicks", ->
-        expect($('.bl-start')).toHandle("click")
-
-      describe "and the start button is clicked", ->
-    
-        it "should get the current time from the player", ->
-          spyOn(@clippy.player, 'getCurrentTime').andCallThrough()
-          spyOn(@clippy, 'checkErrors')
-          $('.bl-start').click()
-          expect(@clippy.player.getCurrentTime).toHaveBeenCalled()
-
-        it "should set the bl-start input to the current time", ->
-          spyOn(@clippy.player, 'getCurrentTime').andReturn(300)
-          spyOn(@clippy, 'checkErrors')
-          inputSelector = "input[name='bl-start']"
-          valSpy = spyOn($.fn, 'val').andCallThrough()
-          $('.bl-start').click()
-          expect($.fn.val).toHaveBeenCalledWith(300)
-          expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
-
-        it "should check for errors", ->
-          spyOn(@clippy, 'checkErrors')
-          $('.bl-start').click()
-          expect(@clippy.checkErrors).toHaveBeenCalled()
-
-
-      it "should make the end button respond to clicks", ->
-        expect($('.bl-end')).toHandle("click")
-
-      describe 'and end button is clicked', ->
-        it "should get the current time from the player", ->
-          spyOn(@clippy.player, 'getCurrentTime').andCallThrough()
-          spyOn(@clippy, 'checkErrors')
-          $('.bl-end').click()
-          expect(@clippy.player.getCurrentTime).toHaveBeenCalled()
-
-        it "should set the bl-start input to the current time", ->
-          spyOn(@clippy.player, 'getCurrentTime').andReturn(300)
-          spyOn(@clippy, 'checkErrors')
-          inputSelector = "input[name='bl-end']"
-          valSpy = spyOn($.fn, 'val').andCallThrough()
-          $('.bl-end').click()
-          expect($.fn.val).toHaveBeenCalledWith(300)
-          expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
-
-        it "should check for errors", ->
-          spyOn(@clippy, 'checkErrors')
-          $('.bl-end').click()
-          expect(@clippy.checkErrors).toHaveBeenCalled()
-
-      it "should make the reset button respond to clicks", ->
-        expect($(".bl-reset")).toHandle("click")
-
-      describe 'and the reset button is clicked', ->
-        it 'should clear the snippet box inputs', ->
-          spyOn(@clippy, 'clearInputs')
-          $('.bl-reset').click()
-          expect(@clippy.clearInputs).toHaveBeenCalled
-
-        it 'should load the video by id', ->
-          spyOn(@clippy.player, 'loadVideoById')
-          $('.bl-reset').click()
-          expect(@clippy.player.loadVideoById).toHaveBeenCalledWith(@clippy.vid, 0, "large")
-
-      it "should make the done button respond to clicks", ->
-        expect($('.bl-done')).toHandle("click")
-
-      describe 'and the done button is clicked', ->
-        it 'should close the modal', ->
-          spyOn(@clippy, 'closeModal')
-          $('.bl-done').click()
-          expect(@clippy.closeModal).toHaveBeenCalled()
-
-        it 'should generate a new tag', ->
-          spyOn(@clippy, 'generateTag')
-          $('.bl-done').click()
-          expect(@clippy.generateTag).toHaveBeenCalled()
-
-        it 'should use the generated tag to update', ->
-          testString = 'Testing 1 2 3'
-          spyOn(@clippy, 'generateTag').andReturn(testString)
-          spyOn(@clippy, 'update')
-          $('.bl-done').click()
-          expect(@clippy.update).toHaveBeenCalledWith(testString)
 
   describe 'when cleaning up', ->
     beforeEach ->
@@ -640,14 +657,14 @@ describe "VideoClipper", ->
       @clippy.clearInputs()
       expect($(".bl-URL").text()).toEqual "Generated URL goes here"
 
-    it "should remove the incorrect highlighting class from the input boxes", ->
+    it "should remove the bl-incorrect class from the input boxes", ->
       $("input[name='bl-end']").addClass "bl-incorrect"
       $("input[name='bl-start']").addClass "bl-incorrect"
       @clippy.clearInputs()
       expect($("input[name='bl-start']")).not.toHaveClass "bl-incorrect"
       expect($("input[name='bl-end']")).not.toHaveClass "bl-incorrect"
 
-  describe "when updating output box", -> 
+  describe "when updating an output box", -> 
     beforeEach ->
       VideoClipper.cleanUp()
       loadFixtures('question.html')
@@ -660,38 +677,48 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         buttonID: @testID
 
-      @newLink = 'Testing testing'
+      @clippy.startTime = '300'
+      @clippy.endTime = '400'
+
+      data = encodeURI @clippy.generateBLDataString
+        type: 'show'
+      @newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+data+"</a>").
+        css
+          'background-image': @reel
+
+      $('body').append("<div id='test'></div>")
+
+    afterEach ->
+      $('#test').remove()
 
     it "should put the new link into the .bl-URL textarea", ->
       textSpy = spyOn($.fn, 'text').andCallThrough()
-      @clippy.update(@newLink)
-      expect($('.bl-URL')).toContainText(@newLink)
-
-    it "should generate a string representing the JSON data object", ->
-      spyOn(@clippy,'generateBLDataString').andCallThrough()
-      @clippy.update(@newLink)
-      expect(@clippy.generateBLDataString).toHaveBeenCalled()
-
-    it "should encoded the data string", -> 
-      spyOn(window, 'encodeURI').andCallThrough()
-      @clippy.update(@newLink)
-      expect(window.encodeURI).toHaveBeenCalled()
+      @clippy.update(@newTag)
+      expect($('.bl-URL')).toContainText(@newTag)
 
     it "should get the question's current contents", ->
       contentSpy = spyOn($.fn, 'contents').andCallThrough()
-      @clippy.update(@newLink)
+      @clippy.update(@newTag)
       expect($.fn.contents).toHaveBeenCalled()
       expect(contentSpy.mostRecentCall.object.selector).
         toEqual "."+@clippy.answerClass
 
-    it "should iterate through the question's text and html", ->
-      expect('pending').toEqual('completed')
+    describe "that doesn't already have contents", ->
+      it "the div's text equal the new link", ->
+        console.log $('.'+@clippy.answerClass).contents().length
+        @clippy.update(@newTag)
+        expect($('.'+@clippy.answerClass).find('a').text()).
+          toEqual @newTag.text()
 
-    it "should place the new link at the caret position", ->
-      expect('pending').toEqual('completed')
+    describe 'that already has contents', ->
+      it "should iterate through the question's text and html", ->
+        expect('pending').toEqual('completed')
 
-    it "should replace the question's content with the new content", ->
-      expect('pending').toEqual('completed')
+      it "should place the new link at the caret position", ->
+        expect('pending').toEqual('completed')
+
+      it "should replace the question's content with the new content", ->
+        expect('pending').toEqual('completed')
 
     it "should update the question's textarea", ->
       expect('pending').toEqual('completed')
@@ -770,11 +797,21 @@ describe "VideoClipper", ->
         tag = @clippy.generateTag()
         expect(tag).toBe 'a'
         expect(tag.text()).toEqual encodeURI str
-    
 
       it "should return the tag", ->
         tag = @clippy.generateTag()
         expect(tag).toBe 'a'
+
+      it 'should make the tag respond to click', ->
+        tag = @clippy.generateTag()
+        expect(tag).toHandle 'click'
+
+      describe 'the generated tag', ->
+        it 'should open a modal window when click', ->
+          spyOn(@clippy,'openModal')
+          tag = @clippy.generateTag()
+          tag.click()
+          expect(@clippy.openModal).toHaveBeenCalled()
   
 
     describe "without correct values", ->

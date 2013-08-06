@@ -31,48 +31,10 @@ class @VideoClipper
 
   # Set up event listeners and elements for video clipping
   setup: =>
-    that = this
-
     @generateOutputBox()
     @generateSnippetBox()
     @generateVideoBox()
     @generateOverlay()
-
-    $("." + @answerClass).click (e) ->
-      that.caretPos = that.getCaretPosition(this)
-      return
-
-    $("." + @answerClass).keyup (e) ->
-      that.caretPos = that.getCaretPosition(this)
-      divText = $(this).html()
-      $(this).prev().val divText
-      return
-
-    $(document).on "click", "[rel*=blModal]", ->
-      that.openModal this
-      return
-
-    $(".bl-start").click (e) =>
-      currTime = @player.getCurrentTime()
-      $("input[name='bl-start']").val currTime
-      that.checkErrors()
-      return
-
-    $(".bl-end").click (e) =>
-      currTime = @player.getCurrentTime()
-      $("input[name='bl-end']").val currTime
-      that.checkErrors()
-      return
-
-    $(".bl-done").click (e) =>
-      that.closeModal()
-      that.update that.generateTag()
-      return
-
-    $(".bl-reset").click (e) =>
-      that.clearInputs()
-      @player.loadVideoById @vid, 0, "large"
-      return
 
   @cleanUp: =>
     $('#bl').remove()
@@ -178,15 +140,14 @@ class @VideoClipper
     $("input[name='bl-end']").removeClass "bl-incorrect"
     $(".bl-URL").text "Generated URL goes here"
 
-  update: (newLink) =>
-    $(".bl-URL").text newLink
-    blData = encodeURI(@generateBLDataString(type: "generate"))
+  update: (newTag) =>
+    $(".bl-URL").text newTag
     currContent = $("." + @answerClass).contents()
     newContent = []
     beginPos = 0
     endPos = 0
     if currContent.length is 0
-      newContent = newLink
+      newContent = newTag
     else
       currContent.each (i, e) =>
         if ((e.nodeType is 3) or (e.nodeType is 1)) and (endPos < @caretPos)
@@ -202,7 +163,7 @@ class @VideoClipper
             front = eString.substring(0, @caretPos - beginPos)
             back = eString.substring(@caretPos - beginPos, eString.length)
             newContent = newContent.concat(front)
-            newContent = newContent.concat(newLink)
+            newContent = newContent.concat(newTag)
             newContent = newContent.concat(back)
             return
           else
@@ -213,6 +174,7 @@ class @VideoClipper
           return
 
     $("." + @answerClass).text ""
+    console.log newContent
     $(newContent).each (i, e) =>
       $("." + @answerClass).append e
 
@@ -239,6 +201,13 @@ class @VideoClipper
       blDataEncoded = encodeURI(dataString)
       newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>").css
         'background-image': @reel
+
+      that = this
+
+      newTag.click ->
+        that.openModal this
+        return
+
       return newTag
     else
       # If there are errors with the start and end times return an empty string
@@ -299,6 +268,12 @@ class @VideoClipper
         rel: "blModal"
         id: @buttonID
 
+    that = this
+
+    $('#'+@buttonID).click ->
+      that.openModal this
+      return
+
   generateSnippetBox: =>
     $("""
       <div id='bl'>
@@ -356,6 +331,40 @@ class @VideoClipper
         </div>
       </div>
       """).appendTo("body") if $("#bl").length is 0
+
+    that = this
+    
+    $("." + @answerClass).click (e) ->
+      that.caretPos = that.getCaretPosition(this)
+      return
+
+    $("." + @answerClass).keyup (e) ->
+      that.caretPos = that.getCaretPosition(this)
+      divText = $(this).html()
+      $(this).prev().val divText
+      return
+
+    $(".bl-start").click (e) =>
+      currTime = @player.getCurrentTime()
+      $("input[name='bl-start']").val currTime
+      that.checkErrors()
+      return
+
+    $(".bl-end").click (e) =>
+      currTime = @player.getCurrentTime()
+      $("input[name='bl-end']").val currTime
+      that.checkErrors()
+      return
+
+    $(".bl-done").click (e) =>
+      that.closeModal()
+      that.update that.generateTag()
+      return
+
+    $(".bl-reset").click (e) =>
+      that.clearInputs()
+      @player.loadVideoById @vid, 0, "large"
+      return
 
   getCaretPosition: (editableDiv) =>
     @caretPos = 0

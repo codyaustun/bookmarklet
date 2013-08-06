@@ -43,7 +43,6 @@ class @OmniPlayer
       firstScriptTag = document.getElementsByTagName("script")[0]
       firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-
     build: ->
       @internal = new window.YT.Player(@elementId,
         videoId: @videoId
@@ -76,7 +75,6 @@ class @OmniPlayer
 
       @loadVideoById = (options) ->
         @internal.loadVideoById.apply(this, options)
-
 
     createPlayer: (obj)->
 
