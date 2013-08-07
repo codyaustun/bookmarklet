@@ -71,10 +71,10 @@ class @OmniPlayer
         @internal.stopVideo()
 
       @cueVideoById = (options) ->
-        @internal.cueVideoById.apply(this, options)
+        @internal.cueVideoById(options)
 
       @loadVideoById = (options) ->
-        @internal.loadVideoById.apply(this, options)
+        @internal.loadVideoById(options)
 
     createPlayer: (obj)->
 

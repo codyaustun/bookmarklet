@@ -28,13 +28,18 @@ class @VideoClipper
 
     @setup() if @generate
 
-
   # Set up event listeners and elements for video clipping
   setup: =>
     @generateOutputBox()
     @generateSnippetBox()
     @generateVideoBox()
     @generateOverlay()
+
+    that = this
+
+    $(document).on 'click', '[rel*=blModal]', ->
+      that.openModal this
+      return 
 
   @cleanUp: =>
     $('#bl').remove()
@@ -371,7 +376,7 @@ class @VideoClipper
     containerEl = null
     sel = undefined
     range = undefined
-    if window.getSelection
+    if window.getSelection?
       sel = window.getSelection()
       if sel.rangeCount
         range = sel.getRangeAt(0)

@@ -926,10 +926,18 @@ describe "VideoClipper", ->
         expect(@clippy.generateBLDataString()).toEqual ""
   
 
-  # describe "when getting caret position", ->
+  describe "when getting caret position", ->
 
-  #   it "should have a spec", ->
-  #     expect('pending').toEqual('completed')
+    it 'should check to see if there is a window selection', ->
+      spyOn(window, 'getSelection').andReturn false
+
+      expect(window.getSelection).toHaveBeenCalled()
+
+    describe 'and the window selection exists', ->
+      it 'should get the window selection', ->
+        spyOn(window, 'getSelection').andReturn false
+
+        expect(window.getSelection).toHaveBeenCalled()
 
 
   # describe "when stripping html", ->
