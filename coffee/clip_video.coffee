@@ -10,8 +10,8 @@ class @VideoClipper
   reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
   answerClass: "bookMarklet-answer"
   button: ""
-  vid: "" # video id
-  videoType: "" # YouTube, TechTV etc.
+  videoId: "" # video id
+  videoType: "" # YT, TEST
   generate: true
 
   constructor: (obj)->
@@ -19,12 +19,11 @@ class @VideoClipper
     @reel = obj.reel or @reel
     @answerClass = obj.answerClass or @answerClass
     @textareaID = obj.textareaID
-    @vid = obj.videoID or @vid
+    @videoId = obj.videoID or @videoId
     @videoType = obj.videoType or @videoType
 
-
     @generate = if obj.generate != undefined then obj.generate else @generate
-    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @vid
+    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @videoId
 
     @setup() if @generate
 
@@ -45,8 +44,8 @@ class @VideoClipper
     $('#bl').remove()
     $('#bl-vid').remove()
     $("#bookMarklet-overlay").remove()
-    return
     # add removeOutputBox Function
+    return
 
   closeModal: (modalID) =>
     modalID = modalID or @modalID
@@ -61,24 +60,24 @@ class @VideoClipper
     blData = that.getBLData(el)
 
     if blData.type is "generate"
-      @vid = blData.video.id
+      @videoId = blData.video.id
       @videoType = blData.video.type
       url = ""
-      url = "http://www.youtube.com/embed/" + @vid  if @videoType is "YT"
+      url = "http://www.youtube.com/embed/" + @videoId  if @videoType is "YT"
       $(".bl-srcURL").attr "href", url
       $(".bl-srcURL").text url
       that.clearInputs()
       if @player is false
         @player = new OmniPlayer(
           elementId: "bl-player"
-          videoId: @vid
+          videoId: @videoId
           type: @videoType
           events: {}
         )
       else
-        @player.cueVideoById @vid, 0, "large"
+        @player.cueVideoById @videoId, 0, "large"
     else
-      @vid = blData.video.id
+      @videoId = blData.video.id
       @startTime = blData.start
       @endTime = blData.end
       @videoType = blData.video.type
@@ -86,7 +85,7 @@ class @VideoClipper
       if @playerV is false
         @playerV = new OmniPlayer(
           elementId: "bl-playerV"
-          videoId: @vid
+          videoId: @videoId
           type: @videoType
           startSeconds: @startTime
           endSeconds: @endTime
@@ -95,7 +94,7 @@ class @VideoClipper
 
         # This is working. It isn't loading video start and end points
         @playerV.cueVideoById
-          videoId: @vid
+          videoId: @videoId
           startSeconds: @startTime
           endSeconds: @endTime
           suggestedQuality: "large"
@@ -221,7 +220,7 @@ class @VideoClipper
   generateBLDataString: (obj) =>
     obj = obj or {}
     dataString = ""
-    dataVid = obj.vid or @vid
+    dataVid = obj.vid or @videoId
     dataVType = obj.vtype or @videoType
     if obj.type is "generate"
       dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
@@ -258,7 +257,7 @@ class @VideoClipper
 
     dataString = @generateBLDataString(
       type: "generate"
-      vid: @vid
+      vid: @videoId
       vtype: @videoType
     )
     blDataEncoded = encodeURI(dataString)
@@ -368,7 +367,7 @@ class @VideoClipper
 
     $(".bl-reset").click (e) =>
       that.clearInputs()
-      @player.loadVideoById @vid, 0, "large"
+      @player.loadVideoById @videoId, 0, "large"
       return
 
   getCaretPosition: (editableDiv) =>

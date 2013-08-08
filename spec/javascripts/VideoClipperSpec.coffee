@@ -111,7 +111,7 @@ describe "VideoClipper", ->
       @clippy.generateOutputBox()
       expect(@clippy.generateBLDataString).toHaveBeenCalledWith
         type: 'generate'
-        vid: @clippy.vid
+        vid: @clippy.videoId
         vtype: @clippy.videoType
 
     describe 'without a buttonid specified', ->
@@ -291,7 +291,7 @@ describe "VideoClipper", ->
       it 'should load the video by id', ->
         spyOn(@clippy.player, 'loadVideoById')
         $('.bl-reset').click()
-        expect(@clippy.player.loadVideoById).toHaveBeenCalledWith(@clippy.vid, 0, "large")
+        expect(@clippy.player.loadVideoById).toHaveBeenCalledWith(@clippy.videoId, 0, "large")
 
     it "should make the done button respond to clicks", ->
       expect($('.bl-done')).toHandle("click")
@@ -455,7 +455,7 @@ describe "VideoClipper", ->
 
       it "should get video type and id", ->
         @clippy.openModal @el
-        expect(@clippy.vid).toEqual @blData.video.id
+        expect(@clippy.videoId).toEqual @blData.video.id
         expect(@clippy.videoType).toEqual @blData.video.type
 
       it "should clear inputs", ->
@@ -485,7 +485,7 @@ describe "VideoClipper", ->
 
       it "should get video type, id, start time and end time", ->
         @clippy.openModal @el
-        expect(@clippy.vid).toEqual @blData.video.id
+        expect(@clippy.videoId).toEqual @blData.video.id
         expect(@clippy.videoType).toEqual @blData.video.type
         expect(@clippy.startTime).toEqual @blData.start
         expect(@clippy.endTime).toEqual @blData.end

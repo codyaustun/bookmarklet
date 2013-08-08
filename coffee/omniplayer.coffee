@@ -7,6 +7,9 @@ class @OmniPlayer
   startSeconds: undefined
   endSeconds: undefined
   internal: undefined
+  @loaded:
+    YT: false
+    TEST: false
 
   constructor: (obj) ->
     @elementId = obj.elementId
@@ -80,7 +83,7 @@ class @OmniPlayer
 
       that = this
 
-      if obj.loaded?
+      if OmniPlayer.loaded.YT
         that.YT.ready = true
 
       if @YT.ready

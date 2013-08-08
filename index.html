@@ -38,25 +38,37 @@
     <script type="text/javascript">
       // Create a YouTube player object for the modal dialog window
       $(document).ready(function(){
+        OmniPlayer.loaded.YT = true
         var temp = new VideoClipper({textareaID: "bl-text", videoType: "YT", videoID: "8f7wj_RcqYk"});
+        var temp2 = new VideoClipper({textareaID: "bl-text2", videoType: "YT", videoID: "PPqprN5nrJg"});
       });
     </script>
   </head>
   <body>
   	<div class="outer-wrap">
-
   		<div class="inner-wrap">
-  			<div class="align">
-  			<h1>Consider the following video:</h1>
-  		
+        <div class="question">
+    			<h1>Consider the following video:</h1>
 
-  			<iframe width="560" height="315" src="http://www.youtube.com/embed/8f7wj_RcqYk" frameborder="0" allowfullscreen></iframe>
-  			<p>
-  				Question: Pick the best Harlem Shake Video
-  			</p>
-  			</div>
-  			<textarea id="bl-text"></textarea>
-  		</div>
+    			<iframe width="560" height="315" src="http://www.youtube.com/embed/8f7wj_RcqYk" frameborder="0" allowfullscreen></iframe>
+    			<p>
+    				Question: Pick the best Harlem Shake Video
+    			</p>
+          <textarea id="bl-text"></textarea>
+        </div>
+  			
+
+        <div class="question">
+          <h1>Consider the following video:</h1>
+        
+
+          <iframe width="560" height="315" src="http://www.youtube.com/embed/PPqprN5nrJg" frameborder="0" allowfullscreen></iframe>
+          <p>
+            Question: Pick the best part
+          </p>
+          <textarea id="bl-text2"></textarea>
+        </div>
+      </div>
   	</div>
   </body>
 </html>
