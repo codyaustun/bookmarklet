@@ -1,35 +1,141 @@
 class @VideoClipper
 
+  # Instance Variables
   startTime: ""
   endTime: ""
   modalID: ""
-  player: false
-  playerV: false
   caretPos: 0
-
-  reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
-  answerClass: "bookMarklet-answer"
-  button: ""
+  answerClass: ""
   videoId: "" # video id
   videoType: "" # YT, TEST
   generate: true
 
+  buttonID: ""
+  textareaID: ""
+
+  # jQuery element objects
+  outputBox = null
+  snippetButton = null
+
+  # Class Variables 
+  @reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
+  @player: false
+  @playerV: false
+  @answerClass: "bookMarklet-answer"
+
   constructor: (obj)->
     obj = obj or {}
-    @reel = obj.reel or @reel
-    @answerClass = obj.answerClass or @answerClass
-    @textareaID = obj.textareaID
-    @videoId = obj.videoID or @videoId
-    @videoType = obj.videoType or @videoType
+    @reel = obj.reel or VideoClipper.reel # instance
+    @answerClass = obj.answerClass or VideoClipper.answerClass # instance
+    @textareaID = obj.textareaID # instance
+    @videoId = obj.videoID or @videoId # instance
+    @videoType = obj.videoType or @videoType # instance
 
-    @generate = if obj.generate != undefined then obj.generate else @generate
-    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @videoId
+    @generate = if obj.generate != undefined then obj.generate else @generate #instance 
+    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @videoId # instance
 
     @setup() if @generate
 
   # Set up event listeners and elements for video clipping
+  # could split up in class and a instance
   setup: =>
     @generateOutputBox()
+    VideoClipper.generate()
+
+  generateOutputBox: () =>
+    element = $("#"+@textareaID)
+    w = element.width()
+    h = element.height()
+    content = element.val()
+    @outputBox = element.after("<div></div>").css("display", "none").next()
+
+    @outputBox.attr(contenteditable: "true").addClass(@answerClass).css
+      width: w
+      height: h
+
+    dataString = @generateBLDataString(
+      type: "generate"
+      vid: @videoId
+      vtype: @videoType
+    )
+    blDataEncoded = encodeURI(dataString)
+
+    if $('#'+@buttonID).length > 0
+      $('#'+@buttonID).attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
+    else
+      @outputBox.after("<input type='button' value='Snippet'>").next().attr
+        "data-bl": blDataEncoded
+        rel: "blModal"
+        id: @buttonID
+
+    that = this
+
+    @snippetButton = $('#'+@buttonID)
+
+    @snippetButton.click ->
+      that.openModal this
+      return
+
+  update: (newTag) =>
+    $(".bl-URL").text newTag
+    currContent = $("." + @answerClass).contents()
+    newContent = []
+    beginPos = 0
+    endPos = 0
+    if currContent.length is 0
+      newContent = newTag
+    else
+      currContent.each (i, e) =>
+        if ((e.nodeType is 3) or (e.nodeType is 1)) and (endPos < @caretPos)
+          eString = ""
+          if e.nodeType is 3
+            eString = e.data
+          else
+            eString = e.text
+          beginPos = endPos
+          endPos = endPos + eString.length
+
+          if endPos >= @caretPos
+            front = eString.substring(0, @caretPos - beginPos)
+            back = eString.substring(@caretPos - beginPos, eString.length)
+            newContent = newContent.concat(front)
+            newContent = newContent.concat(newTag)
+            newContent = newContent.concat(back)
+            return
+          else
+            newContent = newContent.concat(e)
+            return
+        else
+          newContent = newContent.concat(e)
+          return
+
+    $("." + @answerClass).text ""
+    console.log newContent
+    $(newContent).each (i, e) =>
+      $("." + @answerClass).append e
+
+    newVal = $("." + @answerClass).html()
+    $("." + @answerClass).prev().val newVal
+
+  getCaretPosition: (editableDiv) =>
+    @caretPos = 0
+    containerEl = null
+    sel = undefined
+    range = undefined
+    if window.getSelection?
+      sel = window.getSelection()
+      if sel.rangeCount
+        range = sel.getRangeAt(0)
+        if range.commonAncestorContainer.parentNode is editableDiv
+          temp1 = range.endContainer.data
+          temp2 = range.commonAncestorContainer.parentNode.innerHTML.replace(/&nbsp;/g, String.fromCharCode(160))
+          temp2 = VideoClipper.stripHTML(temp2)
+          @caretPos = range.endOffset + temp2.split(temp1)[0].length
+    @caretPos
+
+  @generate: ()->
     @generateSnippetBox()
     @generateVideoBox()
     @generateOverlay()
@@ -38,7 +144,7 @@ class @VideoClipper
 
     $(document).on 'click', '[rel*=blModal]', ->
       that.openModal this
-      return 
+      return
 
   @cleanUp: =>
     $('#bl').remove()
@@ -47,17 +153,18 @@ class @VideoClipper
     # add removeOutputBox Function
     return
 
-  closeModal: (modalID) =>
-    modalID = modalID or @modalID
+  @closeModal: (modalID) =>
+    modalID = modalID
     $("#bookMarklet-overlay").fadeOut 200
     $(modalID).css display: "none"
     if modalID is "#bl"
       @player.stopVideo()
     else @playerV.stopVideo()  if modalID is "#bl-vid"
 
-  openModal: (el) =>
+  # pass clipper
+  openModal: (element, clipper) =>
     that = this
-    blData = that.getBLData(el)
+    blData = that.getBLData(element)
 
     if blData.type is "generate"
       @videoId = blData.video.id
@@ -117,10 +224,10 @@ class @VideoClipper
 
     $(@modalID).fadeTo 200, 1
 
-  checkErrors: =>
-    @startTime = parseFloat($("input[name='bl-start']").val())
-    @endTime = parseFloat($("input[name='bl-end']").val())
-    if (@startTime < @endTime or isNaN(@endTime)) and (not isNaN(@startTime))
+  @checkErrors: =>
+    startTime = parseFloat($("input[name='bl-start']").val())
+    endTime = parseFloat($("input[name='bl-end']").val())
+    if (startTime < endTime or isNaN(endTime)) and (not isNaN(startTime))
       $("input[name='bl-start']").removeClass "bl-incorrect"
       $("input[name='bl-end']").removeClass "bl-incorrect"
       true
@@ -144,46 +251,7 @@ class @VideoClipper
     $("input[name='bl-end']").removeClass "bl-incorrect"
     $(".bl-URL").text "Generated URL goes here"
 
-  update: (newTag) =>
-    $(".bl-URL").text newTag
-    currContent = $("." + @answerClass).contents()
-    newContent = []
-    beginPos = 0
-    endPos = 0
-    if currContent.length is 0
-      newContent = newTag
-    else
-      currContent.each (i, e) =>
-        if ((e.nodeType is 3) or (e.nodeType is 1)) and (endPos < @caretPos)
-          eString = ""
-          if e.nodeType is 3
-            eString = e.data
-          else
-            eString = e.text
-          beginPos = endPos
-          endPos = endPos + eString.length
 
-          if endPos >= @caretPos
-            front = eString.substring(0, @caretPos - beginPos)
-            back = eString.substring(@caretPos - beginPos, eString.length)
-            newContent = newContent.concat(front)
-            newContent = newContent.concat(newTag)
-            newContent = newContent.concat(back)
-            return
-          else
-            newContent = newContent.concat(e)
-            return
-        else
-          newContent = newContent.concat(e)
-          return
-
-    $("." + @answerClass).text ""
-    console.log newContent
-    $(newContent).each (i, e) =>
-      $("." + @answerClass).append e
-
-    newVal = $("." + @answerClass).html()
-    $("." + @answerClass).prev().val newVal
 
   generateTag: =>
 
@@ -230,7 +298,7 @@ class @VideoClipper
       dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
     dataString
 
-  generateVideoBox: =>
+  @generateVideoBox: =>
     $("""
       <div id='bl-vid'>
         <div class='bl-video-wrap'>
@@ -239,46 +307,12 @@ class @VideoClipper
       </div>
       """).appendTo("body") if $("#bl-vid").length is 0
 
-  generateOverlay: =>
+  @generateOverlay: =>
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
     $("#bookMarklet-overlay").click =>
       @closeModal()
 
-  generateOutputBox: () =>
-    element = $("#"+@textareaID)
-    w = element.width()
-    h = element.height()
-    content = element.val()
-    @outputBox = element.after("<div></div>").css("display", "none").next()
-
-    @outputBox.attr(contenteditable: "true").addClass(@answerClass).css
-      width: w
-      height: h
-
-    dataString = @generateBLDataString(
-      type: "generate"
-      vid: @videoId
-      vtype: @videoType
-    )
-    blDataEncoded = encodeURI(dataString)
-
-    if $('#'+@buttonID).length > 0
-      $('#'+@buttonID).attr
-        "data-bl": blDataEncoded
-        rel: "blModal"
-    else
-      @outputBox.after("<input type='button' value='Snippet'>").next().attr
-        "data-bl": blDataEncoded
-        rel: "blModal"
-        id: @buttonID
-
-    that = this
-
-    $('#'+@buttonID).click ->
-      that.openModal this
-      return
-
-  generateSnippetBox: =>
+  @generateSnippetBox: =>
     $("""
       <div id='bl'>
         <div class='bl-top'>
@@ -369,22 +403,6 @@ class @VideoClipper
       that.clearInputs()
       @player.loadVideoById @videoId, 0, "large"
       return
-
-  getCaretPosition: (editableDiv) =>
-    @caretPos = 0
-    containerEl = null
-    sel = undefined
-    range = undefined
-    if window.getSelection?
-      sel = window.getSelection()
-      if sel.rangeCount
-        range = sel.getRangeAt(0)
-        if range.commonAncestorContainer.parentNode is editableDiv
-          temp1 = range.endContainer.data
-          temp2 = range.commonAncestorContainer.parentNode.innerHTML.replace(/&nbsp;/g, String.fromCharCode(160))
-          temp2 = VideoClipper.stripHTML(temp2)
-          @caretPos = range.endOffset + temp2.split(temp1)[0].length
-    @caretPos
 
   @stripHTML: (html) ->
     tmp = document.createElement("DIV")
