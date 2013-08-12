@@ -33,7 +33,7 @@ class @VideoClipper
     @reel = obj.reel or VideoClipper.reel # instance
     @answerClass = obj.answerClass or VideoClipper.answerClass # instance
     @textareaID = obj.textareaID # instance
-    @videoId = obj.videoID or @videoId # instance
+    @videoId = obj.videoId or @videoId # instance
     @videoType = obj.videoType or @videoType # instance
 
     @generate = if obj.generate != undefined then obj.generate else VideoClipper.generate #instance 
@@ -139,15 +139,20 @@ class @VideoClipper
     @caretPos
 
   @generate: (clipper)->
-    @generateSnippetBox(clipper)
+    @generateSnippetBox(clipper) if clipper?
     @generateVideoBox()
     @generateOverlay()
 
     that = this
 
-    clipper.questionBox.on 'click', '[rel*=blModal]', ->
-      that.openModal this, clipper
-      return
+    if clipper?
+      clipper.questionBox.on 'click', '[rel*=blModal]', ->
+        that.openModal this, clipper
+        return
+    else
+      $(document).on 'click', '[rel*=blModal]', ->
+        that.openModal this, clipper
+        return
 
   @cleanUp: =>
     $('#bl').remove()
@@ -249,15 +254,12 @@ class @VideoClipper
     else blData = $.parseJSON(decodeURI($(el).text()))  if typeof ($(el).text()) isnt "undefined"
     blData
 
-
   @clearInputs: =>
     $("input[name='bl-end']").val ""
     $("input[name='bl-start']").val ""
     $("input[name='bl-start']").removeClass "bl-incorrect"
     $("input[name='bl-end']").removeClass "bl-incorrect"
     $(".bl-URL").text "Generated URL goes here"
-
-
 
   @generateTag: (clipper) =>
 
@@ -408,7 +410,7 @@ class @VideoClipper
 
     $(".bl-reset").click (e) =>
       VideoClipper.clearInputs()
-      @player.loadVideoById @videoId, 0, "large"
+      @player.loadVideoById that.clipper.videoId, 0, "large"
       return
 
   @stripHTML: (html) ->
