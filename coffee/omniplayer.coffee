@@ -37,6 +37,15 @@ class @OmniPlayer
   loadVideoById: (options) -> 
     return 0
 
+  remove: ->
+    el = $("##{@elementId}")
+    new_el = el.after("<div></div>").next()
+
+    el.remove()
+    new_el.attr
+      id: "#{@elementId}"
+    return this
+
   YT: 
     ready: false
     

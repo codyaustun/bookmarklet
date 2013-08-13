@@ -192,7 +192,8 @@ class @VideoClipper
     $(modalID).css display: "none"
     if modalID is "#bl"
       @player.stopVideo()
-    else @playerV.stopVideo()  if modalID is "#bl-vid"
+    else 
+      @playerV.stopVideo()  if modalID is "#bl-vid"
 
     return this
 
@@ -406,12 +407,24 @@ class @VideoClipper
         )
       else
 
-        # This is working. It isn't loading video start and end points
-        @playerV.cueVideoById
-          videoId: videoId
-          startSeconds: startTime
-          endSeconds: endTime
-          suggestedQuality: "large"
+        # OPTIMIZE: This works, 
+        #   but it would be nice if it didn't need to delete the video
+        if @playerV.videoId != videoId
+          @playerV.cueVideoById
+            videoId: videoId
+            startSeconds: startTime
+            endSeconds: endTime
+            suggestedQuality: "large"
+        else
+          console.log 'here'
+          @playerV.remove()
+          @playerV = new OmniPlayer(
+            elementId: "bl-playerV"
+            videoId: videoId
+            type: videoType
+            startSeconds: startTime
+            endSeconds: endTime
+          )
 
     @modalID = blData.modal
     modalWidth = $(@modalID).outerWidth()
