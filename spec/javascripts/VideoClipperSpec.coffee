@@ -739,7 +739,7 @@ describe "VideoClipper", ->
       @el = $('#'+@testID)
       @blData = VideoClipper.getBLData @el
 
-      @clippy.openModal @el
+      VideoClipper.openModal @el, @clippy
 
     afterEach ->
       VideoClipper.closeModal()
@@ -747,24 +747,24 @@ describe "VideoClipper", ->
     it "should get start time from the snippet box", ->
       $("input[name='bl-start']").val("200.5")
       valSpy = spyOn($.fn, "val").andCallThrough()
-      @clippy.generateTag()
+      VideoClipper.generateTag @clippy
       expect($.fn.val).toHaveBeenCalled()
-      expect(@clippy.startTime).toEqual 200.5
+      expect(@clippy.startTime).toEqual '200.5'
       expect(valSpy.calls[0].object.selector).toEqual("input[name='bl-start']")
 
     it "should get end time from the snippet box", ->
       $("input[name='bl-end']").val("300.5")
       valSpy = spyOn($.fn, "val").andCallThrough()
-      @clippy.generateTag()
+      VideoClipper.generateTag @clippy
       expect($.fn.val).toHaveBeenCalled()
-      expect(@clippy.endTime).toEqual 300.5
+      expect(@clippy.endTime).toEqual '300.5'
       expect(valSpy.calls[1].object.selector).toEqual("input[name='bl-end']")
 
 
     it "should check for errors in the start and end times", ->
-      spyOn(@clippy, 'checkErrors').andCallThrough()
-      @clippy.generateTag()
-      expect(@clippy.checkErrors).toHaveBeenCalled()
+      spyOn(VideoClipper, 'checkErrors').andCallThrough()
+      VideoClipper.generateTag @clippy
+      expect(VideoClipper.checkErrors).toHaveBeenCalled()
 
 
     describe "with correct values", ->
@@ -775,50 +775,50 @@ describe "VideoClipper", ->
       it "should set the endTime to the video duration if it isn't defined", ->
         $("input[name='bl-end']").val("")
         spyOn(VideoClipper.player, 'getDuration').andReturn 400
-        @clippy.generateTag()
+        VideoClipper.generateTag @clippy
         expect(VideoClipper.player.getDuration).toHaveBeenCalled()
 
       it "should generate a show data JSON string", ->
-        spyOn(@clippy, 'generateBLDataString').andCallThrough()
-        @clippy.generateTag()
-        expect(@clippy.generateBLDataString).toHaveBeenCalled()
+        spyOn(VideoClipper, 'generateBLDataString').andCallThrough()
+        VideoClipper.generateTag @clippy
+        expect(VideoClipper.generateBLDataString).toHaveBeenCalled()
 
       it "should encode the data string", ->
         spyOn(window, 'encodeURI')
         str = 'Test'
-        spyOn(@clippy, 'generateBLDataString').andReturn (str)
-        @clippy.generateTag()
+        spyOn(VideoClipper, 'generateBLDataString').andReturn (str)
+        VideoClipper.generateTag @clippy
         expect(window.encodeURI).toHaveBeenCalledWith(str)
   
 
       it "should create an a tag with the encodedData in the text", ->
         str = 'Test'
-        spyOn(@clippy, 'generateBLDataString').andReturn (str)
-        tag = @clippy.generateTag()
+        spyOn(VideoClipper, 'generateBLDataString').andReturn (str)
+        tag = VideoClipper.generateTag @clippy
         expect(tag).toBe 'a'
         expect(tag.text()).toEqual encodeURI str
 
       it "should return the tag", ->
-        tag = @clippy.generateTag()
+        tag = VideoClipper.generateTag @clippy
         expect(tag).toBe 'a'
 
       it 'should make the tag respond to click', ->
-        tag = @clippy.generateTag()
+        tag = VideoClipper.generateTag @clippy
         expect(tag).toHandle 'click'
 
       describe 'the generated tag', ->
         it 'should open a modal window when click', ->
-          spyOn(@clippy,'openModal')
-          tag = @clippy.generateTag()
+          spyOn(VideoClipper,'openModal')
+          tag = VideoClipper.generateTag @clippy
           tag.click()
-          expect(@clippy.openModal).toHaveBeenCalled()
+          expect(VideoClipper.openModal).toHaveBeenCalled()
   
 
     describe "without correct values", ->
 
       it "should return and empty string", ->
         spyOn(VideoClipper, 'checkErrors').andReturn false
-        expect(@clippy.generateTag()).toEqual ""  
+        expect(VideoClipper.generateTag(@clippy)).toEqual ""  
 
   describe "when generating JSON clip data", ->
     beforeEach -> 
@@ -837,8 +837,7 @@ describe "VideoClipper", ->
 
     describe "with a type of 'generate' ", ->
       beforeEach ->
-        dataString = @clippy.generateBLDataString
-          type: 'generate'
+        dataString = VideoClipper.generateBLDataString 'generate', @clippy
         @blData = $.parseJSON dataString
 
       it 'should create a JSON string with a type of generate', ->
@@ -850,22 +849,6 @@ describe "VideoClipper", ->
       it 'should use the type of the instance in the JSON string', ->
         expect(@blData.video.type).toEqual @videoType
 
-      describe 'and defaults values', ->
-        beforeEach ->
-          @obj = 
-            type: "generate"
-            vid: 'Test123'
-            vtype: 'YT'
-
-          dataString = @clippy.generateBLDataString(@obj)
-          @blData = $.parseJSON dataString
-
-        it 'should use the vid of the argument in the JSON string', ->
-          expect(@blData.video.id).toEqual @obj.vid
-
-        it 'should use the type of the argument in the JSON string', ->
-          expect(@blData.video.type).toEqual @obj.vtype
-
 
     describe "with a type of 'show", ->
       beforeEach ->
@@ -875,8 +858,7 @@ describe "VideoClipper", ->
         @clippy.startTime = @startTime
         @clippy.endTime = @endTime
 
-        dataString = @clippy.generateBLDataString
-          type: 'show'
+        dataString = VideoClipper.generateBLDataString 'show', @clippy
         @blData = $.parseJSON dataString
 
       it 'should create a JSON string with a type of show', ->
@@ -894,36 +876,10 @@ describe "VideoClipper", ->
       it 'should use the end time of the instance in the JSON string', ->
         expect(@blData.end).toEqual @endTime
 
-
-      describe 'and defaults values', ->
-        beforeEach ->
-          @obj = 
-            type: "show"
-            vid: 'Test123'
-            vtype: 'YT'
-            start: '400'
-            end: '500'
-
-          dataString = @clippy.generateBLDataString(@obj)
-          @blData = $.parseJSON dataString
-
-        it 'should use the vid of the argument in the JSON string', ->
-          expect(@blData.video.id).toEqual @obj.vid
-
-        it 'should use the type of the argument in the JSON string', ->
-          expect(@blData.video.type).toEqual @obj.vtype
-
-        it 'should use the start time of the argument in the JSON string', ->
-          expect(@blData.start).toEqual @obj.start
-
-        it 'should use the end time of the argument in the JSON string', ->
-          expect(@blData.end).toEqual @obj.end
-
-
-    describe "without a type", ->
+    describe "without an incorrect type", ->
 
       it "should return an empty string", ->
-        expect(@clippy.generateBLDataString()).toEqual ""
+        expect(VideoClipper.generateBLDataString 'incorrect', @clippy).toEqual ""
   
 
   describe "when getting caret position", ->
