@@ -28,15 +28,17 @@ class @VideoClipper
 
   constructor: (obj)->
     obj = obj or {}
-    @reel = obj.reel or VideoClipper.reel # instance
-    @answerClass = obj.answerClass or VideoClipper.answerClass # instance
-    @textareaID = obj.textareaID # instance
-    @videoId = obj.videoId or @videoId # instance
-    @videoType = obj.videoType or @videoType # instance
+    @reel = obj.reel or VideoClipper.reel
+    @answerClass = obj.answerClass or VideoClipper.answerClass
+    @textareaID = obj.textareaID
+    @videoId = obj.videoId or @videoId
+    @videoType = obj.videoType or @videoType
 
+    # The variables below can be false, so or can't be used
     @generate = if obj.generate != undefined then obj.generate else VideoClipper.generate #instance 
     @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @videoId # instance
 
+    # Condition mainly used for testing
     @setup() if @generate
 
     VideoClipper.clippers = VideoClipper.clippers.concat(this)
@@ -46,6 +48,8 @@ class @VideoClipper
     w = element.width()
     h = element.height()
     content = element.val()
+
+    # Newly created div for answer input
     @questionBox = element.after("<div></div>").css("display", "none").next()
 
     @questionBox.attr(contenteditable: "true").addClass(@answerClass).css
