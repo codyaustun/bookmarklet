@@ -420,7 +420,6 @@ class @VideoClipper
             endSeconds: endTime
             suggestedQuality: "large"
         else
-          console.log 'here'
           @playerV.remove()
           @playerV = new OmniPlayer(
             elementId: "bl-playerV"
