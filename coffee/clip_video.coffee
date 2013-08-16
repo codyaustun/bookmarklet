@@ -140,7 +140,12 @@ class @VideoClipper
     newVal = @questionBox.html()
     @questionBox.prev().val newVal
 
-  # TODO: Add Tests
+    that = this
+
+    # TODO: Add tests
+    @questionBox.find('[rel*=blModal]').click ->
+      VideoClipper.openModal this, that
+
   @generate: (clipper)->
     @generateSnippetBox(clipper) if clipper?
     @generateVideoBox()
@@ -148,14 +153,9 @@ class @VideoClipper
 
     that = this
 
-    if clipper?
-      clipper.questionBox.on 'click', '[rel*=blModal]', ->
-        that.openModal this, clipper
-        return
-    else
-      $(document).on 'click', '[rel*=blModal]', ->
+    if !clipper?
+      $('[rel*=blModal]').click ->
         that.openModal this
-        return
     return that
 
   @checkErrors: =>
@@ -174,11 +174,8 @@ class @VideoClipper
     $('#bl').remove()
     $('#bl-vid').remove()
     $("#bookMarklet-overlay").remove()
-
-    # TODO: Add test
     @prepared.snippet = false
-    # TODO: Add removequestionBox Function
-
+    clipper.questionBox.remove() for clipper in @clippers when clipper.questionBox?
     return this
 
   @clearInputs: =>
@@ -198,7 +195,6 @@ class @VideoClipper
       @player.stopVideo()
     else 
       @playerV.stopVideo()  if modalID is "#bl-vid"
-
     return this
 
   @generateTag: (clipper) =>
@@ -224,15 +220,10 @@ class @VideoClipper
 
       that = this
 
-      newTag.click ->
-        that.openModal this
-        return
-
       clipper.clips = clipper.clips.concat(newTag)
 
       return newTag
     else
-      # If there are errors with the start and end times return an empty string
       return ""
 
   @generateBLDataString: (type, clipper) =>
@@ -348,11 +339,11 @@ class @VideoClipper
         @player.loadVideoById that.clipper.videoId, 0, "large"
         return
 
-      # TODO: Add test
       @prepared.snippet = true
 
     return this
 
+  # TODO: Add Tests
   @generateVideoBox: =>
     $("""
       <div id='bl-vid'>
@@ -373,6 +364,9 @@ class @VideoClipper
 
   @openModal: (element, clipper) =>
     that = this
+
+    @closeModal()
+
     blData = that.getBLData(element)
 
     @clipper = clipper
