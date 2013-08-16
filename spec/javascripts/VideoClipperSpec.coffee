@@ -4,53 +4,117 @@ describe "VideoClipper", ->
     @clippy = new VideoClipper
     expect(@clippy).toBeDefined()
 
-  # Not sure if a constructor actually makes sense yet
-  xdescribe "when constructing", ->
+  describe "when constructing", ->
     beforeEach ->
-      @clippy = new VideoClipper
+      @textareaID = 'bl-text'
+      @videoId = '8f7wj_RcqYk'
+      @videoType = 'TEST'
 
-    it "should give reel a default but allow it to be set", ->
-      expect(@clippy.reel).not.toBeFalsy
+    afterEach ->
+      VideoClipper.cleanUp()
 
-      reelString = "http://web.mit.edu/colemanc/www/bookmarklet/images/film2Small.png"
-      @clippy2 = new VideoClipper
-        reel: reelString
+    describe 'with defaults', ->
+      beforeEach ->
+        @clippy = new VideoClipper
+          textareaID: @textareaID
+          videoId: @videoId
+          videoType: @videoType
 
-      expect(@clippy2.reel).toEqual(reelString)
+      it "should use @textareaID for the instance's textareaID", ->
+        expect(@clippy.textareaID).toEqual @textareaID
 
-    it "should give answerClass a default but allow it to be set", ->
-      expect(@clippy.answerClass).not.toBeFalsy
+      it "should use @videoId for the instance's videoId", ->
+        expect(@clippy.videoId).toEqual @videoId
 
-      answerClass = "VC-answer"
-      @clippy2 = new VideoClipper
-        answerClass: answerClass 
+      it "should use @videoType for the instance's videoType", ->
+        expect(@clippy.videoType).toEqual @videoType
 
-      expect(@clippy2.answerClass).toEqual(answerClass)
+      it "should use VideoClipper.reel for the instance's reel", ->
+        expect(@clippy.reel).toEqual VideoClipper.reel
 
-    it "should require vid to be set", ->
-      vid = "d_z2CA-o13U"
-      @clippy2 = new VideoClipper
-        videoId: vid 
+      it "should use VideoClipper.answerClass for the instance's answerClass", ->
+        expect(@clippy.answerClass).toEqual VideoClipper.answerClass
 
-      expect(@clippy2.vid).toEqual(vid)
+      it "should use VideoClipper.generateHtml for the instance's generate", ->
+        expect(@clippy.generate).toEqual VideoClipper.generateHtml
 
-      # Should throw error
-      expect('pending').toEqual('completed')
+      it 'should generate a buttonID for the instance', ->
+        expect(@clippy.buttonID).toBeDefined()
 
-    it "should require videoType to be set", ->
-      videoType = "yt"
-      @clippy2 = new VideoClipper
-        videoType: videoType
+    describe 'without using defaults', ->
+      beforeEach ->
+        @answerClass = 'answer-class-test'
+        @reel = 'reel-test'
+        @buttonID = 'button-id-test'
+        @textareaID = 'bl-text'
+        @generate = false
 
-      expect(@clippy2.videoType).toEqual(videoType)
-      # Should throw error
-      expect('pending').toEqual('completed')
+        @clippy = new VideoClipper
+          textareaID: @textareaID
+          videoId: @videoId
+          videoType: @videoType
+          generate: @generate
+          reel: @reel
+          buttonID: @buttonID
+          answerClass: @answerClass
 
-    it "should require textareaID to be set", ->
-      expect('pending').toEqual('completed')
+      it "should use @textareaID for the instance's textareaID", ->
+        expect(@clippy.textareaID).toEqual @textareaID
 
-    it "should allow button to be turned off", ->
-      expect('pending').toEqual('completed')
+      it "should use @videoId for the instance's videoId", ->
+        expect(@clippy.videoId).toEqual @videoId
+
+      it "should use @videoType for the instance's videoType", ->
+        expect(@clippy.videoType).toEqual @videoType
+
+      it "should use the given value for the instance's reel", ->
+        expect(@clippy.reel).toEqual @reel
+
+      it "should use the given value for the instance's answerClass", ->
+        expect(@clippy.answerClass).toEqual @answerClass
+
+      it "should use the given value for the instance's generate", ->
+        expect(@clippy.generate).toEqual @generate
+
+      it "should use the given value for the instance's buttonID", ->
+        expect(@clippy.buttonID).toEqual @buttonID
+
+    describe 'when generate is true', ->
+      it 'should call #setup', ->
+        # clippy.setup calls VideoClipper.generate, so
+        # this tests spies on VideoClipper.generate
+        spyOn(VideoClipper, 'generate')
+
+        clippy = new VideoClipper
+          textareaID: @textareaID
+          videoId: @videoId
+          videoType: @videoType
+          generate: true
+
+    describe 'when generate is false', ->
+      it 'should not call #setup', ->
+        # clippy.setup calls VideoClipper.generate, so
+        # this tests spies on VideoClipper.generate
+        spyOn(VideoClipper, 'generate')
+
+        clippy = new VideoClipper
+          textareaID: @textareaID
+          videoId: @videoId
+          videoType: @videoType
+          generate: false
+
+        expect(VideoClipper.generate).not.toHaveBeenCalled()
+
+    it 'should add the new instance to VideoClipper.clippers', ->
+      clippy = new VideoClipper
+        textareaID: @textareaID
+        videoId: @videoId
+        videoType: @videoType
+        generate: true
+
+      addedClipper = false
+      addedClipper = true for c in VideoClipper.clippers when c = clippy
+      expect(addedClipper).toBeTruthy
 
   describe '.generateQuestionBox', ->
     beforeEach ->

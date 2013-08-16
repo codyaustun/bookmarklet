@@ -19,14 +19,13 @@ class @VideoClipper
   @player: false
   @playerV: false
   @answerClass: "bookMarklet-answer"
-  @generate: true
+  @generateHtml: true
   @modalID: "" # bl or bl-vid
   @clipper: ""
   @clippers: []
   @prepared:
     snippet: false
 
-  # TODO: Add tests
   constructor: (obj)->
     obj = obj or {}
     @reel = obj.reel or VideoClipper.reel
@@ -34,10 +33,11 @@ class @VideoClipper
     @textareaID = obj.textareaID
     @videoId = obj.videoId or @videoId
     @videoType = obj.videoType or @videoType
+    @buttonID = obj.buttonID or "bl-"+@videoType + @videoId
 
     # The variables below can be false, so or can't be used
-    @generate = if obj.generate != undefined then obj.generate else VideoClipper.generate #instance 
-    @buttonID = if obj.buttonID != undefined then obj.buttonID else "bl-"+@videoType + @videoId # instance
+    @generate = if obj.generate != undefined then obj.generate else VideoClipper.generateHtml
+
 
     # Condition mainly used for testing
     @setup() if @generate
