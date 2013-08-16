@@ -312,7 +312,30 @@ describe "VideoClipper", ->
       expect(VideoClipper.prepared.snippet).toBeTruthy()
 
   describe ".generateVideoBox", ->
-    # Do I need to test this?
+    describe 'with a #bl-vid already', ->
+      beforeEach ->
+        VideoClipper.generateVideoBox()
+
+      afterEach ->
+        VideoClipper.cleanUp()
+      it "should not add another #bl-vid div", ->
+        expect($('#bl-vid').length).toEqual 1
+        VideoClipper.generateVideoBox()
+        expect($('#bl-vid').length).toEqual 1
+
+    describe 'without a #bl-vid already', ->
+      it 'should add a #bl-vid div', ->
+        expect($('#bl-vid').length).toEqual 0
+        VideoClipper.generateVideoBox()
+        expect($('#bl-vid').length).toEqual 1
+
+      it 'should have #bl-playerV inside #bl-vid', ->
+        VideoClipper.generateVideoBox()
+        expect($('#bl-vid').find('#bl-playerV').length).toEqual 1        
+
+    it 'should return VideoClipper', ->
+      result = VideoClipper.generateVideoBox()
+      expect(result).toEqual VideoClipper
 
   describe "#setup", ->
     beforeEach ->
@@ -881,6 +904,12 @@ describe "VideoClipper", ->
         expect(tag).toBe 'a'
         expect(tag.text()).toEqual encodeURI str
 
+      it "should the clip to the instance's clips", ->
+        tag = VideoClipper.generateTag @clippy
+        clipAdded = false
+        clipAdded = true for clip in @clippy.clips when clip == tag
+        expect(clipAdded).toBeTruthy
+
       it "should return the tag", ->
         tag = VideoClipper.generateTag @clippy
         expect(tag).toBe 'a'
@@ -964,14 +993,18 @@ describe "VideoClipper", ->
         expect(window.getSelection).toHaveBeenCalled()
 
 
-  # describe "when stripping html", ->
+  describe "when stripping html", ->
+    beforeEach ->
+      @elementHtml = '<a rel="blModal" href="#bl-vid" class="bl">%7B%22start%22:%20%2243.92%22,%20%22end%22:%20%22330%22,%20%22type%22:%20%22show%22,%20%22modal%22:%20%22#bl-vid%22,%20%22video%22:%20%7B%22id%22:%20%228f7wj_RcqYk%22,%20%22type%22:%20%22YT%22%7D%7D</a>'
 
-  #   it "should create a div", ->
-  #     expect('pending').toEqual('completed')
+    it "should create a div", ->
+      spyOn(document, "createElement").andCallThrough()
+      VideoClipper.stripHTML(@elementHtml)
+      expect(document.createElement).toHaveBeenCalledWith("DIV")
 
-  #   it "should put the html into the div's innerHTML", ->
-  #     expect('pending').toEqual('completed')
+    it "should put the html into the div's innerHTML", ->
+      expect('pending').toEqual('completed')
 
-  #   it "should return div's textContent or innerText", ->
-  #     expect('pending').toEqual('completed')
+    it "should return div's textContent or innerText", ->
+      expect('pending').toEqual('completed')
 

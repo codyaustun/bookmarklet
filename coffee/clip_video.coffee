@@ -26,6 +26,7 @@ class @VideoClipper
   @prepared:
     snippet: false
 
+  # TODO: Add tests
   constructor: (obj)->
     obj = obj or {}
     @reel = obj.reel or VideoClipper.reel
@@ -146,18 +147,6 @@ class @VideoClipper
     @questionBox.find('[rel*=blModal]').click ->
       VideoClipper.openModal this, that
 
-  @generate: (clipper)->
-    @generateSnippetBox(clipper) if clipper?
-    @generateVideoBox()
-    @generateOverlay()
-
-    that = this
-
-    if !clipper?
-      $('[rel*=blModal]').click ->
-        that.openModal this
-    return that
-
   @checkErrors: =>
     startTime = parseFloat($("input[name='bl-start']").val())
     endTime = parseFloat($("input[name='bl-end']").val())
@@ -197,34 +186,17 @@ class @VideoClipper
       @playerV.stopVideo()  if modalID is "#bl-vid"
     return this
 
-  @generateTag: (clipper) =>
+  @generate: (clipper)->
+    @generateSnippetBox(clipper) if clipper?
+    @generateVideoBox()
+    @generateOverlay()
 
-    # Get in and out points
-    clipper.startTime = $("input[name='bl-start']").val()
-    clipper.endTime = $("input[name='bl-end']").val()
+    that = this
 
-    # Check for errors and proceed
-    if VideoClipper.checkErrors()
-
-      # Default for endTime is an empty string
-      clipper.endTime = @player.getDuration() if isNaN parseFloat clipper.endTime 
-
-      # Generate an anchor tag with encoded JSON as text
-      newTag = ""
-      dataString = @generateBLDataString "show", clipper
-      # Logging for edX
-      # Logger.log('video_clip', $.parseJSON(dataString));
-      blDataEncoded = encodeURI(dataString)
-      newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>").css
-        'background-image': clipper.reel
-
-      that = this
-
-      clipper.clips = clipper.clips.concat(newTag)
-
-      return newTag
-    else
-      return ""
+    if !clipper?
+      $('[rel*=blModal]').click ->
+        that.openModal this
+    return that
 
   @generateBLDataString: (type, clipper) =>
     dataString = ""
@@ -343,7 +315,35 @@ class @VideoClipper
 
     return this
 
-  # TODO: Add Tests
+  @generateTag: (clipper) =>
+
+    # Get in and out points
+    clipper.startTime = $("input[name='bl-start']").val()
+    clipper.endTime = $("input[name='bl-end']").val()
+
+    # Check for errors and proceed
+    if VideoClipper.checkErrors()
+
+      # Default for endTime is an empty string
+      clipper.endTime = @player.getDuration() if isNaN parseFloat clipper.endTime 
+
+      # Generate an anchor tag with encoded JSON as text
+      newTag = ""
+      dataString = @generateBLDataString "show", clipper
+      # Logging for edX
+      # Logger.log('video_clip', $.parseJSON(dataString));
+      blDataEncoded = encodeURI(dataString)
+      newTag = $("<a rel='blModal' href='#bl-vid' class='bl'>"+ blDataEncoded+ "</a>").css
+        'background-image': clipper.reel
+
+      that = this
+
+      clipper.clips = clipper.clips.concat(newTag)
+
+      return newTag
+    else
+      return ""
+
   @generateVideoBox: =>
     $("""
       <div id='bl-vid'>
