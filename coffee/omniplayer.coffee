@@ -10,6 +10,7 @@ class @OmniPlayer
   @loaded:
     YT: false
     TEST: false
+    JW: true
 
   constructor: (obj) ->
     @elementId = obj.elementId
@@ -46,6 +47,37 @@ class @OmniPlayer
       id: "#{@elementId}"
     return this
 
+  JW:
+    build: (obj) ->
+      console.log @elementId
+      jwplayer(@elementId).setup
+        file: "http://www.youtube.com/watch?v=ac7KhViaVqc"
+        image: 'http://rack.1.mshcdn.com/media/ZgkyMDEyLzEyLzA0Lzg1L2hhcHB5NXRoYmlyLmJLYy5qcGcKcAl0aHVtYgk5NTB4NTM0IwplCWpwZw/eb8329a5/d20/happy-5th-birthday-youtube--501ecffedf.jpg'
+        # height: @height
+        # width: @width
+
+      @getDuration = ->
+        jwplayer(@elementId).getDuration()
+
+      @getCurrentTime = ->
+        jwplay(@elementId).getPosition()
+
+      @stopVideo = ->
+        jwplayer(@elementId).stop()
+
+      @cueVideoById = (options) ->
+        # TODO
+
+      @loadVideoById = (options) ->
+        # TODO
+
+      @remove = ->
+        jwplayer(@elementId).remoe()
+
+    createPlayer: (obj) ->
+      OmniPlayer.loaded.JW = true
+      @JW.build.apply this, [obj]
+
   YT: 
     setup: ->
       tag = document.createElement("script")
@@ -71,13 +103,13 @@ class @OmniPlayer
       )
 
       # Encapsulate YouTube API functions
-      @getDuration = () ->
+      @getDuration = ->
         @internal.getDuration()
 
-      @getCurrentTime = () ->
+      @getCurrentTime = ->
         @internal.getCurrentTime()
 
-      @stopVideo = () ->
+      @stopVideo = ->
         @internal.stopVideo()
 
       @cueVideoById = (options) ->
