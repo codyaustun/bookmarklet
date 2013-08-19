@@ -151,19 +151,18 @@ class @VideoClipper
     @questionBox.find('[rel*=blModal]').each (index, element) ->
       data = VideoClipper.getBLData $(element)
 
-      startTime = VideoClipper.toTime(data.start)
-      endTime = VideoClipper.toTime(data.end)
+      startTime = VideoClipper.secondsToTime(data.start)
+      endTime = VideoClipper.secondsToTime(data.end)
 
-      $(element).qtip(
+      $(element).qtip
         style:
           classes: 'qtip-rounded qtip-dark'
         content:
           text: "Start: #{startTime} - End: #{endTime}"
-      )
-
+          
   @checkErrors: =>
-    startTime = parseFloat($("input[name='bl-start']").val())
-    endTime = parseFloat($("input[name='bl-end']").val())
+    startTime = parseFloat(@getStartTime())
+    endTime = parseFloat(@getEndTime())
     if (startTime < endTime or isNaN(endTime)) and (not isNaN(startTime))
       $("input[name='bl-start']").removeClass "bl-incorrect"
       $("input[name='bl-end']").removeClass "bl-incorrect"
@@ -182,8 +181,8 @@ class @VideoClipper
     return this
 
   @clearInputs: =>
-    $("input[name='bl-end']").val ""
-    $("input[name='bl-start']").val ""
+    @setStartTime ""
+    @setEndTime ""
     $("input[name='bl-start']").removeClass "bl-incorrect"
     $("input[name='bl-end']").removeClass "bl-incorrect"
     $(".bl-URL").text "Generated URL goes here"
@@ -210,6 +209,20 @@ class @VideoClipper
     if !clipper?
       $('[rel*=blModal]').click ->
         that.openModal this
+
+      # TODO: Add tests
+      $('[rel*=blModal]').each (index, element) ->
+        data = VideoClipper.getBLData $(element)
+
+        startTime = VideoClipper.secondsToTime(data.start)
+        endTime = VideoClipper.secondsToTime(data.end)
+
+        $(element).qtip
+          style:
+            classes: 'qtip-rounded qtip-dark'
+          content:
+            text: "Start: #{startTime} - End: #{endTime}"
+
     return that
 
   @generateBLDataString: (type, clipper) =>
@@ -241,7 +254,7 @@ class @VideoClipper
           </div>
           <div class='bl-controls'>
             <div class='bl-title'>
-              <h1>Create a URL</h1>
+              <h1>Create a Clip</h1>
             </div>
             <div class='bl-instructions'>
               Click \"Start Time\" and \"End Time\" buttons,or by type in the time in the text boxes.
@@ -305,13 +318,13 @@ class @VideoClipper
     if !@prepared.snippet
       $(".bl-start").click (e) =>
         currTime = @player.getCurrentTime()
-        $("input[name='bl-start']").val currTime
+        that.setStartTime currTime
         that.checkErrors()
         return
 
       $(".bl-end").click (e) =>
         currTime = @player.getCurrentTime()
-        $("input[name='bl-end']").val currTime
+        that.setEndTime currTime
         that.checkErrors()
         return
 
@@ -332,8 +345,8 @@ class @VideoClipper
   @generateTag: (clipper) =>
 
     # Get in and out points
-    clipper.startTime = $("input[name='bl-start']").val()
-    clipper.endTime = $("input[name='bl-end']").val()
+    clipper.startTime = @getStartTime()
+    clipper.endTime = @getEndTime()
 
     # Check for errors and proceed
     if VideoClipper.checkErrors()
@@ -395,12 +408,11 @@ class @VideoClipper
       $(".bl-srcURL").text url
       @clearInputs()
       if @player is false
-        @player = new OmniPlayer(
+        @player = new OmniPlayer
           elementId: "bl-player"
           videoId: clipper.videoId
           type: clipper.videoType
           events: {}
-        )
       else
         @player.cueVideoById clipper.videoId, 0, "large"
     else
@@ -410,13 +422,12 @@ class @VideoClipper
       videoType = blData.video.type
 
       if @playerV is false
-        @playerV = new OmniPlayer(
+        @playerV = new OmniPlayer
           elementId: "bl-playerV"
           videoId: videoId
           type: videoType
           startSeconds: startTime
           endSeconds: endTime
-        )
       else
 
         # OPTIMIZE: This works, 
@@ -463,25 +474,64 @@ class @VideoClipper
     tmp.textContent or tmp.innerText
 
   # TODO: Add tests
-  @toTime: (seconds) ->
-    seconds = parseFloat(seconds)
-
-    hours = parseInt(seconds / 3600)
-    minutes = parseInt(seconds / 60) % 60
-    seconds = seconds % 60
-
-    result = ""
-
-    if hours > 0
-      minutes = "0#{minutes}" if (minutes / 10) < 1
-      seconds = "0#{seconds}" if (seconds / 10) < 1
-      result = "#{hours}:#{minutes}:#{seconds}"
-    else if minutes > 0
-      seconds = "0#{seconds}" if (seconds / 10) < 1
-      result = "#{minutes}:#{seconds}"
+  @secondsToTime: (seconds) ->
+    if seconds == ""
+      return seconds
     else
-      result = "#{seconds}"
+      seconds = parseFloat(seconds).toFixed(2)
 
-    return result
+      hours = parseInt(seconds / 3600)
+      minutes = parseInt(seconds / 60) % 60
+      seconds = seconds % 60
+
+      result = ""
+
+      if hours > 0
+        minutes = "0#{minutes}" if (minutes / 10) < 1
+        seconds = "0#{seconds}" if (seconds / 10) < 1
+        result = "#{hours}:#{minutes}:#{seconds}"
+      else if minutes > 0
+        seconds = "0#{seconds}" if (seconds / 10) < 1
+        result = "#{minutes}:#{seconds}"
+      else
+        result = "#{seconds}"
+
+      return result
+
+  # TODO: Add tests
+  @timeToSeconds: (time) ->
+    amounts = time.split(':')
+    seconds = 0
+
+    len = amounts.length
+    for amount, index in amounts
+      seconds += parseFloat(amount)*Math.pow(60, len-(index+1))
+
+    return seconds.toFixed(2)
+
+  # TODO: Add tests
+  @getEndTime: ->
+    val = $("input[name='bl-end']").val() 
+    return @timeToSeconds(val)
+
+  # TODO: Add tests
+  @getStartTime: ->
+    val = $("input[name='bl-start']").val()
+    return @timeToSeconds(val)
+
+  # TODO: Add tests
+  @setEndTime: (val) ->
+    console.log val
+    val = @secondsToTime val
+    $("input[name='bl-end']").val val
+    return val
+
+  # TODO: Add tests
+  @setStartTime: (val) ->
+    val = @secondsToTime val
+    $("input[name='bl-start']").val val
+    return val
+
+
 
 
