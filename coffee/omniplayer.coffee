@@ -47,8 +47,6 @@ class @OmniPlayer
     return this
 
   YT: 
-    ready: false
-    
     setup: ->
       tag = document.createElement("script")
       tag.src = "https://www.youtube.com/iframe_api"
@@ -93,17 +91,15 @@ class @OmniPlayer
       that = this
 
       if OmniPlayer.loaded.YT
-        that.YT.ready = true
-
-      if @YT.ready
         @YT.build.apply this
       else
         window.onYouTubeIframeAPIReady = () ->
-          that.YT.ready = true
+          OmniPlayer.loaded.YT = true
           that.YT.build.apply that
 
         @YT.setup()
 
   TEST:
     createPlayer: (obj)->
+      OmniPlayer.loaded.TEST = true
 
