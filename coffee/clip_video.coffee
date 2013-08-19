@@ -147,6 +147,20 @@ class @VideoClipper
     @questionBox.find('[rel*=blModal]').click ->
       VideoClipper.openModal this, that
 
+    # TODO: Add tests
+    @questionBox.find('[rel*=blModal]').each (index, element) ->
+      data = VideoClipper.getBLData $(element)
+
+      startTime = VideoClipper.toTime(data.start)
+      endTime = VideoClipper.toTime(data.end)
+
+      $(element).qtip(
+        style:
+          classes: 'qtip-rounded qtip-dark'
+        content:
+          text: "Start: #{startTime} - End: #{endTime}"
+      )
+
   @checkErrors: =>
     startTime = parseFloat($("input[name='bl-start']").val())
     endTime = parseFloat($("input[name='bl-end']").val())
@@ -447,5 +461,27 @@ class @VideoClipper
     tmp = document.createElement("DIV")
     tmp.innerHTML = html
     tmp.textContent or tmp.innerText
+
+  # TODO: Add tests
+  @toTime: (seconds) ->
+    seconds = parseFloat(seconds)
+
+    hours = parseInt(seconds / 3600)
+    minutes = parseInt(seconds / 60) % 60
+    seconds = seconds % 60
+
+    result = ""
+
+    if hours > 0
+      minutes = "0#{minutes}" if (minutes / 10) < 1
+      seconds = "0#{seconds}" if (seconds / 10) < 1
+      result = "#{hours}:#{minutes}:#{seconds}"
+    else if minutes > 0
+      seconds = "0#{seconds}" if (seconds / 10) < 1
+      result = "#{minutes}:#{seconds}"
+    else
+      result = "#{seconds}"
+
+    return result
 
 
