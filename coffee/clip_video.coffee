@@ -412,7 +412,6 @@ class @VideoClipper
           elementId: "bl-player"
           videoId: clipper.videoId
           type: clipper.videoType
-          events: {}
       else
         @player.cueVideoById clipper.videoId, 0, "large"
     else
@@ -521,7 +520,6 @@ class @VideoClipper
 
   # TODO: Add tests
   @setEndTime: (val) ->
-    console.log val
     val = @secondsToTime val
     $("input[name='bl-end']").val val
     return val
