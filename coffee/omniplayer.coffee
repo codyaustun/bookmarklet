@@ -49,20 +49,20 @@ class @OmniPlayer
 
   JW:
     build: (obj) ->
-      jwplayer(@elementId).setup
+      @internal = jwplayer(@elementId).setup
         file: "http://www.youtube.com/watch?v=#{@videoId}"
         image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
-        # height: @height
-        # width: @width
+        height: @height
+        width: @width
 
       @getDuration = ->
-        jwplayer(@elementId).getDuration()
+        @internal.getDuration()
 
       @getCurrentTime = ->
-        jwplayer(@elementId).getPosition()
+        @internal.getPosition()
 
       @stopVideo = ->
-        jwplayer(@elementId).stop()
+        @internal.stop()
 
       @cueVideoById = (options) ->
         # TODO
@@ -71,7 +71,7 @@ class @OmniPlayer
         # TODO
 
       @remove = ->
-        jwplayer(@elementId).remoe()
+        @internal.remoe()
 
     createPlayer: (obj) ->
       jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
@@ -88,6 +88,8 @@ class @OmniPlayer
     build: ->
       @internal = new window.YT.Player(@elementId,
         videoId: @videoId
+        height: @height
+        width: @width
         events: {
           onReady: (event) =>
             if @startSeconds || @endSeconds

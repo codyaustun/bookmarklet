@@ -68,23 +68,25 @@
 
     OmniPlayer.prototype.JW = {
       build: function(obj) {
-        jwplayer(this.elementId).setup({
+        this.internal = jwplayer(this.elementId).setup({
           file: "http://www.youtube.com/watch?v=" + this.videoId,
-          image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg"
+          image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
+          height: this.height,
+          width: this.width
         });
         this.getDuration = function() {
-          return jwplayer(this.elementId).getDuration();
+          return this.internal.getDuration();
         };
         this.getCurrentTime = function() {
-          return jwplayer(this.elementId).getPosition();
+          return this.internal.getPosition();
         };
         this.stopVideo = function() {
-          return jwplayer(this.elementId).stop();
+          return this.internal.stop();
         };
         this.cueVideoById = function(options) {};
         this.loadVideoById = function(options) {};
         return this.remove = function() {
-          return jwplayer(this.elementId).remoe();
+          return this.internal.remoe();
         };
       },
       createPlayer: function(obj) {
@@ -108,6 +110,8 @@
 
         this.internal = new window.YT.Player(this.elementId, {
           videoId: this.videoId,
+          height: this.height,
+          width: this.width,
           events: {
             onReady: function(event) {
               if (_this.startSeconds || _this.endSeconds) {
