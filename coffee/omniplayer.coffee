@@ -57,7 +57,6 @@ class @OmniPlayer
 
       that = this
       @internal.seek(@startSeconds)
-      @internal.pause()
 
       if @endSeconds?
         @internal.onTime (e) ->
@@ -84,8 +83,7 @@ class @OmniPlayer
 
         that = this
         @internal.seek(options.startSeconds)
-        @internal.pause()
-        
+
         if options.endSeconds?
           @internal.onTime (e) ->
             if e.position > options.endSeconds

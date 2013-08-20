@@ -78,7 +78,6 @@
         });
         that = this;
         this.internal.seek(this.startSeconds);
-        this.internal.pause();
         if (this.endSeconds != null) {
           this.internal.onTime(function(e) {
             if (e.position > this.endSeconds) {
@@ -107,7 +106,6 @@
           });
           that = this;
           this.internal.seek(options.startSeconds);
-          this.internal.pause();
           if (options.endSeconds != null) {
             return this.internal.onTime(function(e) {
               if (e.position > options.endSeconds) {
