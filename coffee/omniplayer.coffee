@@ -85,10 +85,21 @@ class @OmniPlayer
         @internal.stop()
 
       @cueVideoById = (options) ->
+        @internal.remove() if @internal?
+        @endSeconds = options.endSeconds
+        @startSeconds = options.startSeconds
+        @videoId = options.videoId
+
         @JW.setup.apply this, [false]
 
 
       @loadVideoById = (options) ->
+        @internal.remove() if @internal?
+        
+        @endSeconds = options.endSeconds
+        @startSeconds = options.startSeconds
+        @videoId = options.videoId
+
         @JW.setup.apply this, [true]
 
       @remove = ->

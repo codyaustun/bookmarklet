@@ -108,9 +108,21 @@
           return this.internal.stop();
         };
         this.cueVideoById = function(options) {
+          if (this.internal != null) {
+            this.internal.remove();
+          }
+          this.endSeconds = options.endSeconds;
+          this.startSeconds = options.startSeconds;
+          this.videoId = options.videoId;
           return this.JW.setup.apply(this, [false]);
         };
         this.loadVideoById = function(options) {
+          if (this.internal != null) {
+            this.internal.remove();
+          }
+          this.endSeconds = options.endSeconds;
+          this.startSeconds = options.startSeconds;
+          this.videoId = options.videoId;
           return this.JW.setup.apply(this, [true]);
         };
         return this.remove = function() {
