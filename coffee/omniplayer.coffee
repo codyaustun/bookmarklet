@@ -49,6 +49,11 @@ class @OmniPlayer
 
   JW:
     build: (obj) ->
+      # set default height and width
+      @height = $("##{@elementId}").height() if !@height?
+      @width = $("##{@elementId}").width() if !@width?
+
+
       @internal = jwplayer(@elementId).setup
         file: "http://www.youtube.com/watch?v=#{@videoId}"
         image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
