@@ -74,7 +74,7 @@
 
     OmniPlayer.prototype.JW = {
       build: function(obj) {
-        var that;
+        var started, that;
 
         this.internal = jwplayer(this.elementId).setup({
           file: "http://www.youtube.com/watch?v=" + this.videoId,
@@ -84,8 +84,12 @@
         });
         that = this;
         this.internal.seek(this.startSeconds);
-        this.internal.onReady(function() {
-          return that.internal.pause();
+        started = false;
+        this.internal.onPlay(function() {
+          if (!started) {
+            started = true;
+            return that.internal.pause();
+          }
         });
         this.internal.onTime(function(e) {
           if (e.position > that.endSeconds) {
@@ -116,8 +120,12 @@
           });
           that = this;
           this.internal.seek(this.startSeconds);
-          this.internal.onReady(function() {
-            return that.internal.pause();
+          started = false;
+          this.internal.onPlay(function() {
+            if (!started) {
+              started = true;
+              return that.internal.pause();
+            }
           });
           return this.internal.onTime(function(e) {
             if (e.position > that.endSeconds) {

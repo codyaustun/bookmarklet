@@ -63,8 +63,12 @@ class @OmniPlayer
       that = this
       @internal.seek(@startSeconds)
 
-      @internal.onReady () ->
-        that.internal.pause()
+      started = false
+
+      @internal.onPlay () ->
+        if !started
+          started = true
+          that.internal.pause()
 
       @internal.onTime (e) ->
         if e.position > that.endSeconds
@@ -94,8 +98,12 @@ class @OmniPlayer
         that = this
         @internal.seek(@startSeconds)
 
-        @internal.onReady () ->
-          that.internal.pause()
+        started = false
+
+        @internal.onPlay () ->
+          if !started
+            started = true
+            that.internal.pause()
 
         @internal.onTime (e) ->
           if e.position > that.endSeconds
