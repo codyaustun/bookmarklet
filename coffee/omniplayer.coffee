@@ -49,10 +49,9 @@ class @OmniPlayer
 
   JW:
     build: (obj) ->
-      console.log @elementId
       jwplayer(@elementId).setup
         file: "http://www.youtube.com/watch?v=ac7KhViaVqc"
-        image: 'http://rack.1.mshcdn.com/media/ZgkyMDEyLzEyLzA0Lzg1L2hhcHB5NXRoYmlyLmJLYy5qcGcKcAl0aHVtYgk5NTB4NTM0IwplCWpwZw/eb8329a5/d20/happy-5th-birthday-youtube--501ecffedf.jpg'
+        image: "http://img.youtube.com/vi/ac7KhViaVqc/0.jpg"
         # height: @height
         # width: @width
 
@@ -75,6 +74,7 @@ class @OmniPlayer
         jwplayer(@elementId).remoe()
 
     createPlayer: (obj) ->
+      jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
       OmniPlayer.loaded.JW = true
       @JW.build.apply this, [obj]
 
