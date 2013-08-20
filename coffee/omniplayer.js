@@ -78,13 +78,11 @@
         });
         that = this;
         this.internal.seek(this.startSeconds);
-        if (this.endSeconds != null) {
-          this.internal.onTime(function(e) {
-            if (e.position > this.endSeconds) {
-              return that.stopVideo();
-            }
-          });
-        }
+        this.internal.onTime(function(e) {
+          if (e.position > this.endSeconds) {
+            return that.stopVideo();
+          }
+        });
         this.getDuration = function() {
           return this.internal.getDuration();
         };
@@ -106,13 +104,11 @@
           });
           that = this;
           this.internal.seek(options.startSeconds);
-          if (options.endSeconds != null) {
-            return this.internal.onTime(function(e) {
-              if (e.position > options.endSeconds) {
-                return that.stopVideo();
-              }
-            });
-          }
+          return this.internal.onTime(function(e) {
+            if (e.position > options.endSeconds) {
+              return that.stopVideo();
+            }
+          });
         };
         this.loadVideoById = function(options) {};
         return this.remove = function() {

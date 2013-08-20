@@ -58,10 +58,9 @@ class @OmniPlayer
       that = this
       @internal.seek(@startSeconds)
 
-      if @endSeconds?
-        @internal.onTime (e) ->
-          if e.position > @endSeconds
-            that.stopVideo()
+      @internal.onTime (e) ->
+        if e.position > @endSeconds
+          that.stopVideo()
 
       @getDuration = ->
         @internal.getDuration()
@@ -84,10 +83,9 @@ class @OmniPlayer
         that = this
         @internal.seek(options.startSeconds)
 
-        if options.endSeconds?
-          @internal.onTime (e) ->
-            if e.position > options.endSeconds
-              that.stopVideo()
+        @internal.onTime (e) ->
+          if e.position > options.endSeconds
+            that.stopVideo()
 
 
       @loadVideoById = (options) ->
