@@ -50,8 +50,8 @@ class @OmniPlayer
   JW:
     build: (obj) ->
       jwplayer(@elementId).setup
-        file: "http://www.youtube.com/watch?v=ac7KhViaVqc"
-        image: "http://img.youtube.com/vi/ac7KhViaVqc/0.jpg"
+        file: "http://www.youtube.com/watch?v=#{@videoId}"
+        image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
         # height: @height
         # width: @width
 
