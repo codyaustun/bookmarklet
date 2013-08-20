@@ -159,7 +159,8 @@ class @VideoClipper
           classes: 'qtip-rounded qtip-dark'
         content:
           text: "Start: #{startTime} - End: #{endTime}"
-
+          # text: "<img class='video-thumbnail-small' src='http://img.youtube.com/vi/#{that.videoId}/0.jpg'> <span class='video-thumbnail-label'>Start: #{startTime} - End: #{endTime}</span>"
+          
   @checkErrors: =>
     startTime = parseFloat(@getStartTime())
     endTime = parseFloat(@getEndTime())
@@ -481,7 +482,7 @@ class @VideoClipper
 
       hours = parseInt(seconds / 3600)
       minutes = parseInt(seconds / 60) % 60
-      seconds = seconds % 60
+      seconds = parseFloat(seconds % 60).toFixed(2)
 
       result = ""
 
