@@ -31,6 +31,8 @@
       this.width = obj.width;
       this.startSeconds = obj.startSeconds;
       this.endSeconds = obj.endSeconds;
+      this.mediaContentUrl = object.mediaContentUrl;
+      this.thumbnailUrl = object.thumbnailUrl;
       if (this.height == null) {
         this.height = $("#" + this.elementId).height();
       }
@@ -41,23 +43,31 @@
     }
 
     OmniPlayer.prototype.getDuration = function() {
-      return 0;
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.getCurrentTime = function() {
-      return 0;
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.stopVideo = function() {
-      return 0;
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.cueVideoById = function(options) {
-      return 0;
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
+    };
+
+    OmniPlayer.prototype.cueVideoByUrl = function(options) {
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.loadVideoById = function(options) {
-      return 0;
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
+    };
+
+    OmniPlayer.prototype.loadVideoById = function(options) {
+      throw new Error("Method not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.remove = function() {
@@ -76,9 +86,15 @@
       setup: function(started) {
         var that;
 
+        if ((this.mediaContentUrl == null) && (this.videoId != null)) {
+          this.mediaContentUrl = "http://www.youtube.com/watch?v=" + this.videoId;
+        }
+        if ((this.thumbnailUrl != null) && (this.videoId != null)) {
+          this.thumbnailUrl = "http://img.youtube.com/vi/" + this.videoId + "/0.jpg";
+        }
         this.internal = jwplayer(this.elementId).setup({
-          file: "http://www.youtube.com/watch?v=" + this.videoId,
-          image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
+          file: this.mediaContentUrl,
+          image: this.thumbnailUrl,
           height: this.height,
           width: this.width
         });
@@ -107,6 +123,16 @@
         this.stopVideo = function() {
           return this.internal.stop();
         };
+        this.cueVideoByUrl = function(options) {
+          if (this.internal != null) {
+            this.internal.remove();
+          }
+          this.endSeconds = options.endSeconds;
+          this.startSeconds = options.startSeconds;
+          this.mediaContentUrl = options.mediaContentUrl;
+          this.thumbnailUrl = options.thumbnailUrl;
+          return this.JW.setup.apply(this, [false]);
+        };
         this.cueVideoById = function(options) {
           if (this.internal != null) {
             this.internal.remove();
@@ -125,6 +151,16 @@
           this.videoId = options.videoId;
           return this.JW.setup.apply(this, [true]);
         };
+        this.loadVideoByUrl = function(options) {
+          if (this.internal != null) {
+            this.internal.remove();
+          }
+          this.endSeconds = options.endSeconds;
+          this.startSeconds = options.startSeconds;
+          this.mediaContentUrl = options.mediaContentUrl;
+          this.thumbnailUrl = options.thumbnailUrl;
+          return this.JW.setup.apply(this, [true]);
+        };
         return this.remove = function() {
           return this.internal.remove();
         };
@@ -134,7 +170,7 @@
           this.JW.build.apply(this, [obj]);
           return OmniPlayer.loaded.JW = true;
         } else {
-
+          throw new Error('jwplayer.key is not defined');
         }
       }
     };
@@ -180,11 +216,17 @@
         this.stopVideo = function() {
           return this.internal.stopVideo();
         };
+        this.cueVideoByUrl = function(options) {
+          return this.internal.cueVideoByUrl = options;
+        };
         this.cueVideoById = function(options) {
           return this.internal.cueVideoById(options);
         };
-        return this.loadVideoById = function(options) {
+        this.loadVideoById = function(options) {
           return this.internal.loadVideoById(options);
+        };
+        return this.loadVideoByUrl = function(options) {
+          return this.internal.loadVideoByUrl = options;
         };
       },
       createPlayer: function(obj) {
@@ -205,7 +247,28 @@
 
     OmniPlayer.prototype.TEST = {
       createPlayer: function(obj) {
-        return OmniPlayer.loaded.TEST = true;
+        OmniPlayer.loaded.TEST = true;
+        this.getDuration = function() {
+          return 0;
+        };
+        this.getCurrentTime = function() {
+          return 0;
+        };
+        this.stopVideo = function() {
+          return 0;
+        };
+        this.cueVideoById = function(options) {
+          return 0;
+        };
+        this.cueVideoByUrl = function(options) {
+          return 0;
+        };
+        this.loadVideoById = function(options) {
+          return 0;
+        };
+        return this.loadVideoByUrl = function(options) {
+          return 0;
+        };
       }
     };
 

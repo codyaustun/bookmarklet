@@ -21,6 +21,9 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
+    @mediaContentUrl = object.mediaContentUrl
+    @thumbnailUrl = object.thumbnailUrl
+
     # set default height and width
     @height = $("##{@elementId}").height() if !@height?
     @width = $("##{@elementId}").width() if !@width?
@@ -28,19 +31,26 @@ class @OmniPlayer
     this[@type].createPlayer.apply(this, [obj])
 
   getDuration: ->
-    return 0
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
 
   getCurrentTime: ->
-    return 0    
+    throw new Error "Method not defined for OmniPlayer type #{@type}"   
 
   stopVideo: ->
-    return 0
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
 
   cueVideoById: (options) ->
-    return 0
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
+
+  cueVideoByUrl: (options) ->
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
 
   loadVideoById: (options) -> 
-    return 0
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
+
+  loadVideoById: (options) -> 
+    throw new Error "Method not defined for OmniPlayer type #{@type}"
+
 
   remove: ->
     el = $("##{@elementId}")
@@ -53,9 +63,15 @@ class @OmniPlayer
 
   JW:
     setup: (started) ->
+      if !@mediaContentUrl? && @videoId?
+        @mediaContentUrl = "http://www.youtube.com/watch?v=#{@videoId}"
+
+      if @thumbnailUrl? && @videoId?
+        @thumbnailUrl = "http://img.youtube.com/vi/#{@videoId}/0.jpg"
+
       @internal = jwplayer(@elementId).setup
-        file: "http://www.youtube.com/watch?v=#{@videoId}"
-        image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
+        file: @mediaContentUrl
+        image: @thumbnailUrl
         height: @height
         width: @width
 
@@ -84,8 +100,19 @@ class @OmniPlayer
       @stopVideo = ->
         @internal.stop()
 
+      @cueVideoByUrl = (options) ->
+        @internal.remove() if @internal?
+
+        @endSeconds = options.endSeconds
+        @startSeconds = options.startSeconds
+        @mediaContentUrl = options.mediaContentUrl
+        @thumbnailUrl = options.thumbnailUrl
+
+        @JW.setup.apply this, [false]
+
       @cueVideoById = (options) ->
         @internal.remove() if @internal?
+
         @endSeconds = options.endSeconds
         @startSeconds = options.startSeconds
         @videoId = options.videoId
@@ -95,10 +122,20 @@ class @OmniPlayer
 
       @loadVideoById = (options) ->
         @internal.remove() if @internal?
-        
+
         @endSeconds = options.endSeconds
         @startSeconds = options.startSeconds
         @videoId = options.videoId
+
+        @JW.setup.apply this, [true]
+
+      @loadVideoByUrl = (options) ->
+        @internal.remove() if @internal?
+
+        @endSeconds = options.endSeconds
+        @startSeconds = options.startSeconds
+        @mediaContentUrl = options.mediaContentUrl
+        @thumbnailUrl = options.thumbnailUrl
 
         @JW.setup.apply this, [true]
 
@@ -110,7 +147,7 @@ class @OmniPlayer
         @JW.build.apply this, [obj]
         OmniPlayer.loaded.JW = true
       else
-        # throw exception
+        throw new Error 'jwplayer.key is not defined'
 
   YT: 
     setup: ->
@@ -148,11 +185,17 @@ class @OmniPlayer
       @stopVideo = ->
         @internal.stopVideo()
 
+      @cueVideoByUrl = (options) ->
+        @internal.cueVideoByUrl = (options)
+
       @cueVideoById = (options) ->
         @internal.cueVideoById(options)
 
       @loadVideoById = (options) ->
         @internal.loadVideoById(options)
+
+      @loadVideoByUrl = (options) ->
+        @internal.loadVideoByUrl = (options)
 
     createPlayer: (obj)->
 
@@ -170,4 +213,25 @@ class @OmniPlayer
   TEST:
     createPlayer: (obj)->
       OmniPlayer.loaded.TEST = true
+
+      @getDuration = ->
+        return 0
+
+      @getCurrentTime = ->
+        return 0    
+
+      @stopVideo = ->
+        return 0
+
+      @cueVideoById = (options) ->
+        return 0
+
+      @cueVideoByUrl = (options) ->
+        return 0
+
+      @loadVideoById = (options) -> 
+        return 0
+
+      @loadVideoByUrl = (options) -> 
+        return 0
 
