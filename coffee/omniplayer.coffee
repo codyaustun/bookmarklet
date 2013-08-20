@@ -59,7 +59,7 @@ class @OmniPlayer
         jwplayer(@elementId).getDuration()
 
       @getCurrentTime = ->
-        jwplay(@elementId).getPosition()
+        jwplayer(@elementId).getPosition()
 
       @stopVideo = ->
         jwplayer(@elementId).stop()

@@ -76,7 +76,7 @@
           return jwplayer(this.elementId).getDuration();
         };
         this.getCurrentTime = function() {
-          return jwplay(this.elementId).getPosition();
+          return jwplayer(this.elementId).getPosition();
         };
         this.stopVideo = function() {
           return jwplayer(this.elementId).stop();
