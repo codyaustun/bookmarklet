@@ -74,6 +74,10 @@
           height: this.height,
           width: this.width
         });
+        this.internal.seek(this.startSeconds);
+        this.internal.onTime(function(e) {
+          return console.log(e);
+        });
         this.getDuration = function() {
           return this.internal.getDuration();
         };

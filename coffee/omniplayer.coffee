@@ -55,6 +55,10 @@ class @OmniPlayer
         height: @height
         width: @width
 
+      @internal.seek(@startSeconds)
+      @internal.onTime (e) ->
+        console.log e
+
       @getDuration = ->
         @internal.getDuration()
 
