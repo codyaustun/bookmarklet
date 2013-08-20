@@ -68,6 +68,24 @@
 
     OmniPlayer.prototype.JW = {
       build: function(obj) {
+        var that;
+
+        this.internal = jwplayer(this.elementId).setup({
+          file: "http://www.youtube.com/watch?v=" + this.videoId,
+          image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
+          height: this.height,
+          width: this.width
+        });
+        that = this;
+        this.internal.seek(this.startSeconds);
+        this.internal.pause();
+        if (this.endSeconds != null) {
+          this.internal.onTime(function(e) {
+            if (e.position > this.endSeconds) {
+              return that.stopVideo();
+            }
+          });
+        }
         this.getDuration = function() {
           return this.internal.getDuration();
         };
@@ -78,13 +96,8 @@
           return this.internal.stop();
         };
         this.cueVideoById = function(options) {
-          var that;
-
           if (this.internal != null) {
             this.internal.remove();
-          }
-          if (options.endSeconds == null) {
-            options.endSeconds = this.getDuration();
           }
           this.internal = jwplayer(this.elementId).setup({
             file: "http://www.youtube.com/watch?v=" + options.videoId,
@@ -95,21 +108,18 @@
           that = this;
           this.internal.seek(options.startSeconds);
           this.internal.pause();
-          return this.internal.onTime(function(e) {
-            if (e.position > options.endSeconds) {
-              return that.stopVideo();
-            }
-          });
+          if (options.endSeconds != null) {
+            return this.internal.onTime(function(e) {
+              if (e.position > options.endSeconds) {
+                return that.stopVideo();
+              }
+            });
+          }
         };
         this.loadVideoById = function(options) {};
-        this.remove = function() {
+        return this.remove = function() {
           return this.internal.remove();
         };
-        return this.cueVideoById({
-          videoId: this.videoId,
-          startSeconds: this.startSeconds,
-          endSeconds: this.endSeconds
-        });
       },
       createPlayer: function(obj) {
         jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ==';
