@@ -21,6 +21,13 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
+    # set default height and width
+    @height = $("##{@elementId}").height() if !@height?
+    @width = $("##{@elementId}").width() if !@width?
+
+    console.log @height
+    console.log @width
+
     this[@type].createPlayer.apply(this, [obj])
 
   getDuration: ->
@@ -49,10 +56,6 @@ class @OmniPlayer
 
   JW:
     build: (obj) ->
-      # set default height and width
-      @height = $("##{@elementId}").height() if !@height?
-      @width = $("##{@elementId}").width() if !@width?
-
 
       @internal = jwplayer(@elementId).setup
         file: "http://www.youtube.com/watch?v=#{@videoId}"

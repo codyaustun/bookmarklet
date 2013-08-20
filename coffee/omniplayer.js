@@ -31,6 +31,14 @@
       this.width = obj.width;
       this.startSeconds = obj.startSeconds;
       this.endSeconds = obj.endSeconds;
+      if (this.height == null) {
+        this.height = $("#" + this.elementId).height();
+      }
+      if (this.width == null) {
+        this.width = $("#" + this.elementId).width();
+      }
+      console.log(this.height);
+      console.log(this.width);
       this[this.type].createPlayer.apply(this, [obj]);
     }
 
@@ -70,12 +78,6 @@
       build: function(obj) {
         var that;
 
-        if (this.height == null) {
-          this.height = $("#" + this.elementId).height();
-        }
-        if (this.width == null) {
-          this.width = $("#" + this.elementId).width();
-        }
         this.internal = jwplayer(this.elementId).setup({
           file: "http://www.youtube.com/watch?v=" + this.videoId,
           image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
