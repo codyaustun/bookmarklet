@@ -79,7 +79,7 @@
         this.internal.seek(this.startSeconds);
         this.internal.onTime(function(e) {
           if (e.position === _this.endSeconds) {
-            return _this.internal.stopVideo;
+            return _this.internal.stopVideo();
           }
         });
         this.getDuration = function() {
