@@ -109,9 +109,7 @@ class @OmniPlayer
         @internal.remove()
 
     createPlayer: (obj) ->
-      if obj[0].key?
-        jwplayer.key = obj[0].key
-        # jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
+      if jwplayer.key?
         @JW.build.apply this, [obj]
         OmniPlayer.loaded.JW = true
       else

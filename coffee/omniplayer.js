@@ -131,8 +131,7 @@
         };
       },
       createPlayer: function(obj) {
-        if (obj[0].key != null) {
-          jwplayer.key = obj[0].key;
+        if (jwplayer.key != null) {
           this.JW.build.apply(this, [obj]);
           return OmniPlayer.loaded.JW = true;
         } else {
