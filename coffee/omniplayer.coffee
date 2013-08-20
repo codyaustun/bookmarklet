@@ -25,9 +25,6 @@ class @OmniPlayer
     @height = $("##{@elementId}").height() if !@height?
     @width = $("##{@elementId}").width() if !@width?
 
-    console.log @height
-    console.log @width
-
     this[@type].createPlayer.apply(this, [obj])
 
   getDuration: ->
@@ -112,8 +109,8 @@ class @OmniPlayer
         @internal.remove()
 
     createPlayer: (obj) ->
-      if obj.key?
-        jwplayer.key = obj.key
+      if obj[0].key?
+        jwplayer.key = obj[0].key
         # jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
         @JW.build.apply this, [obj]
         OmniPlayer.loaded.JW = true

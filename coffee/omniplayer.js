@@ -37,8 +37,6 @@
       if (this.width == null) {
         this.width = $("#" + this.elementId).width();
       }
-      console.log(this.height);
-      console.log(this.width);
       this[this.type].createPlayer.apply(this, [obj]);
     }
 
@@ -133,8 +131,8 @@
         };
       },
       createPlayer: function(obj) {
-        if (obj.key != null) {
-          jwplayer.key = obj.key;
+        if (obj[0].key != null) {
+          jwplayer.key = obj[0].key;
           this.JW.build.apply(this, [obj]);
           return OmniPlayer.loaded.JW = true;
         } else {
