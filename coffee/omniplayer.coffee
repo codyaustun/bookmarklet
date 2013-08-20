@@ -58,7 +58,7 @@ class @OmniPlayer
       that = this
       @internal.seek(@startSeconds)
       @internal.onTime (e) ->
-        if e.position == that.endSeconds
+        if e.position > that.endSeconds
           that.stopVideo()
 
       @getDuration = ->
