@@ -31,8 +31,8 @@
       this.width = obj.width;
       this.startSeconds = obj.startSeconds;
       this.endSeconds = obj.endSeconds;
-      this.mediaContentUrl = object.mediaContentUrl;
-      this.thumbnailUrl = object.thumbnailUrl;
+      this.mediaContentUrl = obj.mediaContentUrl;
+      this.thumbnailUrl = obj.thumbnailUrl;
       if (this.height == null) {
         this.height = $("#" + this.elementId).height();
       }

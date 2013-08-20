@@ -21,8 +21,8 @@ class @OmniPlayer
     @startSeconds = obj.startSeconds
     @endSeconds = obj.endSeconds
 
-    @mediaContentUrl = object.mediaContentUrl
-    @thumbnailUrl = object.thumbnailUrl
+    @mediaContentUrl = obj.mediaContentUrl
+    @thumbnailUrl = obj.thumbnailUrl
 
     # set default height and width
     @height = $("##{@elementId}").height() if !@height?
