@@ -52,8 +52,7 @@ class @OmniPlayer
     return this
 
   JW:
-    build: (obj) ->
-
+    setup: (started) ->
       @internal = jwplayer(@elementId).setup
         file: "http://www.youtube.com/watch?v=#{@videoId}"
         image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
@@ -63,8 +62,6 @@ class @OmniPlayer
       that = this
       @internal.seek(@startSeconds)
 
-      started = false
-
       @internal.onPlay () ->
         if !started
           started = true
@@ -73,6 +70,10 @@ class @OmniPlayer
       @internal.onTime (e) ->
         if e.position > that.endSeconds
           that.stopVideo()
+
+    build: (obj) ->
+
+      @JW.setup.apply this, [false]
 
       @getDuration = ->
         @internal.getDuration()
@@ -84,34 +85,11 @@ class @OmniPlayer
         @internal.stop()
 
       @cueVideoById = (options) ->
-        @internal.remove() if @internal?
-        @endSeconds = options.endSeconds
-        @startSeconds = options.startSeconds
-        @videoId = options.videoId
-
-        @internal = jwplayer(@elementId).setup
-          file: "http://www.youtube.com/watch?v=#{@videoId}"
-          image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
-          height: @height
-          width: @width
-
-        that = this
-        @internal.seek(@startSeconds)
-
-        started = false
-
-        @internal.onPlay () ->
-          if !started
-            started = true
-            that.internal.pause()
-
-        @internal.onTime (e) ->
-          if e.position > that.endSeconds
-            that.stopVideo()
+        @JW.setup.apply this, [false]
 
 
       @loadVideoById = (options) ->
-        # TODO
+        @JW.setup.apply this, [true]
 
       @remove = ->
         @internal.remove()

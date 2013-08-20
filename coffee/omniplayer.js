@@ -73,8 +73,8 @@
     };
 
     OmniPlayer.prototype.JW = {
-      build: function(obj) {
-        var started, that;
+      setup: function(started) {
+        var that;
 
         this.internal = jwplayer(this.elementId).setup({
           file: "http://www.youtube.com/watch?v=" + this.videoId,
@@ -84,18 +84,20 @@
         });
         that = this;
         this.internal.seek(this.startSeconds);
-        started = false;
         this.internal.onPlay(function() {
           if (!started) {
             started = true;
             return that.internal.pause();
           }
         });
-        this.internal.onTime(function(e) {
+        return this.internal.onTime(function(e) {
           if (e.position > that.endSeconds) {
             return that.stopVideo();
           }
         });
+      },
+      build: function(obj) {
+        this.JW.setup.apply(this, [false]);
         this.getDuration = function() {
           return this.internal.getDuration();
         };
@@ -106,34 +108,11 @@
           return this.internal.stop();
         };
         this.cueVideoById = function(options) {
-          if (this.internal != null) {
-            this.internal.remove();
-          }
-          this.endSeconds = options.endSeconds;
-          this.startSeconds = options.startSeconds;
-          this.videoId = options.videoId;
-          this.internal = jwplayer(this.elementId).setup({
-            file: "http://www.youtube.com/watch?v=" + this.videoId,
-            image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
-            height: this.height,
-            width: this.width
-          });
-          that = this;
-          this.internal.seek(this.startSeconds);
-          started = false;
-          this.internal.onPlay(function() {
-            if (!started) {
-              started = true;
-              return that.internal.pause();
-            }
-          });
-          return this.internal.onTime(function(e) {
-            if (e.position > that.endSeconds) {
-              return that.stopVideo();
-            }
-          });
+          return this.JW.setup.apply(this, [false]);
         };
-        this.loadVideoById = function(options) {};
+        this.loadVideoById = function(options) {
+          return this.JW.setup.apply(this, [true]);
+        };
         return this.remove = function() {
           return this.internal.remove();
         };
