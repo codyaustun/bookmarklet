@@ -348,7 +348,11 @@
         });
         $(".bl-reset").click(function(e) {
           VideoClipper.clearInputs();
-          VideoClipper.player.loadVideoById(that.clipper.videoId, 0, "large");
+          VideoClipper.player.cueVideoById({
+            videoId: that.clipper.videoId,
+            startSeconds: 0,
+            suggestedQuality: "large"
+          });
         });
         VideoClipper.prepared.snippet = true;
       }
@@ -423,7 +427,11 @@
             type: clipper.videoType
           });
         } else {
-          VideoClipper.player.cueVideoById(clipper.videoId, 0, "large");
+          VideoClipper.player.cueVideoById({
+            videoId: clipper.videoId,
+            startSeconds: 0,
+            suggestedQuality: "large"
+          });
         }
       } else {
         videoId = blData.video.id;

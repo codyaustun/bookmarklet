@@ -396,10 +396,10 @@
           $('.bl-reset').click();
           return expect(VideoClipper.clearInputs).toHaveBeenCalled;
         });
-        return it('should load the video by id', function() {
-          spyOn(VideoClipper.player, 'loadVideoById');
+        return it('should cue the video by id', function() {
+          spyOn(VideoClipper.player, 'cueVideoById');
           $('.bl-reset').click();
-          return expect(VideoClipper.player.loadVideoById).toHaveBeenCalledWith(this.clippy.videoId, 0, "large");
+          return expect(VideoClipper.player.cueVideoById).toHaveBeenCalled();
         });
       });
       it("should make the done button respond to clicks", function() {

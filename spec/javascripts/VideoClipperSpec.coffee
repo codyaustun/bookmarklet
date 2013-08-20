@@ -346,10 +346,10 @@ describe "VideoClipper", ->
         $('.bl-reset').click()
         expect(VideoClipper.clearInputs).toHaveBeenCalled
 
-      it 'should load the video by id', ->
-        spyOn(VideoClipper.player, 'loadVideoById')
+      it 'should cue the video by id', ->
+        spyOn(VideoClipper.player, 'cueVideoById')
         $('.bl-reset').click()
-        expect(VideoClipper.player.loadVideoById).toHaveBeenCalledWith(@clippy.videoId, 0, "large")
+        expect(VideoClipper.player.cueVideoById).toHaveBeenCalled()
 
     it "should make the done button respond to clicks", ->
       expect($('.bl-done')).toHandle("click")

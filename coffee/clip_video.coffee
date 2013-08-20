@@ -336,7 +336,10 @@ class @VideoClipper
 
       $(".bl-reset").click (e) =>
         VideoClipper.clearInputs()
-        @player.loadVideoById that.clipper.videoId, 0, "large"
+        @player.cueVideoById 
+          videoId: that.clipper.videoId
+          startSeconds: 0
+          suggestedQuality: "large"
         return
 
       @prepared.snippet = true
@@ -414,7 +417,10 @@ class @VideoClipper
           videoId: clipper.videoId
           type: clipper.videoType
       else
-        @player.cueVideoById clipper.videoId, 0, "large"
+        @player.cueVideoById
+          videoId: clipper.videoId
+          startSeconds: 0
+          suggestedQuality: "large"
     else
       videoId = blData.video.id
       startTime = blData.start
