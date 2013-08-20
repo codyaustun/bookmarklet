@@ -54,10 +54,11 @@ class @OmniPlayer
         image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
         height: @height
         width: @width
-
+        
       @internal.seek(@startSeconds)
-      @internal.onTime (e) ->
-        console.log e
+      @internal.onTime (e) =>
+        if e.position == @endSeconds
+          @internal.stopVideo
 
       @getDuration = ->
         @internal.getDuration()
