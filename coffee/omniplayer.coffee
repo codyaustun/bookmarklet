@@ -55,10 +55,11 @@ class @OmniPlayer
         height: @height
         width: @width
 
+      that = this
       @internal.seek(@startSeconds)
-      @internal.onTime (e) =>
-        if e.position == @endSeconds
-          @internal.stopVideo()
+      @internal.onTime (e) ->
+        if e.position == that.endSeconds
+          that.stopVideo()
 
       @getDuration = ->
         @internal.getDuration()
