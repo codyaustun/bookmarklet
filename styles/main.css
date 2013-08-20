@@ -110,7 +110,7 @@ a.bl{
 }
 
 #bl #bl-player {
-	width: 100%;
+	width: 544px;
 	height: 415px;
 }
 
@@ -252,7 +252,7 @@ a.bl{
 /* end bookMarklet snippet box styles */
 /* start bookMarklet video box css */
 #bl-vid #bl-playerV {
-	width: 100%;
+	width: 577px;
 	height: 330px;
 	border: none;
 }
