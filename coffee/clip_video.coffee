@@ -481,7 +481,7 @@ class @VideoClipper
 
       hours = parseInt(seconds / 3600)
       minutes = parseInt(seconds / 60) % 60
-      seconds = seconds % 60
+      seconds = parseFloat(seconds % 60).toFixed(2)
 
       result = ""
 
