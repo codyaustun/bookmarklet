@@ -10,7 +10,7 @@ class @OmniPlayer
   @loaded:
     YT: false
     TEST: false
-    JW: true
+    JW: false
 
   constructor: (obj) ->
     @elementId = obj.elementId
@@ -66,6 +66,9 @@ class @OmniPlayer
       that = this
       @internal.seek(@startSeconds)
 
+      @internal.onReady () ->
+        that.internal.pause()
+
       @internal.onTime (e) ->
         if e.position > that.endSeconds
           that.stopVideo()
@@ -94,6 +97,9 @@ class @OmniPlayer
         that = this
         @internal.seek(@startSeconds)
 
+        @internal.onReady () ->
+          that.internal.pause()
+
         @internal.onTime (e) ->
           if e.position > that.endSeconds
             that.stopVideo()
@@ -106,9 +112,13 @@ class @OmniPlayer
         @internal.remove()
 
     createPlayer: (obj) ->
-      jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
-      OmniPlayer.loaded.JW = true
-      @JW.build.apply this, [obj]
+      if obj.key?
+        jwplayer.key = obj.key
+        # jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ=='
+        @JW.build.apply this, [obj]
+        OmniPlayer.loaded.JW = true
+      else
+        # throw exception
 
   YT: 
     setup: ->

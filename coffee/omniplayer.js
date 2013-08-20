@@ -20,7 +20,7 @@
     OmniPlayer.loaded = {
       YT: false,
       TEST: false,
-      JW: true
+      JW: false
     };
 
     function OmniPlayer(obj) {
@@ -86,6 +86,9 @@
         });
         that = this;
         this.internal.seek(this.startSeconds);
+        this.internal.onReady(function() {
+          return that.internal.pause();
+        });
         this.internal.onTime(function(e) {
           if (e.position > that.endSeconds) {
             return that.stopVideo();
@@ -115,6 +118,9 @@
           });
           that = this;
           this.internal.seek(this.startSeconds);
+          this.internal.onReady(function() {
+            return that.internal.pause();
+          });
           return this.internal.onTime(function(e) {
             if (e.position > that.endSeconds) {
               return that.stopVideo();
@@ -127,9 +133,13 @@
         };
       },
       createPlayer: function(obj) {
-        jwplayer.key = 'qQr9/RXBwD+he3rSeg0L9C0Z7rjRuWOH2CISkQ==';
-        OmniPlayer.loaded.JW = true;
-        return this.JW.build.apply(this, [obj]);
+        if (obj.key != null) {
+          jwplayer.key = obj.key;
+          this.JW.build.apply(this, [obj]);
+          return OmniPlayer.loaded.JW = true;
+        } else {
+
+        }
       }
     };
 
