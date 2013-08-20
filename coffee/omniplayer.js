@@ -79,7 +79,7 @@
         that = this;
         this.internal.seek(this.startSeconds);
         this.internal.onTime(function(e) {
-          if (e.position > this.endSeconds) {
+          if (e.position > that.endSeconds) {
             return that.stopVideo();
           }
         });
@@ -96,16 +96,19 @@
           if (this.internal != null) {
             this.internal.remove();
           }
+          this.endSeconds = options.endSeconds;
+          this.startSeconds = options.startSeconds;
+          this.videoId = options.videoId;
           this.internal = jwplayer(this.elementId).setup({
-            file: "http://www.youtube.com/watch?v=" + options.videoId,
-            image: "http://img.youtube.com/vi/" + options.videoId + "/0.jpg",
+            file: "http://www.youtube.com/watch?v=" + this.videoId,
+            image: "http://img.youtube.com/vi/" + this.videoId + "/0.jpg",
             height: this.height,
             width: this.width
           });
           that = this;
-          this.internal.seek(options.startSeconds);
+          this.internal.seek(this.startSeconds);
           return this.internal.onTime(function(e) {
-            if (e.position > options.endSeconds) {
+            if (e.position > that.endSeconds) {
               return that.stopVideo();
             }
           });

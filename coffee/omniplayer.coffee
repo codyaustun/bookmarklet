@@ -59,7 +59,7 @@ class @OmniPlayer
       @internal.seek(@startSeconds)
 
       @internal.onTime (e) ->
-        if e.position > @endSeconds
+        if e.position > that.endSeconds
           that.stopVideo()
 
       @getDuration = ->
@@ -73,18 +73,21 @@ class @OmniPlayer
 
       @cueVideoById = (options) ->
         @internal.remove() if @internal?
+        @endSeconds = options.endSeconds
+        @startSeconds = options.startSeconds
+        @videoId = options.videoId
 
         @internal = jwplayer(@elementId).setup
-          file: "http://www.youtube.com/watch?v=#{options.videoId}"
-          image: "http://img.youtube.com/vi/#{options.videoId}/0.jpg"
+          file: "http://www.youtube.com/watch?v=#{@videoId}"
+          image: "http://img.youtube.com/vi/#{@videoId}/0.jpg"
           height: @height
           width: @width
 
         that = this
-        @internal.seek(options.startSeconds)
+        @internal.seek(@startSeconds)
 
         @internal.onTime (e) ->
-          if e.position > options.endSeconds
+          if e.position > that.endSeconds
             that.stopVideo()
 
 
