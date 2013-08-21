@@ -27,7 +27,7 @@
         return expect(this.player.videoId).toEqual(this.videoId);
       });
       it("sets the type to the given value", function() {
-        return expect(this.player.type).toEqual(this.type);
+        return expect(this.player.videoType).toEqual(this.type);
       });
       it("sets the height to the given value", function() {
         return expect(this.player.height).toEqual(this.height);

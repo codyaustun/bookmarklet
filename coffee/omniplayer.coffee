@@ -15,7 +15,7 @@ class @OmniPlayer
   constructor: (obj) ->
     @elementId = obj.elementId
     @videoId = obj.videoId
-    @type = obj.type
+    @videoType = obj.videoType or obj.type
     @height = obj.height
     @width = obj.width
     @startSeconds = obj.startSeconds
@@ -28,28 +28,28 @@ class @OmniPlayer
     @height = $("##{@elementId}").height() if !@height?
     @width = $("##{@elementId}").width() if !@width?
 
-    OmniPlayer[@type].createPlayer.apply(this, [obj])
+    OmniPlayer[@videoType].createPlayer.apply(this, [obj])
 
   getDuration: ->
-    throw new Error "getDuration isn't defined for OmniPlayer type #{@type}"
+    throw new Error "getDuration isn't defined for OmniPlayer type #{@videoType}"
 
   getCurrentTime: ->
-    throw new Error "getCurrentTime isn't not defined for OmniPlayer type #{@type}"   
+    throw new Error "getCurrentTime isn't not defined for OmniPlayer type #{@videoType}"   
 
   stopVideo: ->
-    throw new Error "stopVideo isn't not defined for OmniPlayer type #{@type}"
+    throw new Error "stopVideo isn't not defined for OmniPlayer type #{@videoType}"
 
   cueVideoById: (options) ->
-    throw new Error "cueVideoById isn't not defined for OmniPlayer type #{@type}"
+    throw new Error "cueVideoById isn't not defined for OmniPlayer type #{@videoType}"
 
   cueVideoByUrl: (options) ->
-    throw new Error "cueVideoByUrl isn't not defined for OmniPlayer type #{@type}"
+    throw new Error "cueVideoByUrl isn't not defined for OmniPlayer type #{@videoType}"
 
   loadVideoById: (options) -> 
-    throw new Error "loadVideoById isn't not defined for OmniPlayer type #{@type}"
+    throw new Error "loadVideoById isn't not defined for OmniPlayer type #{@videoType}"
 
   loadVideoById: (options) -> 
-    throw new Error "loadVideoByUrl isn't not defined for OmniPlayer type #{@type}"
+    throw new Error "loadVideoByUrl isn't not defined for OmniPlayer type #{@videoType}"
 
   remove: ->
     el = $("##{@elementId}")

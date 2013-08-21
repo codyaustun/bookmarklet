@@ -26,7 +26,7 @@
     function OmniPlayer(obj) {
       this.elementId = obj.elementId;
       this.videoId = obj.videoId;
-      this.type = obj.type;
+      this.videoType = obj.videoType || obj.type;
       this.height = obj.height;
       this.width = obj.width;
       this.startSeconds = obj.startSeconds;
@@ -39,35 +39,35 @@
       if (this.width == null) {
         this.width = $("#" + this.elementId).width();
       }
-      OmniPlayer[this.type].createPlayer.apply(this, [obj]);
+      OmniPlayer[this.videoType].createPlayer.apply(this, [obj]);
     }
 
     OmniPlayer.prototype.getDuration = function() {
-      throw new Error("getDuration isn't defined for OmniPlayer type " + this.type);
+      throw new Error("getDuration isn't defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.getCurrentTime = function() {
-      throw new Error("getCurrentTime isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("getCurrentTime isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.stopVideo = function() {
-      throw new Error("stopVideo isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("stopVideo isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.cueVideoById = function(options) {
-      throw new Error("cueVideoById isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("cueVideoById isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.cueVideoByUrl = function(options) {
-      throw new Error("cueVideoByUrl isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("cueVideoByUrl isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.loadVideoById = function(options) {
-      throw new Error("loadVideoById isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("loadVideoById isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.loadVideoById = function(options) {
-      throw new Error("loadVideoByUrl isn't not defined for OmniPlayer type " + this.type);
+      throw new Error("loadVideoByUrl isn't not defined for OmniPlayer type " + this.videoType);
     };
 
     OmniPlayer.prototype.remove = function() {

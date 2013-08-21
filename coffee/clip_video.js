@@ -182,8 +182,8 @@
         var data, endTime, startTime;
 
         data = VideoClipper.getBLData($(element));
-        startTime = VideoClipper.secondsToTime(data.start);
-        endTime = VideoClipper.secondsToTime(data.end);
+        startTime = VideoClipper.secondsToTime(data.startSeconds);
+        endTime = VideoClipper.secondsToTime(data.endSeconds);
         return $(element).qtip({
           style: {
             classes: 'qtip-rounded qtip-dark'
@@ -270,19 +270,13 @@
     };
 
     VideoClipper.generateBLDataString = function(type, clipper) {
-      var dataEnd, dataMediaContentUrl, dataStart, dataString, dataThumbnailUrl, dataVType, dataVid;
+      var dataString;
 
       dataString = "";
-      dataVid = clipper.videoId;
-      dataVType = clipper.videoType;
-      dataMediaContentUrl = clipper.mediaContentUrl;
-      dataThumbnailUrl = clipper.thumbnailUrl;
       if (type === "generate") {
-        dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\"" + dataMediaContentUrl + "\", \"thumbnailUrl\":\"" + dataThumbnailUrl + "\"}}";
+        dataString = "{\n  \"elementId\": \"bl-player\",\n  \"videoId\": \"" + clipper.videoId + "\",\n  \"videoType\": \"" + clipper.videoType + "\",\n  \"mediaContentUrl\": \"" + clipper.mediaContentUrl + "\",\n  \"thumbnailUrl\": \"" + clipper.thumbnailUrl + "\",\n  \"modal\": {\n    \"Id\": \"bl\"\n  }\n}";
       } else if (type === "show") {
-        dataStart = clipper.startTime;
-        dataEnd = clipper.endTime;
-        dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\"" + dataMediaContentUrl + "\", \"thumbnailUrl\":\"" + dataThumbnailUrl + "\"}}";
+        dataString = "{\n    \"elementId\": \"bl-playerV\",\n    \"videoId\": \"" + clipper.videoId + "\",\n    \"videoType\": \"" + clipper.videoType + "\",\n    \"startSeconds\": \"" + clipper.startTime + "\",\n    \"endSeconds\": \"" + clipper.endTime + "\",\n    \"mediaContentUrl\": \"" + clipper.mediaContentUrl + "\",\n    \"thumbnailUrl\": \"" + clipper.thumbnailUrl + "\",\n    \"modal\": {\n      \"Id\": \"bl-vid\"\n    }\n  }";
       }
       return dataString;
     };
@@ -395,28 +389,28 @@
       close: function(modalId) {
         modalId = modalId || VideoClipper.modal.Id;
         $("#bookMarklet-overlay").fadeOut(200);
-        $(modalId).css({
+        $("#" + modalId).css({
           display: "none"
         });
-        if (modalId === "#bl") {
+        if (modalId === "bl") {
           VideoClipper.player.stopVideo();
         } else {
-          if (modalId === "#bl-vid") {
+          if (modalId === "bl-vid") {
             VideoClipper.playerV.stopVideo();
           }
         }
         return VideoClipper;
       },
       open: function(element, clipper) {
-        var blData, endTime, mediaContentUrl, modalWidth, startTime, that, thumbnailUrl, url, videoId, videoType;
+        var blData, modalWidth, that, url;
 
         that = VideoClipper;
         VideoClipper.modal.close();
-        blData = that.getBLData(element);
+        blData = VideoClipper.getBLData(element);
         VideoClipper.clipper = clipper;
-        if (blData.type === "generate") {
-          clipper.videoId = blData.video.id;
-          clipper.videoType = blData.video.type;
+        if (blData.modal.Id === "bl") {
+          clipper.videoId = blData.videoId;
+          clipper.videoType = blData.videoType;
           url = "";
           if (clipper.videoType === "YT") {
             url = "http://www.youtube.com/embed/" + clipper.videoId;
@@ -424,70 +418,26 @@
           $(".bl-srcURL").attr("href", url);
           $(".bl-srcURL").text(url);
           VideoClipper.clearInputs();
-          if (VideoClipper.player === false) {
-            VideoClipper.player = new OmniPlayer({
-              elementId: "bl-player",
-              videoId: clipper.videoId,
-              type: clipper.videoType,
-              mediaContentUrl: clipper.mediaContentUrl,
-              thumbnailUrl: clipper.thumbnailUrl
-            });
+          if (VideoClipper.player === false || VideoClipper.player.videoType !== blData.videoType || VideoClipper.playerV.videoId === blData.videoId) {
+            VideoClipper.player = new OmniPlayer(blData);
           } else {
-            VideoClipper.player.cueVideoById({
-              mediaContentUrl: clipper.mediaContentUrl,
-              thumbnailUrl: clipper.thumbnailUrl,
-              videoId: clipper.videoId,
-              startSeconds: 0
-            });
+            VideoClipper.player.cueVideoById(blData);
           }
         } else {
-          videoId = blData.video.id;
-          startTime = blData.start;
-          endTime = blData.end;
-          videoType = blData.video.type;
-          thumbnailUrl = blData.video.thumbnailUrl;
-          mediaContentUrl = blData.video.mediaContentUrl;
-          if (VideoClipper.playerV === false) {
-            VideoClipper.playerV = new OmniPlayer({
-              elementId: "bl-playerV",
-              videoId: videoId,
-              type: videoType,
-              startSeconds: startTime,
-              endSeconds: endTime,
-              mediaContentUrl: mediaContentUrl,
-              thumbnailUrl: thumbnailUrl
-            });
+          if (VideoClipper.playerV === false || VideoClipper.playerV.videoType !== blData.videoType || VideoClipper.playerV.videoId === blData.videoId) {
+            VideoClipper.playerV = new OmniPlayer(blData);
           } else {
-            if (VideoClipper.playerV.videoId !== videoId) {
-              VideoClipper.playerV.cueVideoById({
-                videoId: videoId,
-                startSeconds: startTime,
-                endSeconds: endTime,
-                mediaContentUrl: mediaContentUrl,
-                thumbnailUrl: thumbnailUrl
-              });
-            } else {
-              VideoClipper.playerV.remove();
-              VideoClipper.playerV = new OmniPlayer({
-                elementId: "bl-playerV",
-                videoId: videoId,
-                type: videoType,
-                startSeconds: startTime,
-                endSeconds: endTime,
-                mediaContentUrl: mediaContentUrl,
-                thumbnailUrl: thumbnailUrl
-              });
-            }
+            VideoClipper.playerV.cueVideoById(blData);
           }
         }
-        VideoClipper.modal.Id = blData.modal;
-        modalWidth = $(VideoClipper.modal.Id).outerWidth();
+        VideoClipper.modal.Id = blData.modal.Id;
+        modalWidth = $("#" + VideoClipper.modal.Id).outerWidth();
         $("#bookMarklet-overlay").css({
           display: "block",
           opacity: 0
         });
         $("#bookMarklet-overlay").fadeTo(200, 0.5);
-        $(VideoClipper.modal.Id).css({
+        $("#" + VideoClipper.modal.Id).css({
           display: "block",
           position: "fixed",
           opacity: 0,
@@ -496,7 +446,7 @@
           "margin-left": -(modalWidth / 2) + "px",
           top: "100px"
         });
-        $(VideoClipper.modal.Id).fadeTo(200, 1);
+        $("#" + VideoClipper.modal.Id).fadeTo(200, 1);
         return VideoClipper;
       }
     };

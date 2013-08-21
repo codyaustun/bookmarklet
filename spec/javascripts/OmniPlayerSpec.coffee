@@ -25,7 +25,7 @@ describe "OmniPlayer", ->
       expect(@player.videoId).toEqual @videoId
 
     it "sets the type to the given value", ->
-      expect(@player.type).toEqual @type
+      expect(@player.videoType).toEqual @type
 
     it "sets the height to the given value", ->
       expect(@player.height).toEqual @height
