@@ -8,8 +8,8 @@ class @VideoClipper
   videoId: "" # video id
   videoType: "" # YT, TEST
   generate: true
-  buttonID: ""
-  textareaID: ""
+  buttonId: ""
+  textareaId: ""
   clips: []
   questionBox = null # the question box as a jQuery object
   snippetButton = null # the button to open snippet box as a jQuery object
@@ -20,7 +20,6 @@ class @VideoClipper
   @playerV: false
   @answerClass: "bookMarklet-answer"
   @generateHtml: true
-  @modalID: "" # bl or bl-vid
   @clipper: ""
   @clippers: []
   @prepared:
@@ -28,7 +27,7 @@ class @VideoClipper
 
   constructor: (obj)->
     obj = obj or {}
-    @textareaID = obj.textareaID
+    @textareaId = obj.textareaId
     @videoId = obj.videoId
     @videoType = obj.videoType
 
@@ -38,7 +37,7 @@ class @VideoClipper
 
     @reel = obj.reel or VideoClipper.reel
     @answerClass = obj.answerClass or VideoClipper.answerClass
-    @buttonID = obj.buttonID or "bl-"+@videoType + @videoId
+    @buttonId = obj.buttonId or "bl-"+@videoType + @videoId
 
     # The variables below can be false, so or can't be used
     @generate = if obj.generate != undefined then obj.generate else VideoClipper.generateHtml
@@ -50,7 +49,7 @@ class @VideoClipper
     VideoClipper.clippers = VideoClipper.clippers.concat(this)
 
   generateQuestionBox: () =>
-    element = $("#"+@textareaID)
+    element = $("#"+@textareaId)
     w = element.width()
     h = element.height()
     content = element.val()
@@ -66,22 +65,22 @@ class @VideoClipper
 
     blDataEncoded = encodeURI(dataString)
 
-    if $('#'+@buttonID).length > 0
-      $('#'+@buttonID).attr
+    if $('#'+@buttonId).length > 0
+      $('#'+@buttonId).attr
         "data-bl": blDataEncoded
         rel: "blModal"
     else
       @questionBox.after("<input type='button' value='Snippet'>").next().attr
         "data-bl": blDataEncoded
         rel: "blModal"
-        id: @buttonID
+        id: @buttonId
 
     that = this
 
-    @snippetButton = $('#'+@buttonID)
+    @snippetButton = $('#'+@buttonId)
 
     @snippetButton.click ->
-      VideoClipper.openModal this, that
+      VideoClipper.modal.open this, that
       return
 
   # TODO: Add tests
@@ -150,7 +149,7 @@ class @VideoClipper
 
     # TODO: Add tests
     @questionBox.find('[rel*=blModal]').click ->
-      VideoClipper.openModal this, that
+      VideoClipper.modal.open this, that
 
     # TODO: Add tests
     @questionBox.find('[rel*=blModal]').each (index, element) ->
@@ -195,16 +194,6 @@ class @VideoClipper
 
     return this
 
-  @closeModal: (modalID) =>
-    modalID = modalID or @modalID
-    $("#bookMarklet-overlay").fadeOut 200
-    $(modalID).css display: "none"
-    if modalID is "#bl"
-      @player.stopVideo()
-    else 
-      @playerV.stopVideo()  if modalID is "#bl-vid"
-    return this
-
   @generate: (clipper)->
     @generateSnippetBox(clipper) if clipper?
     @generateVideoBox()
@@ -214,7 +203,7 @@ class @VideoClipper
 
     if !clipper?
       $('[rel*=blModal]').click ->
-        that.openModal this
+        that.modal.open this
 
       # TODO: Add tests
       $('[rel*=blModal]').each (index, element) ->
@@ -250,7 +239,7 @@ class @VideoClipper
   @generateOverlay: =>
     $("<div id='bookMarklet-overlay'></div>").appendTo "body"  if $("#bookMarklet-overlay").length is 0
     $("#bookMarklet-overlay").click =>
-      @closeModal()
+      @modal.close()
 
     return this
 
@@ -338,7 +327,7 @@ class @VideoClipper
         return
 
       $(".bl-done").click (e) =>
-        that.closeModal()
+        that.modal.close()
         that.clipper.update that.generateTag(that.clipper)
         return
 
@@ -399,69 +388,61 @@ class @VideoClipper
     if typeof ($(el).attr("data-bl")) isnt "undefined"
       blData = $.parseJSON(decodeURI($(el).attr("data-bl")))
     else blData = $.parseJSON(decodeURI($(el).text()))  if typeof ($(el).text()) isnt "undefined"
-    blData
+    return blData
 
-  @openModal: (element, clipper) =>
-    that = this
+  @modal:
+    Id: "" # bl or bl-vid
+    
+    close: (modalId) =>
+      modalId = modalId or @modal.Id
+      $("#bookMarklet-overlay").fadeOut 200
+      $(modalId).css display: "none"
+      if modalId is "#bl"
+        VideoClipper.player.stopVideo()
+      else 
+        VideoClipper.playerV.stopVideo()  if modalId is "#bl-vid"
+      return VideoClipper  
 
-    @closeModal()
+    open: (element, clipper) =>
+      that = this
 
-    blData = that.getBLData(element)
+      @modal.close()
 
-    @clipper = clipper
+      blData = that.getBLData(element)
 
-    if blData.type is "generate"
-      clipper.videoId = blData.video.id
-      clipper.videoType = blData.video.type
+      @clipper = clipper
 
-      url = ""
-      url = "http://www.youtube.com/embed/" + clipper.videoId  if clipper.videoType is "YT"
-      $(".bl-srcURL").attr "href", url
-      $(".bl-srcURL").text url
-      @clearInputs()
-      if @player is false
-        @player = new OmniPlayer
-          elementId: "bl-player"
-          videoId: clipper.videoId
-          type: clipper.videoType
-          mediaContentUrl: clipper.mediaContentUrl
-          thumbnailUrl: clipper.thumbnailUrl
-      else
-        @player.cueVideoById
-          mediaContentUrl: clipper.mediaContentUrl
-          thumbnailUrl: clipper.thumbnailUrl
-          videoId: clipper.videoId
-          startSeconds: 0
-    else
-      videoId = blData.video.id
-      startTime = blData.start
-      endTime = blData.end
-      videoType = blData.video.type
-      thumbnailUrl = blData.video.thumbnailUrl
-      mediaContentUrl = blData.video.mediaContentUrl
+      if blData.type is "generate"
+        clipper.videoId = blData.video.id
+        clipper.videoType = blData.video.type
 
-      if @playerV is false
-        @playerV = new OmniPlayer
-          elementId: "bl-playerV"
-          videoId: videoId
-          type: videoType
-          startSeconds: startTime
-          endSeconds: endTime
-          mediaContentUrl: mediaContentUrl
-          thumbnailUrl: thumbnailUrl
-      else
-
-        # OPTIMIZE: This works, 
-        #   but it would be nice if it didn't need to delete the video
-        if @playerV.videoId != videoId
-          @playerV.cueVideoById
-            videoId: videoId
-            startSeconds: startTime
-            endSeconds: endTime
-            mediaContentUrl: mediaContentUrl
-            thumbnailUrl: thumbnailUrl
+        url = ""
+        url = "http://www.youtube.com/embed/" + clipper.videoId  if clipper.videoType is "YT"
+        $(".bl-srcURL").attr "href", url
+        $(".bl-srcURL").text url
+        @clearInputs()
+        if @player is false
+          @player = new OmniPlayer
+            elementId: "bl-player"
+            videoId: clipper.videoId
+            type: clipper.videoType
+            mediaContentUrl: clipper.mediaContentUrl
+            thumbnailUrl: clipper.thumbnailUrl
         else
-          @playerV.remove()
+          @player.cueVideoById
+            mediaContentUrl: clipper.mediaContentUrl
+            thumbnailUrl: clipper.thumbnailUrl
+            videoId: clipper.videoId
+            startSeconds: 0
+      else
+        videoId = blData.video.id
+        startTime = blData.start
+        endTime = blData.end
+        videoType = blData.video.type
+        thumbnailUrl = blData.video.thumbnailUrl
+        mediaContentUrl = blData.video.mediaContentUrl
+
+        if @playerV is false
           @playerV = new OmniPlayer
             elementId: "bl-playerV"
             videoId: videoId
@@ -470,26 +451,47 @@ class @VideoClipper
             endSeconds: endTime
             mediaContentUrl: mediaContentUrl
             thumbnailUrl: thumbnailUrl
+        else
 
-    @modalID = blData.modal
-    modalWidth = $(@modalID).outerWidth()
-    $("#bookMarklet-overlay").css
-      display: "block"
-      opacity: 0
+          # OPTIMIZE: This works, 
+          #   but it would be nice if it didn't need to delete the video
+          if @playerV.videoId != videoId
+            @playerV.cueVideoById
+              videoId: videoId
+              startSeconds: startTime
+              endSeconds: endTime
+              mediaContentUrl: mediaContentUrl
+              thumbnailUrl: thumbnailUrl
+          else
+            @playerV.remove()
+            @playerV = new OmniPlayer
+              elementId: "bl-playerV"
+              videoId: videoId
+              type: videoType
+              startSeconds: startTime
+              endSeconds: endTime
+              mediaContentUrl: mediaContentUrl
+              thumbnailUrl: thumbnailUrl
 
-    $("#bookMarklet-overlay").fadeTo 200, 0.5
-    $(@modalID).css
-      display: "block"
-      position: "fixed"
-      opacity: 0
-      "z-index": 11000
-      left: 50 + "%"
-      "margin-left": -(modalWidth / 2) + "px"
-      top: "100px"
+      @modal.Id = blData.modal
+      modalWidth = $(@modal.Id).outerWidth()
+      $("#bookMarklet-overlay").css
+        display: "block"
+        opacity: 0
 
-    $(@modalID).fadeTo 200, 1
+      $("#bookMarklet-overlay").fadeTo 200, 0.5
+      $(@modal.Id).css
+        display: "block"
+        position: "fixed"
+        opacity: 0
+        "z-index": 11000
+        left: 50 + "%"
+        "margin-left": -(modalWidth / 2) + "px"
+        top: "100px"
 
-    return this
+      $(@modal.Id).fadeTo 200, 1
+
+      return this
 
   @stripHTML: (html) ->
     tmp = document.createElement("DIV")
@@ -553,7 +555,3 @@ class @VideoClipper
     val = @secondsToTime val
     $("input[name='bl-start']").val val
     return val
-
-
-
-

@@ -7,7 +7,7 @@
     });
     describe("when constructing", function() {
       beforeEach(function() {
-        this.textareaID = 'bl-text';
+        this.textareaId = 'bl-text';
         this.videoId = '8f7wj_RcqYk';
         return this.videoType = 'TEST';
       });
@@ -17,13 +17,13 @@
       describe('with defaults', function() {
         beforeEach(function() {
           return this.clippy = new VideoClipper({
-            textareaID: this.textareaID,
+            textareaId: this.textareaId,
             videoId: this.videoId,
             videoType: this.videoType
           });
         });
-        it("should use @textareaID for the instance's textareaID", function() {
-          return expect(this.clippy.textareaID).toEqual(this.textareaID);
+        it("should use @textareaId for the instance's textareaId", function() {
+          return expect(this.clippy.textareaId).toEqual(this.textareaId);
         });
         it("should use @videoId for the instance's videoId", function() {
           return expect(this.clippy.videoId).toEqual(this.videoId);
@@ -40,29 +40,29 @@
         it("should use VideoClipper.generateHtml for the instance's generate", function() {
           return expect(this.clippy.generate).toEqual(VideoClipper.generateHtml);
         });
-        return it('should generate a buttonID for the instance', function() {
-          return expect(this.clippy.buttonID).toBeDefined();
+        return it('should generate a buttonId for the instance', function() {
+          return expect(this.clippy.buttonId).toBeDefined();
         });
       });
       describe('without using defaults', function() {
         beforeEach(function() {
           this.answerClass = 'answer-class-test';
           this.reel = 'reel-test';
-          this.buttonID = 'button-id-test';
-          this.textareaID = 'bl-text';
+          this.buttonId = 'button-id-test';
+          this.textareaId = 'bl-text';
           this.generate = false;
           return this.clippy = new VideoClipper({
-            textareaID: this.textareaID,
+            textareaId: this.textareaId,
             videoId: this.videoId,
             videoType: this.videoType,
             generate: this.generate,
             reel: this.reel,
-            buttonID: this.buttonID,
+            buttonId: this.buttonId,
             answerClass: this.answerClass
           });
         });
-        it("should use @textareaID for the instance's textareaID", function() {
-          return expect(this.clippy.textareaID).toEqual(this.textareaID);
+        it("should use @textareaId for the instance's textareaId", function() {
+          return expect(this.clippy.textareaId).toEqual(this.textareaId);
         });
         it("should use @videoId for the instance's videoId", function() {
           return expect(this.clippy.videoId).toEqual(this.videoId);
@@ -79,8 +79,8 @@
         it("should use the given value for the instance's generate", function() {
           return expect(this.clippy.generate).toEqual(this.generate);
         });
-        return it("should use the given value for the instance's buttonID", function() {
-          return expect(this.clippy.buttonID).toEqual(this.buttonID);
+        return it("should use the given value for the instance's buttonId", function() {
+          return expect(this.clippy.buttonId).toEqual(this.buttonId);
         });
       });
       describe('when generate is true', function() {
@@ -89,7 +89,7 @@
 
           spyOn(VideoClipper, 'generate');
           return clippy = new VideoClipper({
-            textareaID: this.textareaID,
+            textareaId: this.textareaId,
             videoId: this.videoId,
             videoType: this.videoType,
             generate: true
@@ -102,7 +102,7 @@
 
           spyOn(VideoClipper, 'generate');
           clippy = new VideoClipper({
-            textareaID: this.textareaID,
+            textareaId: this.textareaId,
             videoId: this.videoId,
             videoType: this.videoType,
             generate: false
@@ -114,7 +114,7 @@
         var addedClipper, c, clippy, _i, _len, _ref;
 
         clippy = new VideoClipper({
-          textareaID: this.textareaID,
+          textareaId: this.textareaId,
           videoId: this.videoId,
           videoType: this.videoType,
           generate: true
@@ -132,23 +132,23 @@
     });
     describe('.generateQuestionBox', function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
-        textareaID = 'bl-text';
-        this.selector = '#' + textareaID;
+        textareaId = 'bl-text';
+        this.selector = '#' + textareaId;
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
           generate: false
         });
       });
-      it('should only have one element specified by textareaID', function() {
+      it('should only have one element specified by textareaId', function() {
         return expect($(this.selector).length).toBe(1);
       });
-      it('should get height of the element with textareaID', function() {
+      it('should get height of the element with textareaId', function() {
         var heightSpy;
 
         heightSpy = spyOn($.fn, 'height');
@@ -158,7 +158,7 @@
         expect($.fn.height).toHaveBeenCalled();
         return expect(heightSpy.mostRecentCall.object.selector).toEqual(this.selector);
       });
-      it('should get width of the element with textareaID', function() {
+      it('should get width of the element with textareaId', function() {
         var widthSpy;
 
         widthSpy = spyOn($.fn, 'width');
@@ -166,7 +166,7 @@
         expect($.fn.width).toHaveBeenCalled();
         return expect(widthSpy.mostRecentCall.object.selector).toEqual(this.selector);
       });
-      it('should get the value of the element with textareaID', function() {
+      it('should get the value of the element with textareaId', function() {
         var valSpy;
 
         valSpy = spyOn($.fn, 'val');
@@ -203,7 +203,7 @@
         this.clippy.generateQuestionBox();
         return expect(VideoClipper.generateBLDataString).toHaveBeenCalledWith('generate', this.clippy);
       });
-      describe('without a buttonid specified', function() {
+      describe('without a buttonId specified', function() {
         it('should create a button after the outputbox div', function() {
           var div;
 
@@ -229,20 +229,20 @@
         });
         return it('should make the button respond to clicks', function() {
           this.clippy.generateQuestionBox();
-          return expect($("#" + this.clippy.buttonID)).toHandle('click');
+          return expect($("#" + this.clippy.buttonId)).toHandle('click');
         });
       });
-      return describe('with a buttonid specified', function() {
+      return describe('with a buttonId specified', function() {
         beforeEach(function() {
-          var textareaID;
+          var textareaId;
 
           this.testID = "button-test";
-          textareaID = 'bl-text';
+          textareaId = 'bl-text';
           return this.clippy = new VideoClipper({
-            textareaID: textareaID,
+            textareaId: textareaId,
             videoId: '8f7wj_RcqYk',
             videoType: 'TEST',
-            buttonID: this.testID,
+            buttonId: this.testID,
             generate: false
           });
         });
@@ -264,7 +264,7 @@
         });
         return it('should make the button respond to clicks', function() {
           this.clippy.generateQuestionBox();
-          return expect($("#" + this.clippy.buttonID)).toHandle('click');
+          return expect($("#" + this.clippy.buttonId)).toHandle('click');
         });
       });
     });
@@ -273,7 +273,7 @@
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         return this.clippy = new VideoClipper({
-          textareaID: 'bl-text',
+          textareaId: 'bl-text',
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
           generate: false
@@ -305,27 +305,27 @@
         return expect($("#bookMarklet-overlay")).toHandle('click');
       });
       return describe('and the overlay is clicked', function() {
-        return it('should call closeModal', function() {
+        return it('should call modal.close', function() {
           VideoClipper.generateOverlay();
-          spyOn(VideoClipper, "closeModal").andCallThrough;
+          spyOn(VideoClipper.modal, "close").andCallThrough;
           $("#bookMarklet-overlay").click();
-          return expect(VideoClipper.closeModal).toHaveBeenCalled();
+          return expect(VideoClipper.modal.close).toHaveBeenCalled();
         });
       });
     });
     describe(".generateSnippetBox", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID,
+          buttonId: this.testID,
           generate: true
         });
         VideoClipper.player = new OmniPlayer({
@@ -407,9 +407,9 @@
       });
       describe('and the done button is clicked', function() {
         it('should close the modal', function() {
-          spyOn(VideoClipper, 'closeModal');
+          spyOn(VideoClipper.modal, 'close');
           $('.bl-done').click();
-          return expect(VideoClipper.closeModal).toHaveBeenCalled();
+          return expect(VideoClipper.modal.close).toHaveBeenCalled();
         });
         it('should generate a new tag', function() {
           spyOn(VideoClipper, 'generateTag');
@@ -464,17 +464,17 @@
     });
     describe("#setup", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID,
+          buttonId: this.testID,
           generate: false
         });
       });
@@ -519,17 +519,17 @@
     });
     describe('.generate', function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID,
+          buttonId: this.testID,
           generate: false
         });
       });
@@ -586,27 +586,27 @@
         });
         return describe('when a video clip is click', function() {
           return it('should open the modal window', function() {
-            spyOn(VideoClipper, 'openModal');
+            spyOn(VideoClipper.modal, 'open');
             VideoClipper.generate();
             $('[rel*=blModal]').click();
-            return expect(VideoClipper.openModal).toHaveBeenCalled();
+            return expect(VideoClipper.modal.open).toHaveBeenCalled();
           });
         });
       });
     });
     describe('.cleanUp', function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
       });
       it('should remove the div with id of bl', function() {
@@ -637,69 +637,69 @@
         return expect(removeSpy.mostRecentCall.object).toEqual(this.clippy.questionBox);
       });
     });
-    describe(".closeModal", function() {
+    describe(".modal.close", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
-        return VideoClipper.openModal($('#' + this.testID), this.clippy);
+        return VideoClipper.modal.open($('#' + this.testID), this.clippy);
       });
       it("should fade out the overlay", function() {
         var fadeSpy;
 
         fadeSpy = spyOn($.fn, 'fadeOut');
-        VideoClipper.closeModal(this.clippy.modalID);
+        VideoClipper.modal.close(this.clippy.modalID);
         expect($.fn.fadeOut).toHaveBeenCalled();
         return expect(fadeSpy.mostRecentCall.object.selector).toEqual("#bookMarklet-overlay");
       });
       it("should hide the modal window", function() {
-        expect($(VideoClipper.modalID)).toBeVisible();
-        VideoClipper.closeModal();
-        return expect($(VideoClipper.modalID)).toBeHidden();
+        expect($(VideoClipper.modal.Id)).toBeVisible();
+        VideoClipper.modal.close();
+        return expect($(VideoClipper.modal.Id)).toBeHidden();
       });
       return it("should stop the video player", function() {
         spyOn(VideoClipper.player, 'stopVideo');
-        VideoClipper.closeModal(this.clippy.modalID);
+        VideoClipper.modal.close(this.clippy.modalID);
         return expect(VideoClipper.player.stopVideo).toHaveBeenCalled();
       });
     });
-    describe(".openModal", function() {
+    describe(".modal.open", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
         this.el = $('#' + this.testID);
         return this.blData = VideoClipper.getBLData(this.el);
       });
       afterEach(function() {
-        return VideoClipper.closeModal();
+        return VideoClipper.modal.close();
       });
       it('should close any open modal windows', function() {
-        spyOn(VideoClipper, 'closeModal');
-        VideoClipper.openModal(this.el, this.clippy);
-        return expect(VideoClipper.closeModal).toHaveBeenCalled();
+        spyOn(VideoClipper.modal, 'close');
+        VideoClipper.modal.open(this.el, this.clippy);
+        return expect(VideoClipper.modal.close).toHaveBeenCalled();
       });
       it("should get the data from the element", function() {
         spyOn(VideoClipper, 'getBLData').andReturn(this.blData);
-        VideoClipper.openModal(this.el, this.clippy);
+        VideoClipper.modal.open(this.el, this.clippy);
         return expect(VideoClipper.getBLData).toHaveBeenCalledWith(this.el);
       });
       describe("with a snippet box", function() {
@@ -707,24 +707,24 @@
           return spyOn(VideoClipper, 'getBLData').andReturn(this.blData);
         });
         it("should get video type and id", function() {
-          VideoClipper.openModal(this.el, this.clippy);
+          VideoClipper.modal.open(this.el, this.clippy);
           expect(this.clippy.videoId).toEqual(this.blData.video.id);
           return expect(this.clippy.videoType).toEqual(this.blData.video.type);
         });
         it("should clear inputs", function() {
           spyOn(VideoClipper, 'clearInputs').andCallThrough();
-          VideoClipper.openModal(this.el, this.clippy);
+          VideoClipper.modal.open(this.el, this.clippy);
           return expect(VideoClipper.clearInputs).toHaveBeenCalled();
         });
         it("should create a video player if it doesn't exist", function() {
-          VideoClipper.openModal(this.el, this.clippy);
+          VideoClipper.modal.open(this.el, this.clippy);
           return expect(VideoClipper.player).toEqual(jasmine.any(OmniPlayer));
         });
         it("should show snippet box", function() {
           var fadeSpy;
 
           fadeSpy = spyOn($.fn, 'fadeTo').andCallThrough();
-          VideoClipper.openModal(this.el, this.clippy);
+          VideoClipper.modal.open(this.el, this.clippy);
           expect($.fn.fadeTo).toHaveBeenCalled();
           return expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl');
         });
@@ -732,7 +732,7 @@
           var fadeSpy;
 
           fadeSpy = spyOn($.fn, 'fadeTo').andCallThrough();
-          VideoClipper.openModal(this.el, this.clippy);
+          VideoClipper.modal.open(this.el, this.clippy);
           expect($.fn.fadeTo).toHaveBeenCalled();
           return expect(fadeSpy.calls[0].object.selector).toEqual('#bookMarklet-overlay');
         });
@@ -745,24 +745,24 @@
           return spyOn(VideoClipper, 'getBLData').andReturn(this.blData);
         });
         afterEach(function() {
-          return VideoClipper.closeModal();
+          return VideoClipper.modal.close();
         });
         it("should get video type, id, start time and end time", function() {
-          VideoClipper.openModal(this.el);
+          VideoClipper.modal.open(this.el);
           expect(this.clippy.videoId).toEqual(this.blData.video.id);
           expect(this.clippy.videoType).toEqual(this.blData.video.type);
           expect(this.clippy.startTime).toEqual(this.blData.start);
           return expect(this.clippy.endTime).toEqual(this.blData.end);
         });
         it("should create a video player if it doesn't exist", function() {
-          VideoClipper.openModal(this.el);
+          VideoClipper.modal.open(this.el);
           return expect(VideoClipper.playerV).toEqual(jasmine.any(OmniPlayer));
         });
         it("should show video box", function() {
           var fadeSpy;
 
           fadeSpy = spyOn($.fn, 'fadeTo').andCallThrough();
-          VideoClipper.openModal(this.el);
+          VideoClipper.modal.open(this.el);
           expect($.fn.fadeTo).toHaveBeenCalled();
           return expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl-vid');
         });
@@ -770,7 +770,7 @@
           var fadeSpy;
 
           fadeSpy = spyOn($.fn, 'fadeTo').andCallThrough();
-          VideoClipper.openModal(this.el);
+          VideoClipper.modal.open(this.el);
           expect($.fn.fadeTo).toHaveBeenCalled();
           return expect(fadeSpy.calls[0].object.selector).toEqual('#bookMarklet-overlay');
         });
@@ -778,17 +778,17 @@
     });
     describe(".checkErrors", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
       });
       it("should parse floats from the  start input box", function() {
@@ -836,17 +836,17 @@
     });
     describe(".getBLData", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
         this.testDataGenerate = encodeURI(VideoClipper.generateBLDataString('generate', this.clippy));
         this.clippy.startTime = '200';
@@ -917,17 +917,17 @@
     });
     describe(".clearInputs", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
       });
       it("should clear values for input box in the snippet box", function() {
@@ -952,17 +952,17 @@
     });
     describe("#update", function() {
       beforeEach(function() {
-        var data, textareaID;
+        var data, textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
         this.clippy.startTime = '300';
         this.clippy.endTime = '400';
@@ -1014,24 +1014,24 @@
     });
     describe(".generateTag", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: '8f7wj_RcqYk',
           videoType: 'TEST',
-          buttonID: this.testID
+          buttonId: this.testID
         });
         this.el = $('#' + this.testID);
         this.blData = VideoClipper.getBLData(this.el);
-        return VideoClipper.openModal(this.el, this.clippy);
+        return VideoClipper.modal.open(this.el, this.clippy);
       });
       afterEach(function() {
-        return VideoClipper.closeModal();
+        return VideoClipper.modal.close();
       });
       it("should get start time from the snippet box", function() {
         var valSpy;
@@ -1122,19 +1122,19 @@
     });
     describe(".generateBLDataString", function() {
       beforeEach(function() {
-        var textareaID;
+        var textareaId;
 
         VideoClipper.cleanUp();
         loadFixtures('question.html');
         this.testID = "button-test";
-        textareaID = 'bl-text';
+        textareaId = 'bl-text';
         this.vid = '8f7wj_RcqYk';
         this.videoType = 'TEST';
         return this.clippy = new VideoClipper({
-          textareaID: textareaID,
+          textareaId: textareaId,
           videoId: this.vid,
           videoType: this.videoType,
-          buttonID: this.testID
+          buttonId: this.testID
         });
       });
       describe("with a type of 'generate' ", function() {
