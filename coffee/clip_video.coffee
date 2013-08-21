@@ -28,11 +28,16 @@ class @VideoClipper
 
   constructor: (obj)->
     obj = obj or {}
+    @textareaID = obj.textareaID
+    @videoId = obj.videoId
+    @videoType = obj.videoType
+
+    # TODO: Add tests
+    @mediaContentUrl = obj.mediaContentUrl
+    @thumbnailUrl = obj.thumbnailUrl
+
     @reel = obj.reel or VideoClipper.reel
     @answerClass = obj.answerClass or VideoClipper.answerClass
-    @textareaID = obj.textareaID
-    @videoId = obj.videoId or @videoId
-    @videoType = obj.videoType or @videoType
     @buttonID = obj.buttonID or "bl-"+@videoType + @videoId
 
     # The variables below can be false, so or can't be used
@@ -230,12 +235,15 @@ class @VideoClipper
     dataString = ""
     dataVid = clipper.videoId
     dataVType = clipper.videoType
+    dataMediaContentUrl = clipper.mediaContentUrl
+    dataThumbnailUrl = clipper.thumbnailUrl
+
     if type is "generate"
-      dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
+      dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\""+ dataMediaContentUrl+"\", \"thumbnailUrl\":\""+dataThumbnailUrl+"\"}}"
     else if type is "show"
       dataStart = clipper.startTime
       dataEnd = clipper.endTime
-      dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}"
+      dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\""+ dataMediaContentUrl+"\", \"thumbnailUrl\":\""+dataThumbnailUrl+"\"}}"
     
     return dataString
 
@@ -416,8 +424,12 @@ class @VideoClipper
           elementId: "bl-player"
           videoId: clipper.videoId
           type: clipper.videoType
+          mediaContentUrl: clipper.mediaContentUrl
+          thumbnailUrl: clipper.thumbnailUrl
       else
         @player.cueVideoById
+          mediaContentUrl: clipper.mediaContentUrl
+          thumbnailUrl: clipper.thumbnailUrl
           videoId: clipper.videoId
           startSeconds: 0
           suggestedQuality: "large"

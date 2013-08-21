@@ -54,11 +54,13 @@
       this.setup = __bind(this.setup, this);
       this.getCaretPosition = __bind(this.getCaretPosition, this);
       this.generateQuestionBox = __bind(this.generateQuestionBox, this);      obj = obj || {};
+      this.textareaID = obj.textareaID;
+      this.videoId = obj.videoId;
+      this.videoType = obj.videoType;
+      this.mediaContentUrl = obj.mediaContentUrl;
+      this.thumbnailUrl = obj.thumbnailUrl;
       this.reel = obj.reel || VideoClipper.reel;
       this.answerClass = obj.answerClass || VideoClipper.answerClass;
-      this.textareaID = obj.textareaID;
-      this.videoId = obj.videoId || this.videoId;
-      this.videoType = obj.videoType || this.videoType;
       this.buttonID = obj.buttonID || "bl-" + this.videoType + this.videoId;
       this.generate = obj.generate !== void 0 ? obj.generate : VideoClipper.generateHtml;
       if (this.generate) {
@@ -285,17 +287,19 @@
     };
 
     VideoClipper.generateBLDataString = function(type, clipper) {
-      var dataEnd, dataStart, dataString, dataVType, dataVid;
+      var dataEnd, dataMediaContentUrl, dataStart, dataString, dataThumbnailUrl, dataVType, dataVid;
 
       dataString = "";
       dataVid = clipper.videoId;
       dataVType = clipper.videoType;
+      dataMediaContentUrl = clipper.mediaContentUrl;
+      dataThumbnailUrl = clipper.thumbnailUrl;
       if (type === "generate") {
-        dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}";
+        dataString = "{\"type\": \"generate\", \"modal\": \"#bl\"," + "\"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\"" + dataMediaContentUrl + "\", \"thumbnailUrl\":\"" + dataThumbnailUrl + "\"}}";
       } else if (type === "show") {
         dataStart = clipper.startTime;
         dataEnd = clipper.endTime;
-        dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\"}}";
+        dataString = "{\"start\": \"" + dataStart + "\", \"end\": \"" + dataEnd + "\", \"type\": \"show" + "\", \"modal\": \"#bl-vid" + "\", \"video\": {" + "\"id\": \"" + dataVid + "\", \"type\": \"" + dataVType + "\", \"mediaContentUrl\":\"" + dataMediaContentUrl + "\", \"thumbnailUrl\":\"" + dataThumbnailUrl + "\"}}";
       }
       return dataString;
     };
@@ -424,10 +428,14 @@
           VideoClipper.player = new OmniPlayer({
             elementId: "bl-player",
             videoId: clipper.videoId,
-            type: clipper.videoType
+            type: clipper.videoType,
+            mediaContentUrl: clipper.mediaContentUrl,
+            thumbnailUrl: clipper.thumbnailUrl
           });
         } else {
           VideoClipper.player.cueVideoById({
+            mediaContentUrl: clipper.mediaContentUrl,
+            thumbnailUrl: clipper.thumbnailUrl,
             videoId: clipper.videoId,
             startSeconds: 0,
             suggestedQuality: "large"
