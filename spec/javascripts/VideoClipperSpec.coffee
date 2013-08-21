@@ -299,12 +299,13 @@ describe "VideoClipper", ->
         expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled()
 
       it "should set the bl-start input to the current time", ->
-        spyOn(VideoClipper.player, 'getCurrentTime').andReturn(300)
+        val = 300
+        spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val)
         spyOn(VideoClipper, 'checkErrors')
         inputSelector = "input[name='bl-start']"
         valSpy = spyOn($.fn, 'val').andCallThrough()
         $('.bl-start').click()
-        expect($.fn.val).toHaveBeenCalledWith(300)
+        expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val))
         expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
 
       it "should check for errors", ->
@@ -324,12 +325,13 @@ describe "VideoClipper", ->
         expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled()
 
       it "should set the bl-start input to the current time", ->
-        spyOn(VideoClipper.player, 'getCurrentTime').andReturn(300)
+        val = 300
+        spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val)
         spyOn(VideoClipper, 'checkErrors')
         inputSelector = "input[name='bl-end']"
         valSpy = spyOn($.fn, 'val').andCallThrough()
         $('.bl-end').click()
-        expect($.fn.val).toHaveBeenCalledWith(300)
+        expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val))
         expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
 
       it "should check for errors", ->
@@ -917,19 +919,19 @@ describe "VideoClipper", ->
       VideoClipper.modal.close()
 
     it "should get start time from the snippet box", ->
-      $("input[name='bl-start']").val("200.5")
+      $("input[name='bl-start']").val("200.50")
       valSpy = spyOn($.fn, "val").andCallThrough()
       VideoClipper.generateTag @clippy
       expect($.fn.val).toHaveBeenCalled()
-      expect("#{@clippy.startTime}").toEqual '200.5'
+      expect("#{@clippy.startTime}").toEqual '200.50'
       expect(valSpy.calls[0].object.selector).toEqual("input[name='bl-start']")
 
     it "should get end time from the snippet box", ->
-      $("input[name='bl-end']").val("300.5")
+      $("input[name='bl-end']").val("300.50")
       valSpy = spyOn($.fn, "val").andCallThrough()
       VideoClipper.generateTag @clippy
       expect($.fn.val).toHaveBeenCalled()
-      expect("#{@clippy.endTime}").toEqual '300.5'
+      expect("#{@clippy.endTime}").toEqual '300.50'
       expect(valSpy.calls[1].object.selector).toEqual("input[name='bl-end']")
 
     it "should check for errors in the start and end times", ->
@@ -939,8 +941,8 @@ describe "VideoClipper", ->
 
     describe "with correct values", ->
       beforeEach ->
-        $("input[name='bl-start']").val("200.5")
-        $("input[name='bl-end']").val("300.5")
+        $("input[name='bl-start']").val("200.50")
+        $("input[name='bl-end']").val("300.50")
   
       it "should set the endTime to the video duration if it isn't defined", ->
         $("input[name='bl-end']").val("")

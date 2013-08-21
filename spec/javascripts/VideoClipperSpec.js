@@ -344,14 +344,15 @@
           return expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled();
         });
         it("should set the bl-start input to the current time", function() {
-          var inputSelector, valSpy;
+          var inputSelector, val, valSpy;
 
-          spyOn(VideoClipper.player, 'getCurrentTime').andReturn(300);
+          val = 300;
+          spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val);
           spyOn(VideoClipper, 'checkErrors');
           inputSelector = "input[name='bl-start']";
           valSpy = spyOn($.fn, 'val').andCallThrough();
           $('.bl-start').click();
-          expect($.fn.val).toHaveBeenCalledWith(300);
+          expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val));
           return expect(valSpy.mostRecentCall.object.selector).toEqual(inputSelector);
         });
         return it("should check for errors", function() {
@@ -371,14 +372,15 @@
           return expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled();
         });
         it("should set the bl-start input to the current time", function() {
-          var inputSelector, valSpy;
+          var inputSelector, val, valSpy;
 
-          spyOn(VideoClipper.player, 'getCurrentTime').andReturn(300);
+          val = 300;
+          spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val);
           spyOn(VideoClipper, 'checkErrors');
           inputSelector = "input[name='bl-end']";
           valSpy = spyOn($.fn, 'val').andCallThrough();
           $('.bl-end').click();
-          expect($.fn.val).toHaveBeenCalledWith(300);
+          expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val));
           return expect(valSpy.mostRecentCall.object.selector).toEqual(inputSelector);
         });
         return it("should check for errors", function() {
@@ -1036,21 +1038,21 @@
       it("should get start time from the snippet box", function() {
         var valSpy;
 
-        $("input[name='bl-start']").val("200.5");
+        $("input[name='bl-start']").val("200.50");
         valSpy = spyOn($.fn, "val").andCallThrough();
         VideoClipper.generateTag(this.clippy);
         expect($.fn.val).toHaveBeenCalled();
-        expect("" + this.clippy.startTime).toEqual('200.5');
+        expect("" + this.clippy.startTime).toEqual('200.50');
         return expect(valSpy.calls[0].object.selector).toEqual("input[name='bl-start']");
       });
       it("should get end time from the snippet box", function() {
         var valSpy;
 
-        $("input[name='bl-end']").val("300.5");
+        $("input[name='bl-end']").val("300.50");
         valSpy = spyOn($.fn, "val").andCallThrough();
         VideoClipper.generateTag(this.clippy);
         expect($.fn.val).toHaveBeenCalled();
-        expect("" + this.clippy.endTime).toEqual('300.5');
+        expect("" + this.clippy.endTime).toEqual('300.50');
         return expect(valSpy.calls[1].object.selector).toEqual("input[name='bl-end']");
       });
       it("should check for errors in the start and end times", function() {
@@ -1060,8 +1062,8 @@
       });
       describe("with correct values", function() {
         beforeEach(function() {
-          $("input[name='bl-start']").val("200.5");
-          return $("input[name='bl-end']").val("300.5");
+          $("input[name='bl-start']").val("200.50");
+          return $("input[name='bl-end']").val("300.50");
         });
         it("should set the endTime to the video duration if it isn't defined", function() {
           $("input[name='bl-end']").val("");
