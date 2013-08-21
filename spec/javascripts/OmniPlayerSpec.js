@@ -42,7 +42,7 @@
         return expect(this.player.endSeconds).toEqual(this.endSeconds);
       });
       return it('should call #[type].createPlayer', function() {
-        spyOn(OmniPlayer.prototype[this.type], 'createPlayer');
+        spyOn(OmniPlayer[this.type], 'createPlayer');
         this.player2 = new OmniPlayer({
           elementId: this.elementId,
           videoId: this.videoId,
@@ -52,7 +52,7 @@
           startSeconds: this.startSeconds,
           endSeconds: this.endSeconds
         });
-        return expect(OmniPlayer.prototype[this.type].createPlayer).toHaveBeenCalled();
+        return expect(OmniPlayer[this.type].createPlayer).toHaveBeenCalled();
       });
     });
     return describe("instance with a type of 'YT'", function() {
@@ -66,10 +66,10 @@
         return this.endSeconds = '400';
       });
       xdescribe('window.onYouTubeIframeAPIReady', function() {});
-      xdescribe('#YT.build', function() {});
-      describe('#YT.setup', function() {
+      xdescribe('.YT.build', function() {});
+      describe('.YT.setup', function() {
         beforeEach(function() {
-          spyOn(OmniPlayer.prototype.YT, 'createPlayer');
+          spyOn(OmniPlayer.YT, 'createPlayer');
           return this.player = new OmniPlayer({
             elementId: this.elementId,
             videoId: this.videoId,
@@ -82,12 +82,12 @@
         });
         it('creates a script element', function() {
           spyOn(document, 'createElement').andCallThrough();
-          this.player.YT.setup();
+          OmniPlayer.YT.setup();
           return expect(document.createElement).toHaveBeenCalledWith("script");
         });
         return it('gets the first script Tag', function() {
           spyOn(document, 'getElementsByTagName').andCallThrough();
-          this.player.YT.setup();
+          OmniPlayer.YT.setup();
           return expect(document.getElementsByTagName).toHaveBeenCalledWith("script");
         });
       });
@@ -96,8 +96,8 @@
           beforeEach(function() {
             return OmniPlayer.loaded.YT = true;
           });
-          return it('calls #YT.build', function() {
-            spyOn(OmniPlayer.prototype.YT, 'build');
+          return it('calls .YT.build', function() {
+            spyOn(OmniPlayer.YT, 'build');
             this.player = new OmniPlayer({
               elementId: this.elementId,
               videoId: this.videoId,
@@ -107,7 +107,7 @@
               startSeconds: this.startSeconds,
               endSeconds: this.endSeconds
             });
-            return expect(OmniPlayer.prototype.YT.build).toHaveBeenCalled();
+            return expect(OmniPlayer.YT.build).toHaveBeenCalled();
           });
         });
         return describe('when OmniPlayer.loaded.YT is false', function() {
@@ -126,8 +126,8 @@
             });
             return expect(window.onYouTubeIframeAPIReady).toBeDefined();
           });
-          return it('calls #YT.setup', function() {
-            spyOn(OmniPlayer.prototype.YT, 'setup');
+          return it('calls .YT.setup', function() {
+            spyOn(OmniPlayer.YT, 'setup');
             this.player = new OmniPlayer({
               elementId: this.elementId,
               videoId: this.videoId,
@@ -137,7 +137,7 @@
               startSeconds: this.startSeconds,
               endSeconds: this.endSeconds
             });
-            return expect(OmniPlayer.prototype.YT.setup).toHaveBeenCalled();
+            return expect(OmniPlayer.YT.setup).toHaveBeenCalled();
           });
         });
       });
