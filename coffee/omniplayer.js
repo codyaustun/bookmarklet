@@ -89,7 +89,7 @@
         if ((this.mediaContentUrl == null) && (this.videoId != null)) {
           this.mediaContentUrl = "http://www.youtube.com/watch?v=" + this.videoId;
         }
-        if ((this.thumbnailUrl != null) && (this.videoId != null)) {
+        if ((this.thumbnailUrl == null) && (this.videoId != null)) {
           this.thumbnailUrl = "http://img.youtube.com/vi/" + this.videoId + "/0.jpg";
         }
         this.internal = jwplayer(this.elementId).setup({
@@ -106,10 +106,14 @@
             return that.internal.pause();
           }
         });
-        return this.internal.onTime(function(e) {
+        this.internal.onTime(function(e) {
           if (e.position > that.endSeconds) {
             return that.stopVideo();
           }
+        });
+        return this.internal.onIdle(function(e) {
+          started = false;
+          return that.internal.seek(that.startSeconds);
         });
       },
       build: function(obj) {

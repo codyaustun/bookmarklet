@@ -65,7 +65,7 @@ class @OmniPlayer
       if !@mediaContentUrl? && @videoId?
         @mediaContentUrl = "http://www.youtube.com/watch?v=#{@videoId}"
 
-      if @thumbnailUrl? && @videoId?
+      if !@thumbnailUrl? && @videoId?
         @thumbnailUrl = "http://img.youtube.com/vi/#{@videoId}/0.jpg"
 
       @internal = jwplayer(@elementId).setup
@@ -85,6 +85,10 @@ class @OmniPlayer
       @internal.onTime (e) ->
         if e.position > that.endSeconds
           that.stopVideo()
+
+      @internal.onIdle (e) ->
+        started = false
+        that.internal.seek(that.startSeconds)
 
     build: (obj) ->
 
