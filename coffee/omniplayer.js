@@ -217,15 +217,27 @@
           return this.internal.stopVideo();
         };
         this.cueVideoByUrl = function(options) {
+          if (options.suggestedQuality == null) {
+            options.suggestedQuality = "large";
+          }
           return this.internal.cueVideoByUrl = options;
         };
         this.cueVideoById = function(options) {
+          if (options.suggestedQuality == null) {
+            options.suggestedQuality = "large";
+          }
           return this.internal.cueVideoById(options);
         };
         this.loadVideoById = function(options) {
+          if (options.suggestedQuality == null) {
+            options.suggestedQuality = "large";
+          }
           return this.internal.loadVideoById(options);
         };
         return this.loadVideoByUrl = function(options) {
+          if (options.suggestedQuality == null) {
+            options.suggestedQuality = "large";
+          }
           return this.internal.loadVideoByUrl = options;
         };
       },

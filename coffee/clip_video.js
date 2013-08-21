@@ -408,7 +408,7 @@
     };
 
     VideoClipper.openModal = function(element, clipper) {
-      var blData, endTime, modalWidth, startTime, that, url, videoId, videoType;
+      var blData, endTime, mediaContentUrl, modalWidth, startTime, that, thumbnailUrl, url, videoId, videoType;
 
       that = VideoClipper;
       VideoClipper.closeModal();
@@ -437,8 +437,7 @@
             mediaContentUrl: clipper.mediaContentUrl,
             thumbnailUrl: clipper.thumbnailUrl,
             videoId: clipper.videoId,
-            startSeconds: 0,
-            suggestedQuality: "large"
+            startSeconds: 0
           });
         }
       } else {
@@ -446,13 +445,17 @@
         startTime = blData.start;
         endTime = blData.end;
         videoType = blData.video.type;
+        thumbnailUrl = blData.video.thumbnailUrl;
+        mediaContentUrl = blData.video.mediaContentUrl;
         if (VideoClipper.playerV === false) {
           VideoClipper.playerV = new OmniPlayer({
             elementId: "bl-playerV",
             videoId: videoId,
             type: videoType,
             startSeconds: startTime,
-            endSeconds: endTime
+            endSeconds: endTime,
+            mediaContentUrl: mediaContentUrl,
+            thumbnailUrl: thumbnailUrl
           });
         } else {
           if (VideoClipper.playerV.videoId !== videoId) {
@@ -460,7 +463,8 @@
               videoId: videoId,
               startSeconds: startTime,
               endSeconds: endTime,
-              suggestedQuality: "large"
+              mediaContentUrl: mediaContentUrl,
+              thumbnailUrl: thumbnailUrl
             });
           } else {
             VideoClipper.playerV.remove();
@@ -469,7 +473,9 @@
               videoId: videoId,
               type: videoType,
               startSeconds: startTime,
-              endSeconds: endTime
+              endSeconds: endTime,
+              mediaContentUrl: mediaContentUrl,
+              thumbnailUrl: thumbnailUrl
             });
           }
         }

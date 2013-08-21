@@ -185,15 +185,19 @@ class @OmniPlayer
         @internal.stopVideo()
 
       @cueVideoByUrl = (options) ->
+        options.suggestedQuality = "large" if !options.suggestedQuality?
         @internal.cueVideoByUrl = (options)
 
       @cueVideoById = (options) ->
+        options.suggestedQuality = "large" if !options.suggestedQuality?
         @internal.cueVideoById(options)
 
       @loadVideoById = (options) ->
+        options.suggestedQuality = "large" if !options.suggestedQuality?
         @internal.loadVideoById(options)
 
       @loadVideoByUrl = (options) ->
+        options.suggestedQuality = "large" if !options.suggestedQuality?
         @internal.loadVideoByUrl = (options)
 
     createPlayer: (obj)->

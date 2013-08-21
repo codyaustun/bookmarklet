@@ -432,12 +432,13 @@ class @VideoClipper
           thumbnailUrl: clipper.thumbnailUrl
           videoId: clipper.videoId
           startSeconds: 0
-          suggestedQuality: "large"
     else
       videoId = blData.video.id
       startTime = blData.start
       endTime = blData.end
       videoType = blData.video.type
+      thumbnailUrl = blData.video.thumbnailUrl
+      mediaContentUrl = blData.video.mediaContentUrl
 
       if @playerV is false
         @playerV = new OmniPlayer
@@ -446,6 +447,8 @@ class @VideoClipper
           type: videoType
           startSeconds: startTime
           endSeconds: endTime
+          mediaContentUrl: mediaContentUrl
+          thumbnailUrl: thumbnailUrl
       else
 
         # OPTIMIZE: This works, 
@@ -455,16 +458,18 @@ class @VideoClipper
             videoId: videoId
             startSeconds: startTime
             endSeconds: endTime
-            suggestedQuality: "large"
+            mediaContentUrl: mediaContentUrl
+            thumbnailUrl: thumbnailUrl
         else
           @playerV.remove()
-          @playerV = new OmniPlayer(
+          @playerV = new OmniPlayer
             elementId: "bl-playerV"
             videoId: videoId
             type: videoType
             startSeconds: startTime
             endSeconds: endTime
-          )
+            mediaContentUrl: mediaContentUrl
+            thumbnailUrl: thumbnailUrl
 
     @modalID = blData.modal
     modalWidth = $(@modalID).outerWidth()
