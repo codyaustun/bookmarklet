@@ -39,35 +39,35 @@
       if (this.width == null) {
         this.width = $("#" + this.elementId).width();
       }
-      this[this.type].createPlayer.apply(this, [obj]);
+      OmniPlayer[this.type].createPlayer.apply(this, [obj]);
     }
 
     OmniPlayer.prototype.getDuration = function() {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("getDuration isn't defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.getCurrentTime = function() {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("getCurrentTime isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.stopVideo = function() {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("stopVideo isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.cueVideoById = function(options) {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("cueVideoById isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.cueVideoByUrl = function(options) {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("cueVideoByUrl isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.loadVideoById = function(options) {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("loadVideoById isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.loadVideoById = function(options) {
-      throw new Error("Method not defined for OmniPlayer type " + this.type);
+      throw new Error("loadVideoByUrl isn't not defined for OmniPlayer type " + this.type);
     };
 
     OmniPlayer.prototype.remove = function() {
@@ -82,7 +82,7 @@
       return this;
     };
 
-    OmniPlayer.prototype.JW = {
+    OmniPlayer.JW = {
       setup: function(started) {
         var that;
 
@@ -113,7 +113,7 @@
         });
       },
       build: function(obj) {
-        this.JW.setup.apply(this, [false]);
+        OmniPlayer.JW.setup.apply(this, [false]);
         this.getDuration = function() {
           return this.internal.getDuration();
         };
@@ -131,7 +131,7 @@
           this.startSeconds = options.startSeconds;
           this.mediaContentUrl = options.mediaContentUrl;
           this.thumbnailUrl = options.thumbnailUrl;
-          return this.JW.setup.apply(this, [false]);
+          return OmniPlayer.JW.setup.apply(this, [false]);
         };
         this.cueVideoById = function(options) {
           if (this.internal != null) {
@@ -140,7 +140,7 @@
           this.endSeconds = options.endSeconds;
           this.startSeconds = options.startSeconds;
           this.videoId = options.videoId;
-          return this.JW.setup.apply(this, [false]);
+          return OmniPlayer.JW.setup.apply(this, [false]);
         };
         this.loadVideoById = function(options) {
           if (this.internal != null) {
@@ -149,7 +149,7 @@
           this.endSeconds = options.endSeconds;
           this.startSeconds = options.startSeconds;
           this.videoId = options.videoId;
-          return this.JW.setup.apply(this, [true]);
+          return OmniPlayer.JW.setup.apply(this, [true]);
         };
         this.loadVideoByUrl = function(options) {
           if (this.internal != null) {
@@ -159,7 +159,7 @@
           this.startSeconds = options.startSeconds;
           this.mediaContentUrl = options.mediaContentUrl;
           this.thumbnailUrl = options.thumbnailUrl;
-          return this.JW.setup.apply(this, [true]);
+          return OmniPlayer.JW.setup.apply(this, [true]);
         };
         return this.remove = function() {
           return this.internal.remove();
@@ -167,7 +167,7 @@
       },
       createPlayer: function(obj) {
         if (jwplayer.key != null) {
-          this.JW.build.apply(this, [obj]);
+          OmniPlayer.JW.build.apply(this, [obj]);
           return OmniPlayer.loaded.JW = true;
         } else {
           throw new Error('jwplayer.key is not defined');
@@ -175,7 +175,7 @@
       }
     };
 
-    OmniPlayer.prototype.YT = {
+    OmniPlayer.YT = {
       setup: function() {
         var firstScriptTag, tag;
 
@@ -234,18 +234,18 @@
 
         that = this;
         if (OmniPlayer.loaded.YT) {
-          return this.YT.build.apply(this);
+          return OmniPlayer.YT.build.apply(this);
         } else {
           window.onYouTubeIframeAPIReady = function() {
             OmniPlayer.loaded.YT = true;
-            return that.YT.build.apply(that);
+            return OmniPlayer.YT.build.apply(that);
           };
-          return this.YT.setup();
+          return OmniPlayer.YT.setup();
         }
       }
     };
 
-    OmniPlayer.prototype.TEST = {
+    OmniPlayer.TEST = {
       createPlayer: function(obj) {
         OmniPlayer.loaded.TEST = true;
         this.getDuration = function() {

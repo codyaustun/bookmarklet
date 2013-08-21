@@ -28,29 +28,28 @@ class @OmniPlayer
     @height = $("##{@elementId}").height() if !@height?
     @width = $("##{@elementId}").width() if !@width?
 
-    this[@type].createPlayer.apply(this, [obj])
+    OmniPlayer[@type].createPlayer.apply(this, [obj])
 
   getDuration: ->
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
+    throw new Error "getDuration isn't defined for OmniPlayer type #{@type}"
 
   getCurrentTime: ->
-    throw new Error "Method not defined for OmniPlayer type #{@type}"   
+    throw new Error "getCurrentTime isn't not defined for OmniPlayer type #{@type}"   
 
   stopVideo: ->
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
+    throw new Error "stopVideo isn't not defined for OmniPlayer type #{@type}"
 
   cueVideoById: (options) ->
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
+    throw new Error "cueVideoById isn't not defined for OmniPlayer type #{@type}"
 
   cueVideoByUrl: (options) ->
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
+    throw new Error "cueVideoByUrl isn't not defined for OmniPlayer type #{@type}"
 
   loadVideoById: (options) -> 
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
+    throw new Error "loadVideoById isn't not defined for OmniPlayer type #{@type}"
 
   loadVideoById: (options) -> 
-    throw new Error "Method not defined for OmniPlayer type #{@type}"
-
+    throw new Error "loadVideoByUrl isn't not defined for OmniPlayer type #{@type}"
 
   remove: ->
     el = $("##{@elementId}")
@@ -61,7 +60,7 @@ class @OmniPlayer
       id: "#{@elementId}"
     return this
 
-  JW:
+  @JW:
     setup: (started) ->
       if !@mediaContentUrl? && @videoId?
         @mediaContentUrl = "http://www.youtube.com/watch?v=#{@videoId}"
@@ -89,7 +88,7 @@ class @OmniPlayer
 
     build: (obj) ->
 
-      @JW.setup.apply this, [false]
+      OmniPlayer.JW.setup.apply this, [false]
 
       @getDuration = ->
         @internal.getDuration()
@@ -108,7 +107,7 @@ class @OmniPlayer
         @mediaContentUrl = options.mediaContentUrl
         @thumbnailUrl = options.thumbnailUrl
 
-        @JW.setup.apply this, [false]
+        OmniPlayer.JW.setup.apply this, [false]
 
       @cueVideoById = (options) ->
         @internal.remove() if @internal?
@@ -117,7 +116,7 @@ class @OmniPlayer
         @startSeconds = options.startSeconds
         @videoId = options.videoId
 
-        @JW.setup.apply this, [false]
+        OmniPlayer.JW.setup.apply this, [false]
 
 
       @loadVideoById = (options) ->
@@ -127,7 +126,7 @@ class @OmniPlayer
         @startSeconds = options.startSeconds
         @videoId = options.videoId
 
-        @JW.setup.apply this, [true]
+        OmniPlayer.JW.setup.apply this, [true]
 
       @loadVideoByUrl = (options) ->
         @internal.remove() if @internal?
@@ -137,19 +136,19 @@ class @OmniPlayer
         @mediaContentUrl = options.mediaContentUrl
         @thumbnailUrl = options.thumbnailUrl
 
-        @JW.setup.apply this, [true]
+        OmniPlayer.JW.setup.apply this, [true]
 
       @remove = ->
         @internal.remove()
 
     createPlayer: (obj) ->
       if jwplayer.key?
-        @JW.build.apply this, [obj]
+        OmniPlayer.JW.build.apply this, [obj]
         OmniPlayer.loaded.JW = true
       else
         throw new Error 'jwplayer.key is not defined'
 
-  YT: 
+  @YT: 
     setup: ->
       tag = document.createElement("script")
       tag.src = "https://www.youtube.com/iframe_api"
@@ -202,15 +201,15 @@ class @OmniPlayer
       that = this
 
       if OmniPlayer.loaded.YT
-        @YT.build.apply this
+        OmniPlayer.YT.build.apply this
       else
         window.onYouTubeIframeAPIReady = () ->
           OmniPlayer.loaded.YT = true
-          that.YT.build.apply that
+          OmniPlayer.YT.build.apply that
 
-        @YT.setup()
+        OmniPlayer.YT.setup()
 
-  TEST:
+  @TEST:
     createPlayer: (obj)->
       OmniPlayer.loaded.TEST = true
 
