@@ -582,9 +582,9 @@ describe "VideoClipper", ->
       expect(fadeSpy.mostRecentCall.object.selector).toEqual "#bookMarklet-overlay"
 
     it "should hide the modal window", ->
-      expect($(VideoClipper.modal.Id)).toBeVisible()
+      expect($("##{VideoClipper.modal.Id}")).toBeVisible()
       VideoClipper.modal.close()
-      expect($(VideoClipper.modal.Id)).toBeHidden()
+      expect($("##{VideoClipper.modal.Id}")).toBeHidden()
 
     it "should stop the video player", ->
       spyOn(VideoClipper.player, 'stopVideo')
@@ -626,8 +626,8 @@ describe "VideoClipper", ->
 
       it "should get video type and id", ->
         VideoClipper.modal.open @el, @clippy
-        expect(@clippy.videoId).toEqual @blData.video.id
-        expect(@clippy.videoType).toEqual @blData.video.type
+        expect(@clippy.videoId).toEqual @blData.videoId
+        expect(@clippy.videoType).toEqual @blData.videoType
 
       it "should clear inputs", ->
         spyOn(VideoClipper, 'clearInputs').andCallThrough()
@@ -662,10 +662,10 @@ describe "VideoClipper", ->
 
       it "should get video type, id, start time and end time", ->
         VideoClipper.modal.open @el
-        expect(@clippy.videoId).toEqual @blData.video.id
-        expect(@clippy.videoType).toEqual @blData.video.type
-        expect(@clippy.startTime).toEqual @blData.start
-        expect(@clippy.endTime).toEqual @blData.end
+        expect(@clippy.videoId).toEqual @blData.videoId
+        expect(@clippy.videoType).toEqual @blData.videoType
+        expect(@clippy.startTime).toEqual @blData.startSeconds
+        expect(@clippy.endTime).toEqual @blData.endSeconds
 
       it "should create a video player if it doesn't exist", ->
         VideoClipper.modal.open @el
@@ -1006,14 +1006,11 @@ describe "VideoClipper", ->
         dataString = VideoClipper.generateBLDataString 'generate', @clippy
         @blData = $.parseJSON dataString
 
-      it 'should create a JSON string with a type of generate', ->
-        expect(@blData.type).toEqual "generate"
-
       it 'should use the vid of the instance in the JSON string', ->
-        expect(@blData.video.id).toEqual @vid
+        expect(@blData.videoId).toEqual @vid
 
       it 'should use the type of the instance in the JSON string', ->
-        expect(@blData.video.type).toEqual @videoType
+        expect(@blData.videoType).toEqual @videoType
 
 
     describe "with a type of 'show", ->
@@ -1027,20 +1024,17 @@ describe "VideoClipper", ->
         dataString = VideoClipper.generateBLDataString 'show', @clippy
         @blData = $.parseJSON dataString
 
-      it 'should create a JSON string with a type of show', ->
-        expect(@blData.type).toEqual "show"
-
       it 'should use the vid of the instance in the JSON string', ->
-        expect(@blData.video.id).toEqual @vid
+        expect(@blData.videoId).toEqual @vid
 
       it 'should use the type of the instance in the JSON string', ->
-        expect(@blData.video.type).toEqual @videoType
+        expect(@blData.videoType).toEqual @videoType
 
       it 'should use the start time of the instance in the JSON string', ->
-        expect(@blData.start).toEqual @startTime
+        expect(@blData.startSeconds).toEqual @startTime
 
       it 'should use the end time of the instance in the JSON string', ->
-        expect(@blData.end).toEqual @endTime
+        expect(@blData.endSeconds).toEqual @endTime
 
     describe "without an incorrect type", ->
 
@@ -1073,4 +1067,149 @@ describe "VideoClipper", ->
 
     it "should return div's textContent or innerText", ->
       expect('pending').toEqual('completed')
+
+  describe ".secondsToTime", ->
+    describe "with 0 seconds, minutes and hours of time", ->
+      it "returns 0.00", ->
+        expect(VideoClipper.secondsToTime("0")).toEqual "0.00"
+
+      it 'returns an empty string if given an empty string', ->
+        expect(VideoClipper.secondsToTime("")).toEqual ""
+
+    describe "with 0 minutes and hours of time", ->
+      it 'goes to two decimal places', ->
+        expect(VideoClipper.secondsToTime("12.123456789")).toEqual "12.12"
+
+    describe "with 0 hours of time", ->
+      it 'goes to two decimal places', ->
+        expect(VideoClipper.secondsToTime("602.123456789")).toEqual "10:02.12"
+
+      it 'returns minutes of magnitude 10^0 formatted as M:SS.XX', ->
+        expect(VideoClipper.secondsToTime("60")).toEqual "1:00.00"
+        expect(VideoClipper.secondsToTime("72.1234567")).toEqual "1:12.12"
+        expect(VideoClipper.secondsToTime("300.1234567")).toEqual "5:00.12"
+        expect(VideoClipper.secondsToTime("599.994")).toEqual "9:59.99"
+
+      it 'returns minutes of magnitude 10^1 formatted as MM:SS.XX', ->
+        expect(VideoClipper.secondsToTime("600")).toEqual "10:00.00"
+        expect(VideoClipper.secondsToTime("721.1234567")).toEqual "12:01.12"
+        expect(VideoClipper.secondsToTime("1842.1234567")).toEqual "30:42.12"
+        expect(VideoClipper.secondsToTime("3599.994")).toEqual "59:59.99"        
+
+
+    describe "with hours, minutes and seconds of time", ->
+      it 'goes to two decimal places', ->
+        expect(VideoClipper.secondsToTime("3612.123456789")).toEqual "1:00:12.12"
+
+      it 'returns hours of magnitude 10^0 formatted as H:MM:SS.XX', ->
+        expect(VideoClipper.secondsToTime("3600")).toEqual "1:00:00.00"
+        expect(VideoClipper.secondsToTime("7207")).toEqual "2:00:07.00"
+        expect(VideoClipper.secondsToTime("10812")).toEqual "3:00:12.00"
+        expect(VideoClipper.secondsToTime("14521")).toEqual "4:02:01.00"
+        expect(VideoClipper.secondsToTime("18780.123")).toEqual "5:13:00.12"
+        expect(VideoClipper.secondsToTime("35999.994")).toEqual "9:59:59.99"
+
+
+      it 'returns hours of magnitude 10^1 formatted as HH:MM:SS.XX', ->
+        expect(VideoClipper.secondsToTime("36000")).toEqual "10:00:00.00"
+        expect(VideoClipper.secondsToTime("330207")).toEqual "91:43:27.00"
+        expect(VideoClipper.secondsToTime("298812")).toEqual "83:00:12.00"
+        expect(VideoClipper.secondsToTime("266521")).toEqual "74:02:01.00"
+        expect(VideoClipper.secondsToTime("234780.123")).toEqual "65:13:00.12"
+        expect(VideoClipper.secondsToTime("359999.994")).toEqual "99:59:59.99"
+
+  describe ".timeToSeconds", ->
+    describe "with 0 seconds, minutes and hours of time", ->
+      it 'returns 0.00', ->
+        expect(VideoClipper.timeToSeconds("0.00")).toEqual '0.00'
+
+    describe "with 0 minutes and hours of time", ->
+      it 'returns the right number of seconds', ->
+        expect(VideoClipper.timeToSeconds("1.00")).toEqual '1.00'
+        expect(VideoClipper.timeToSeconds("01.00")).toEqual '1.00'
+        expect(VideoClipper.timeToSeconds("02.12")).toEqual '2.12'
+        expect(VideoClipper.timeToSeconds("26.214")).toEqual '26.21'
+        expect(VideoClipper.timeToSeconds("59.9949")).toEqual '59.99' 
+      
+
+    describe "with 0 hours of time", ->
+      it 'returns the right number of seconds', ->
+        expect(VideoClipper.timeToSeconds("1:00.00")).toEqual "60.00"
+        expect(VideoClipper.timeToSeconds("1:12.12")).toEqual "72.12"
+        expect(VideoClipper.timeToSeconds("5:00.12")).toEqual "300.12"
+        expect(VideoClipper.timeToSeconds("9:59.99")).toEqual "599.99"
+        expect(VideoClipper.timeToSeconds("10:00.00")).toEqual "600.00"
+        expect(VideoClipper.timeToSeconds("12:01.12")).toEqual "721.12"
+        expect(VideoClipper.timeToSeconds("30:42.12")).toEqual "1842.12"
+        expect(VideoClipper.timeToSeconds("59:59.99")).toEqual "3599.99"  
+             
+
+    describe "with hours, minutes and seconds of time", ->
+        expect(VideoClipper.timeToSeconds("1:00:00.00")).toEqual "3600.00"
+        expect(VideoClipper.timeToSeconds("2:00:07.00")).toEqual "7207.00"
+        expect(VideoClipper.timeToSeconds("3:00:12.00")).toEqual "10812.00"
+        expect(VideoClipper.timeToSeconds("4:02:01.00")).toEqual "14521.00"
+        expect(VideoClipper.timeToSeconds("5:13:00.12")).toEqual "18780.12"
+        expect(VideoClipper.timeToSeconds("9:59:59.99")).toEqual "35999.99"
+        expect(VideoClipper.timeToSeconds("10:00:00.00")).toEqual "36000.00"
+        expect(VideoClipper.timeToSeconds("91:43:27.00")).toEqual "330207.00"
+        expect(VideoClipper.timeToSeconds("83:00:12.00")).toEqual "298812.00"
+        expect(VideoClipper.timeToSeconds("74:02:01.00")).toEqual "266521.00"
+        expect(VideoClipper.timeToSeconds("65:13:00.12")).toEqual "234780.12"
+        expect(VideoClipper.timeToSeconds("99:59:59.99")).toEqual "359999.99"
+
+
+  describe ".getEndTime", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      textareaId = 'bl-text'
+
+      @clippy = new VideoClipper
+        textareaId: textareaId
+        videoId: '8f7wj_RcqYk'
+        videoType: 'TEST'
+
+    it "gets the value of input[name='bl-end']", ->
+      valSpy = spyOn($.fn,'val').andCallThrough()
+      VideoClipper.getEndTime()
+      expect($.fn.val).toHaveBeenCalled()
+      expect(valSpy.mostRecentCall.object.selector).toBe "input[name='bl-end']"
+
+    it "passes the value through .timeToSeconds", ->
+      some_val = "SOME VALUE"
+      $("input[name='bl-end']").val some_val
+      spyOn(VideoClipper, 'timeToSeconds')
+      VideoClipper.getEndTime()
+      expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith some_val
+
+
+  describe ".getStartTime", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      textareaId = 'bl-text'
+
+      @clippy = new VideoClipper
+        textareaId: textareaId
+        videoId: '8f7wj_RcqYk'
+        videoType: 'TEST'
+
+    it "gets the value of input[name='bl-start']", ->
+      valSpy = spyOn($.fn,'val').andCallThrough()
+      VideoClipper.getStartTime()
+      expect($.fn.val).toHaveBeenCalled()
+      expect(valSpy.mostRecentCall.object.selector).toBe "input[name='bl-start']"
+
+    it "passes the value through .timeToSeconds", ->
+      some_val = "SOME VALUE"
+      $("input[name='bl-start']").val some_val
+      spyOn(VideoClipper, 'timeToSeconds')
+      VideoClipper.getStartTime()
+      expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith some_val
+
+  describe ".setEndTime", ->
+
+  describe ".setStartTime", ->
+
 

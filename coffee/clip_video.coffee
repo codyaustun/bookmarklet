@@ -42,7 +42,7 @@ class @VideoClipper
     # The variables below can be false, so or can't be used
     @generate = if obj.generate != undefined then obj.generate else VideoClipper.generateHtml
 
-    # Condition mainly used for testing
+    # This condition is mainly used for testing
     @setup() if @generate
 
     VideoClipper.clippers = VideoClipper.clippers.concat(this)
@@ -473,7 +473,6 @@ class @VideoClipper
     tmp.innerHTML = html
     tmp.textContent or tmp.innerText
 
-  # TODO: Add tests
   @secondsToTime: (seconds) ->
     if seconds == ""
       return seconds
@@ -483,7 +482,6 @@ class @VideoClipper
       hours = parseInt(seconds / 3600)
       minutes = parseInt(seconds / 60) % 60
       seconds = parseFloat(seconds % 60).toFixed(2)
-
       result = ""
 
       if hours > 0
@@ -498,7 +496,6 @@ class @VideoClipper
 
       return result
 
-  # TODO: Add tests
   @timeToSeconds: (time) ->
     amounts = time.split(':')
     seconds = 0
@@ -509,12 +506,10 @@ class @VideoClipper
 
     return seconds.toFixed(2)
 
-  # TODO: Add tests
   @getEndTime: ->
     val = $("input[name='bl-end']").val() 
     return @timeToSeconds(val)
 
-  # TODO: Add tests
   @getStartTime: ->
     val = $("input[name='bl-start']").val()
     return @timeToSeconds(val)

@@ -664,9 +664,9 @@
         return expect(fadeSpy.mostRecentCall.object.selector).toEqual("#bookMarklet-overlay");
       });
       it("should hide the modal window", function() {
-        expect($(VideoClipper.modal.Id)).toBeVisible();
+        expect($("#" + VideoClipper.modal.Id)).toBeVisible();
         VideoClipper.modal.close();
-        return expect($(VideoClipper.modal.Id)).toBeHidden();
+        return expect($("#" + VideoClipper.modal.Id)).toBeHidden();
       });
       return it("should stop the video player", function() {
         spyOn(VideoClipper.player, 'stopVideo');
@@ -710,8 +710,8 @@
         });
         it("should get video type and id", function() {
           VideoClipper.modal.open(this.el, this.clippy);
-          expect(this.clippy.videoId).toEqual(this.blData.video.id);
-          return expect(this.clippy.videoType).toEqual(this.blData.video.type);
+          expect(this.clippy.videoId).toEqual(this.blData.videoId);
+          return expect(this.clippy.videoType).toEqual(this.blData.videoType);
         });
         it("should clear inputs", function() {
           spyOn(VideoClipper, 'clearInputs').andCallThrough();
@@ -751,10 +751,10 @@
         });
         it("should get video type, id, start time and end time", function() {
           VideoClipper.modal.open(this.el);
-          expect(this.clippy.videoId).toEqual(this.blData.video.id);
-          expect(this.clippy.videoType).toEqual(this.blData.video.type);
-          expect(this.clippy.startTime).toEqual(this.blData.start);
-          return expect(this.clippy.endTime).toEqual(this.blData.end);
+          expect(this.clippy.videoId).toEqual(this.blData.videoId);
+          expect(this.clippy.videoType).toEqual(this.blData.videoType);
+          expect(this.clippy.startTime).toEqual(this.blData.startSeconds);
+          return expect(this.clippy.endTime).toEqual(this.blData.endSeconds);
         });
         it("should create a video player if it doesn't exist", function() {
           VideoClipper.modal.open(this.el);
@@ -1146,14 +1146,11 @@
           dataString = VideoClipper.generateBLDataString('generate', this.clippy);
           return this.blData = $.parseJSON(dataString);
         });
-        it('should create a JSON string with a type of generate', function() {
-          return expect(this.blData.type).toEqual("generate");
-        });
         it('should use the vid of the instance in the JSON string', function() {
-          return expect(this.blData.video.id).toEqual(this.vid);
+          return expect(this.blData.videoId).toEqual(this.vid);
         });
         return it('should use the type of the instance in the JSON string', function() {
-          return expect(this.blData.video.type).toEqual(this.videoType);
+          return expect(this.blData.videoType).toEqual(this.videoType);
         });
       });
       describe("with a type of 'show", function() {
@@ -1167,20 +1164,17 @@
           dataString = VideoClipper.generateBLDataString('show', this.clippy);
           return this.blData = $.parseJSON(dataString);
         });
-        it('should create a JSON string with a type of show', function() {
-          return expect(this.blData.type).toEqual("show");
-        });
         it('should use the vid of the instance in the JSON string', function() {
-          return expect(this.blData.video.id).toEqual(this.vid);
+          return expect(this.blData.videoId).toEqual(this.vid);
         });
         it('should use the type of the instance in the JSON string', function() {
-          return expect(this.blData.video.type).toEqual(this.videoType);
+          return expect(this.blData.videoType).toEqual(this.videoType);
         });
         it('should use the start time of the instance in the JSON string', function() {
-          return expect(this.blData.start).toEqual(this.startTime);
+          return expect(this.blData.startSeconds).toEqual(this.startTime);
         });
         return it('should use the end time of the instance in the JSON string', function() {
-          return expect(this.blData.end).toEqual(this.endTime);
+          return expect(this.blData.endSeconds).toEqual(this.endTime);
         });
       });
       return describe("without an incorrect type", function() {
@@ -1201,7 +1195,7 @@
         });
       });
     });
-    return describe("when stripping html", function() {
+    describe("when stripping html", function() {
       beforeEach(function() {
         return this.elementHtml = '<a rel="blModal" href="#bl-vid" class="bl">%7B%22start%22:%20%2243.92%22,%20%22end%22:%20%22330%22,%20%22type%22:%20%22show%22,%20%22modal%22:%20%22#bl-vid%22,%20%22video%22:%20%7B%22id%22:%20%228f7wj_RcqYk%22,%20%22type%22:%20%22YT%22%7D%7D</a>';
       });
@@ -1217,6 +1211,165 @@
         return expect('pending').toEqual('completed');
       });
     });
+    describe(".secondsToTime", function() {
+      describe("with 0 seconds, minutes and hours of time", function() {
+        it("returns 0.00", function() {
+          return expect(VideoClipper.secondsToTime("0")).toEqual("0.00");
+        });
+        return it('returns an empty string if given an empty string', function() {
+          return expect(VideoClipper.secondsToTime("")).toEqual("");
+        });
+      });
+      describe("with 0 minutes and hours of time", function() {
+        return it('goes to two decimal places', function() {
+          return expect(VideoClipper.secondsToTime("12.123456789")).toEqual("12.12");
+        });
+      });
+      describe("with 0 hours of time", function() {
+        it('goes to two decimal places', function() {
+          return expect(VideoClipper.secondsToTime("602.123456789")).toEqual("10:02.12");
+        });
+        it('returns minutes of magnitude 10^0 formatted as M:SS.XX', function() {
+          expect(VideoClipper.secondsToTime("60")).toEqual("1:00.00");
+          expect(VideoClipper.secondsToTime("72.1234567")).toEqual("1:12.12");
+          expect(VideoClipper.secondsToTime("300.1234567")).toEqual("5:00.12");
+          return expect(VideoClipper.secondsToTime("599.994")).toEqual("9:59.99");
+        });
+        return it('returns minutes of magnitude 10^1 formatted as MM:SS.XX', function() {
+          expect(VideoClipper.secondsToTime("600")).toEqual("10:00.00");
+          expect(VideoClipper.secondsToTime("721.1234567")).toEqual("12:01.12");
+          expect(VideoClipper.secondsToTime("1842.1234567")).toEqual("30:42.12");
+          return expect(VideoClipper.secondsToTime("3599.994")).toEqual("59:59.99");
+        });
+      });
+      return describe("with hours, minutes and seconds of time", function() {
+        it('goes to two decimal places', function() {
+          return expect(VideoClipper.secondsToTime("3612.123456789")).toEqual("1:00:12.12");
+        });
+        it('returns hours of magnitude 10^0 formatted as H:MM:SS.XX', function() {
+          expect(VideoClipper.secondsToTime("3600")).toEqual("1:00:00.00");
+          expect(VideoClipper.secondsToTime("7207")).toEqual("2:00:07.00");
+          expect(VideoClipper.secondsToTime("10812")).toEqual("3:00:12.00");
+          expect(VideoClipper.secondsToTime("14521")).toEqual("4:02:01.00");
+          expect(VideoClipper.secondsToTime("18780.123")).toEqual("5:13:00.12");
+          return expect(VideoClipper.secondsToTime("35999.994")).toEqual("9:59:59.99");
+        });
+        return it('returns hours of magnitude 10^1 formatted as HH:MM:SS.XX', function() {
+          expect(VideoClipper.secondsToTime("36000")).toEqual("10:00:00.00");
+          expect(VideoClipper.secondsToTime("330207")).toEqual("91:43:27.00");
+          expect(VideoClipper.secondsToTime("298812")).toEqual("83:00:12.00");
+          expect(VideoClipper.secondsToTime("266521")).toEqual("74:02:01.00");
+          expect(VideoClipper.secondsToTime("234780.123")).toEqual("65:13:00.12");
+          return expect(VideoClipper.secondsToTime("359999.994")).toEqual("99:59:59.99");
+        });
+      });
+    });
+    describe(".timeToSeconds", function() {
+      describe("with 0 seconds, minutes and hours of time", function() {
+        return it('returns 0.00', function() {
+          return expect(VideoClipper.timeToSeconds("0.00")).toEqual('0.00');
+        });
+      });
+      describe("with 0 minutes and hours of time", function() {
+        return it('returns the right number of seconds', function() {
+          expect(VideoClipper.timeToSeconds("1.00")).toEqual('1.00');
+          expect(VideoClipper.timeToSeconds("01.00")).toEqual('1.00');
+          expect(VideoClipper.timeToSeconds("02.12")).toEqual('2.12');
+          expect(VideoClipper.timeToSeconds("26.214")).toEqual('26.21');
+          return expect(VideoClipper.timeToSeconds("59.9949")).toEqual('59.99');
+        });
+      });
+      describe("with 0 hours of time", function() {
+        return it('returns the right number of seconds', function() {
+          expect(VideoClipper.timeToSeconds("1:00.00")).toEqual("60.00");
+          expect(VideoClipper.timeToSeconds("1:12.12")).toEqual("72.12");
+          expect(VideoClipper.timeToSeconds("5:00.12")).toEqual("300.12");
+          expect(VideoClipper.timeToSeconds("9:59.99")).toEqual("599.99");
+          expect(VideoClipper.timeToSeconds("10:00.00")).toEqual("600.00");
+          expect(VideoClipper.timeToSeconds("12:01.12")).toEqual("721.12");
+          expect(VideoClipper.timeToSeconds("30:42.12")).toEqual("1842.12");
+          return expect(VideoClipper.timeToSeconds("59:59.99")).toEqual("3599.99");
+        });
+      });
+      return describe("with hours, minutes and seconds of time", function() {
+        expect(VideoClipper.timeToSeconds("1:00:00.00")).toEqual("3600.00");
+        expect(VideoClipper.timeToSeconds("2:00:07.00")).toEqual("7207.00");
+        expect(VideoClipper.timeToSeconds("3:00:12.00")).toEqual("10812.00");
+        expect(VideoClipper.timeToSeconds("4:02:01.00")).toEqual("14521.00");
+        expect(VideoClipper.timeToSeconds("5:13:00.12")).toEqual("18780.12");
+        expect(VideoClipper.timeToSeconds("9:59:59.99")).toEqual("35999.99");
+        expect(VideoClipper.timeToSeconds("10:00:00.00")).toEqual("36000.00");
+        expect(VideoClipper.timeToSeconds("91:43:27.00")).toEqual("330207.00");
+        expect(VideoClipper.timeToSeconds("83:00:12.00")).toEqual("298812.00");
+        expect(VideoClipper.timeToSeconds("74:02:01.00")).toEqual("266521.00");
+        expect(VideoClipper.timeToSeconds("65:13:00.12")).toEqual("234780.12");
+        return expect(VideoClipper.timeToSeconds("99:59:59.99")).toEqual("359999.99");
+      });
+    });
+    describe(".getEndTime", function() {
+      beforeEach(function() {
+        var textareaId;
+
+        VideoClipper.cleanUp();
+        loadFixtures('question.html');
+        textareaId = 'bl-text';
+        return this.clippy = new VideoClipper({
+          textareaId: textareaId,
+          videoId: '8f7wj_RcqYk',
+          videoType: 'TEST'
+        });
+      });
+      it("gets the value of input[name='bl-end']", function() {
+        var valSpy;
+
+        valSpy = spyOn($.fn, 'val').andCallThrough();
+        VideoClipper.getEndTime();
+        expect($.fn.val).toHaveBeenCalled();
+        return expect(valSpy.mostRecentCall.object.selector).toBe("input[name='bl-end']");
+      });
+      return it("passes the value through .timeToSeconds", function() {
+        var some_val;
+
+        some_val = "SOME VALUE";
+        $("input[name='bl-end']").val(some_val);
+        spyOn(VideoClipper, 'timeToSeconds');
+        VideoClipper.getEndTime();
+        return expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith(some_val);
+      });
+    });
+    describe(".getStartTime", function() {
+      beforeEach(function() {
+        var textareaId;
+
+        VideoClipper.cleanUp();
+        loadFixtures('question.html');
+        textareaId = 'bl-text';
+        return this.clippy = new VideoClipper({
+          textareaId: textareaId,
+          videoId: '8f7wj_RcqYk',
+          videoType: 'TEST'
+        });
+      });
+      it("gets the value of input[name='bl-start']", function() {
+        var valSpy;
+
+        valSpy = spyOn($.fn, 'val').andCallThrough();
+        VideoClipper.getStartTime();
+        expect($.fn.val).toHaveBeenCalled();
+        return expect(valSpy.mostRecentCall.object.selector).toBe("input[name='bl-start']");
+      });
+      return it("passes the value through .timeToSeconds", function() {
+        var some_val;
+
+        some_val = "SOME VALUE";
+        $("input[name='bl-start']").val(some_val);
+        spyOn(VideoClipper, 'timeToSeconds');
+        VideoClipper.getStartTime();
+        return expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith(some_val);
+      });
+    });
+    describe(".setEndTime", function() {});
+    return describe(".setStartTime", function() {});
   });
 
 }).call(this);
