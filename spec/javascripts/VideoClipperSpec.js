@@ -1236,14 +1236,34 @@
       });
     });
     describe("#getCaretPosition", function() {
-      it('should check to see if there is a window selection', function() {
-        spyOn(window, 'getSelection').andReturn(false);
-        return expect(window.getSelection).toHaveBeenCalled();
+      beforeEach(function() {
+        var textareaId;
+
+        VideoClipper.cleanUp();
+        loadFixtures('question.html');
+        this.testID = "button-test";
+        textareaId = 'bl-text';
+        this.vid = '8f7wj_RcqYk';
+        this.videoType = 'TEST';
+        return this.clippy = new VideoClipper({
+          textareaId: textareaId,
+          videoId: this.vid,
+          videoType: this.videoType,
+          buttonId: this.testID
+        });
       });
-      return describe('and the window selection exists', function() {
-        return it('should get the window selection', function() {
-          spyOn(window, 'getSelection').andReturn(false);
-          return expect(window.getSelection).toHaveBeenCalled();
+      return it('checks to see if there is a window selection', function() {
+        spyOn(window, 'getSelection').andReturn(void 0);
+        this.clippy.getCaretPosition();
+        expect(window.getSelection).toHaveBeenCalled();
+        describe('with a window selection', function() {});
+        return describe('without a window selection', function() {
+          return it('returns 0', function() {
+            var val;
+
+            val = this.clippy.getCaretPosition();
+            return expect(val).toEqual(0);
+          });
         });
       });
     });

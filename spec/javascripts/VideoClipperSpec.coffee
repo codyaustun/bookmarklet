@@ -1083,15 +1083,32 @@ describe "VideoClipper", ->
         expect(VideoClipper.generateBLDataString 'incorrect', @clippy).toEqual ""
   
   describe "#getCaretPosition", ->
+    beforeEach -> 
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      @testID = "button-test"
+      textareaId = 'bl-text'
+      @vid = '8f7wj_RcqYk'
+      @videoType = 'TEST'
 
-    it 'should check to see if there is a window selection', ->
-      spyOn(window, 'getSelection').andReturn false
+      @clippy = new VideoClipper
+        textareaId: textareaId
+        videoId: @vid
+        videoType: @videoType
+        buttonId: @testID
+
+    it 'checks to see if there is a window selection', ->
+      spyOn(window, 'getSelection').andReturn undefined
+      @clippy.getCaretPosition()
       expect(window.getSelection).toHaveBeenCalled()
 
-    describe 'and the window selection exists', ->
-      it 'should get the window selection', ->
-        spyOn(window, 'getSelection').andReturn false
-        expect(window.getSelection).toHaveBeenCalled()
+      describe 'with a window selection', ->
+
+
+      describe 'without a window selection', ->
+        it 'returns 0', ->
+          val = @clippy.getCaretPosition()
+          expect(val).toEqual 0
 
 
   describe "when stripping html", ->

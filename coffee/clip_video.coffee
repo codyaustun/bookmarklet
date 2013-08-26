@@ -81,13 +81,12 @@ class @VideoClipper
       VideoClipper.modal.open this, that
       return
 
-  # TODO: Add tests
   getCaretPosition: (editableDiv) =>
     @caretPos = 0
     containerEl = null
     sel = undefined
     range = undefined
-    if window.getSelection?
+    if window.getSelection()?
       sel = window.getSelection()
       if sel.rangeCount
         range = sel.getRangeAt(0)
@@ -155,7 +154,7 @@ class @VideoClipper
           classes: 'qtip-rounded qtip-dark'
         content:
           text: "Start: #{startTime} - End: #{endTime}"
-              
+
     newVal = @questionBox.html()
     @questionBox.prev().val newVal
 

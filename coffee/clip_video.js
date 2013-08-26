@@ -110,7 +110,7 @@
       containerEl = null;
       sel = void 0;
       range = void 0;
-      if (window.getSelection != null) {
+      if (window.getSelection() != null) {
         sel = window.getSelection();
         if (sel.rangeCount) {
           range = sel.getRangeAt(0);
