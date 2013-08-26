@@ -48,6 +48,8 @@ describe "VideoClipper", ->
         @buttonId = 'button-id-test'
         @textareaId = 'bl-text'
         @generate = false
+        @mediaContentUrl = 'http://google.com'
+        @thumbnailUrl = 'https://www.google.com/imghp?hl=en&tab=wi&authuser=0'
 
         @clippy = new VideoClipper
           textareaId: @textareaId
@@ -57,6 +59,8 @@ describe "VideoClipper", ->
           reel: @reel
           buttonId: @buttonId
           answerClass: @answerClass
+          mediaContentUrl: @mediaContentUrl
+          thumbnailUrl: @thumbnailUrl
 
       it "should use @textareaId for the instance's textareaId", ->
         expect(@clippy.textareaId).toEqual @textareaId
@@ -66,6 +70,12 @@ describe "VideoClipper", ->
 
       it "should use @videoType for the instance's videoType", ->
         expect(@clippy.videoType).toEqual @videoType
+
+      it "should use @mediaContentUrl for the instance's mediaContentUrl", ->
+        expect(@clippy.mediaContentUrl).toEqual @mediaContentUrl
+
+      it "should use @thumbnailUrl for the instance's thumbnailUrl", ->
+        expect(@clippy.thumbnailUrl).toEqual @thumbnailUrl
 
       it "should use the given value for the instance's reel", ->
         expect(@clippy.reel).toEqual @reel
@@ -1209,7 +1219,71 @@ describe "VideoClipper", ->
       expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith some_val
 
   describe ".setEndTime", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      textareaId = 'bl-text'
+
+      @clippy = new VideoClipper
+        textareaId: textareaId
+        videoId: '8f7wj_RcqYk'
+        videoType: 'TEST'
+
+    it 'calls .secondsToTime with the parameter val', ->
+      val = "SOME VALUE"
+      spyOn(VideoClipper, 'secondsToTime')
+      VideoClipper.setEndTime(val)
+      expect(VideoClipper.secondsToTime).toHaveBeenCalledWith val
+
+    it "sets the 'input[name='bl-end'] box with the time value", ->
+      val = 'SOME VALUE'
+      val2 = 'SOME VALUE ROUND 2'
+      spyOn(VideoClipper, 'secondsToTime').andReturn val2
+      valSpy = spyOn($.fn, 'val').andCallThrough()
+      VideoClipper.setEndTime val
+      expect($.fn.val).toHaveBeenCalledWith val2
+      expect(valSpy.mostRecentCall.object.selector).
+        toEqual "input[name='bl-end']"
+
+    it 'should return the value from secondsToTime', ->
+      val = 'SOME VALUE'
+      val2 = 'SOME VALUE ROUND 2'
+      spyOn(VideoClipper, 'secondsToTime').andReturn val2
+      expect(VideoClipper.setEndTime(val)).toEqual val2
+
+
 
   describe ".setStartTime", ->
+    beforeEach ->
+      VideoClipper.cleanUp()
+      loadFixtures('question.html')
+      textareaId = 'bl-text'
+
+      @clippy = new VideoClipper
+        textareaId: textareaId
+        videoId: '8f7wj_RcqYk'
+        videoType: 'TEST'
+
+    it 'calls .secondsToTime with the parameter val', ->
+      val = "SOME VALUE"
+      spyOn(VideoClipper, 'secondsToTime')
+      VideoClipper.setStartTime(val)
+      expect(VideoClipper.secondsToTime).toHaveBeenCalledWith val
+
+    it "sets the 'input[name='bl-start'] box with the time value", ->
+      val = 'SOME VALUE'
+      val2 = 'SOME VALUE ROUND 2'
+      spyOn(VideoClipper, 'secondsToTime').andReturn val2
+      valSpy = spyOn($.fn, 'val').andCallThrough()
+      VideoClipper.setStartTime val
+      expect($.fn.val).toHaveBeenCalledWith val2
+      expect(valSpy.mostRecentCall.object.selector).
+        toEqual "input[name='bl-start']"
+
+    it 'should return the value from secondsToTime', ->
+      val = 'SOME VALUE'
+      val2 = 'SOME VALUE ROUND 2'
+      spyOn(VideoClipper, 'secondsToTime').andReturn val2
+      expect(VideoClipper.setStartTime(val)).toEqual val2
 
 

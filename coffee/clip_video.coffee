@@ -514,13 +514,11 @@ class @VideoClipper
     val = $("input[name='bl-start']").val()
     return @timeToSeconds(val)
 
-  # TODO: Add tests
   @setEndTime: (val) ->
     val = @secondsToTime val
     $("input[name='bl-end']").val val
     return val
 
-  # TODO: Add tests
   @setStartTime: (val) ->
     val = @secondsToTime val
     $("input[name='bl-start']").val val

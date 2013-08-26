@@ -51,6 +51,8 @@
           this.buttonId = 'button-id-test';
           this.textareaId = 'bl-text';
           this.generate = false;
+          this.mediaContentUrl = 'http://google.com';
+          this.thumbnailUrl = 'https://www.google.com/imghp?hl=en&tab=wi&authuser=0';
           return this.clippy = new VideoClipper({
             textareaId: this.textareaId,
             videoId: this.videoId,
@@ -58,7 +60,9 @@
             generate: this.generate,
             reel: this.reel,
             buttonId: this.buttonId,
-            answerClass: this.answerClass
+            answerClass: this.answerClass,
+            mediaContentUrl: this.mediaContentUrl,
+            thumbnailUrl: this.thumbnailUrl
           });
         });
         it("should use @textareaId for the instance's textareaId", function() {
@@ -69,6 +73,12 @@
         });
         it("should use @videoType for the instance's videoType", function() {
           return expect(this.clippy.videoType).toEqual(this.videoType);
+        });
+        it("should use @mediaContentUrl for the instance's mediaContentUrl", function() {
+          return expect(this.clippy.mediaContentUrl).toEqual(this.mediaContentUrl);
+        });
+        it("should use @thumbnailUrl for the instance's thumbnailUrl", function() {
+          return expect(this.clippy.thumbnailUrl).toEqual(this.thumbnailUrl);
         });
         it("should use the given value for the instance's reel", function() {
           return expect(this.clippy.reel).toEqual(this.reel);
@@ -1368,8 +1378,88 @@
         return expect(VideoClipper.timeToSeconds).toHaveBeenCalledWith(some_val);
       });
     });
-    describe(".setEndTime", function() {});
-    return describe(".setStartTime", function() {});
+    describe(".setEndTime", function() {
+      beforeEach(function() {
+        var textareaId;
+
+        VideoClipper.cleanUp();
+        loadFixtures('question.html');
+        textareaId = 'bl-text';
+        return this.clippy = new VideoClipper({
+          textareaId: textareaId,
+          videoId: '8f7wj_RcqYk',
+          videoType: 'TEST'
+        });
+      });
+      it('calls .secondsToTime with the parameter val', function() {
+        var val;
+
+        val = "SOME VALUE";
+        spyOn(VideoClipper, 'secondsToTime');
+        VideoClipper.setEndTime(val);
+        return expect(VideoClipper.secondsToTime).toHaveBeenCalledWith(val);
+      });
+      it("sets the 'input[name='bl-end'] box with the time value", function() {
+        var val, val2, valSpy;
+
+        val = 'SOME VALUE';
+        val2 = 'SOME VALUE ROUND 2';
+        spyOn(VideoClipper, 'secondsToTime').andReturn(val2);
+        valSpy = spyOn($.fn, 'val').andCallThrough();
+        VideoClipper.setEndTime(val);
+        expect($.fn.val).toHaveBeenCalledWith(val2);
+        return expect(valSpy.mostRecentCall.object.selector).toEqual("input[name='bl-end']");
+      });
+      return it('should return the value from secondsToTime', function() {
+        var val, val2;
+
+        val = 'SOME VALUE';
+        val2 = 'SOME VALUE ROUND 2';
+        spyOn(VideoClipper, 'secondsToTime').andReturn(val2);
+        return expect(VideoClipper.setEndTime(val)).toEqual(val2);
+      });
+    });
+    return describe(".setStartTime", function() {
+      beforeEach(function() {
+        var textareaId;
+
+        VideoClipper.cleanUp();
+        loadFixtures('question.html');
+        textareaId = 'bl-text';
+        return this.clippy = new VideoClipper({
+          textareaId: textareaId,
+          videoId: '8f7wj_RcqYk',
+          videoType: 'TEST'
+        });
+      });
+      it('calls .secondsToTime with the parameter val', function() {
+        var val;
+
+        val = "SOME VALUE";
+        spyOn(VideoClipper, 'secondsToTime');
+        VideoClipper.setStartTime(val);
+        return expect(VideoClipper.secondsToTime).toHaveBeenCalledWith(val);
+      });
+      it("sets the 'input[name='bl-start'] box with the time value", function() {
+        var val, val2, valSpy;
+
+        val = 'SOME VALUE';
+        val2 = 'SOME VALUE ROUND 2';
+        spyOn(VideoClipper, 'secondsToTime').andReturn(val2);
+        valSpy = spyOn($.fn, 'val').andCallThrough();
+        VideoClipper.setStartTime(val);
+        expect($.fn.val).toHaveBeenCalledWith(val2);
+        return expect(valSpy.mostRecentCall.object.selector).toEqual("input[name='bl-start']");
+      });
+      return it('should return the value from secondsToTime', function() {
+        var val, val2;
+
+        val = 'SOME VALUE';
+        val2 = 'SOME VALUE ROUND 2';
+        spyOn(VideoClipper, 'secondsToTime').andReturn(val2);
+        return expect(VideoClipper.setStartTime(val)).toEqual(val2);
+      });
+    });
   });
 
 }).call(this);
