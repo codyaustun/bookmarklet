@@ -172,18 +172,16 @@
       $(newContent).each(function(i, e) {
         return _this.questionBox.append(e);
       });
-      newVal = this.questionBox.html();
-      this.questionBox.prev().val(newVal);
       that = this;
-      this.questionBox.find('[rel*=blModal]').click(function() {
-        return VideoClipper.modal.open(this, that);
-      });
-      return this.questionBox.find('[rel*=blModal]').each(function(index, element) {
+      this.questionBox.find('[rel*=blModal]').each(function(index, element) {
         var data, endTime, startTime;
 
         data = VideoClipper.getBLData($(element));
         startTime = VideoClipper.secondsToTime(data.startSeconds);
         endTime = VideoClipper.secondsToTime(data.endSeconds);
+        $(element).click(function() {
+          return VideoClipper.modal.open(this, that);
+        });
         return $(element).qtip({
           style: {
             classes: 'qtip-rounded qtip-dark'
@@ -193,6 +191,8 @@
           }
         });
       });
+      newVal = this.questionBox.html();
+      return this.questionBox.prev().val(newVal);
     };
 
     VideoClipper.checkErrors = function() {
@@ -247,15 +247,15 @@
       this.generateOverlay();
       that = this;
       if (clipper == null) {
-        $('[rel*=blModal]').click(function() {
-          return that.modal.open(this);
-        });
         $('[rel*=blModal]').each(function(index, element) {
           var data, endTime, startTime;
 
           data = VideoClipper.getBLData($(element));
           startTime = VideoClipper.secondsToTime(data.start);
           endTime = VideoClipper.secondsToTime(data.end);
+          $(element).click(function() {
+            return that.modal.open(this);
+          });
           return $(element).qtip({
             style: {
               classes: 'qtip-rounded qtip-dark'
@@ -419,12 +419,18 @@
           $(".bl-srcURL").text(url);
           VideoClipper.clearInputs();
           if (VideoClipper.player === false || VideoClipper.player.videoType !== blData.videoType || VideoClipper.playerV.videoId === blData.videoId) {
+            if ((VideoClipper.player != null) && VideoClipper.player) {
+              VideoClipper.player.remove();
+            }
             VideoClipper.player = new OmniPlayer(blData);
           } else {
             VideoClipper.player.cueVideoById(blData);
           }
         } else {
           if (VideoClipper.playerV === false || VideoClipper.playerV.videoType !== blData.videoType || VideoClipper.playerV.videoId === blData.videoId) {
+            if ((VideoClipper.playerV != null) && VideoClipper.playerV) {
+              VideoClipper.playerV.remove();
+            }
             VideoClipper.playerV = new OmniPlayer(blData);
           } else {
             VideoClipper.playerV.cueVideoById(blData);

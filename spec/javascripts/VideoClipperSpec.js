@@ -596,6 +596,16 @@
           VideoClipper.generate();
           return expect($('[rel*=blModal]')).toHandle('click');
         });
+        it("adds a qtip to each '[rel*=blModal]'", function() {
+          var qtipSpy;
+
+          qtipSpy = spyOn($.fn, 'qtip');
+          VideoClipper.generate();
+          expect($.fn.qtip).toHaveBeenCalled();
+          return $('[rel*=blModal]').each(function(index, element) {
+            return expect(qtipSpy.calls[index].object).toBe($(element));
+          });
+        });
         return describe('when a video clip is click', function() {
           return it('should open the modal window', function() {
             spyOn(VideoClipper.modal, 'open');
@@ -1004,24 +1014,56 @@
       });
       describe("that doesn't already have contents", function() {
         return it("the div's text equal the new link", function() {
-          console.log($('.' + this.clippy.answerClass).contents().length);
+          expect($('.' + this.clippy.answerClass).contents().length).toEqual(0);
           this.clippy.update(this.newTag);
           return expect($('.' + this.clippy.answerClass).find('a').text()).toEqual(this.newTag.text());
         });
       });
       describe('that already has contents', function() {
-        it("should iterate through the question's text and html", function() {
-          return expect('pending').toEqual('completed');
+        it('should get the questionBox contents', function() {
+          spyOn(this.clippy.questionBox, 'contents').andCallThrough();
+          this.clippy.update(this.newTag);
+          return expect(this.clippy.questionBox.contents).toHaveBeenCalled();
         });
-        it("should place the new link at the caret position", function() {
-          return expect('pending').toEqual('completed');
-        });
-        return it("should replace the question's content with the new content", function() {
-          return expect('pending').toEqual('completed');
+        return it("should iterate through the question's text and html", function() {
+          var eachAgent;
+
+          eachAgent = jasmine.createSpyObj('each', ['each']);
+          spyOn(this.clippy.questionBox, 'contents').andReturn(eachAgent);
+          this.clippy.update(this.newTag);
+          return expect(eachAgent.each).toHaveBeenCalled();
         });
       });
-      return it("should update the question's textarea", function() {
-        return expect('pending').toEqual('completed');
+      it("should update the question's textarea", function() {
+        var newVal, valSpy;
+
+        valSpy = spyOn($.fn, 'val').andCallThrough();
+        this.clippy.update(this.newTag);
+        newVal = this.clippy.questionBox.html();
+        expect($.fn.val).toHaveBeenCalledWith(newVal);
+        return expect(valSpy.mostRecentCall.object).toEqual(this.clippy.questionBox.prev());
+      });
+      it("should make video clips handle clicks", function() {
+        this.clippy.update(this.newTag);
+        return expect(this.clippy.questionBox.find('[rel*=blModal]')).toHandle('click');
+      });
+      it("adds a qtip to each '[rel*=blModal]'", function() {
+        var qtipSpy;
+
+        qtipSpy = spyOn($.fn, 'qtip');
+        this.clippy.update(this.newTag);
+        expect($.fn.qtip).toHaveBeenCalled();
+        return this.clippy.questionBox.find('[rel*=blModal]').each(function(index, element) {
+          return expect(qtipSpy.calls[index].object).toBe($(element));
+        });
+      });
+      return describe('when a video clip is click', function() {
+        return it('should open the modal window', function() {
+          spyOn(VideoClipper.modal, 'open');
+          this.clippy.update(this.newTag);
+          $('[rel*=blModal]').click();
+          return expect(VideoClipper.modal.open).toHaveBeenCalled();
+        });
       });
     });
     describe(".generateTag", function() {
@@ -1209,16 +1251,10 @@
       beforeEach(function() {
         return this.elementHtml = '<a rel="blModal" href="#bl-vid" class="bl">%7B%22start%22:%20%2243.92%22,%20%22end%22:%20%22330%22,%20%22type%22:%20%22show%22,%20%22modal%22:%20%22#bl-vid%22,%20%22video%22:%20%7B%22id%22:%20%228f7wj_RcqYk%22,%20%22type%22:%20%22YT%22%7D%7D</a>';
       });
-      it("should create a div", function() {
+      return it("should create a div", function() {
         spyOn(document, "createElement").andCallThrough();
         VideoClipper.stripHTML(this.elementHtml);
         return expect(document.createElement).toHaveBeenCalledWith("DIV");
-      });
-      it("should put the html into the div's innerHTML", function() {
-        return expect('pending').toEqual('completed');
-      });
-      return it("should return div's textContent or innerText", function() {
-        return expect('pending').toEqual('completed');
       });
     });
     describe(".secondsToTime", function() {

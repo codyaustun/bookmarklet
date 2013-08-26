@@ -525,6 +525,13 @@ describe "VideoClipper", ->
         VideoClipper.generate()
         expect($('[rel*=blModal]')).toHandle 'click'
 
+      it "adds a qtip to each '[rel*=blModal]'", ->
+        qtipSpy = spyOn($.fn,'qtip')
+        VideoClipper.generate()
+        expect($.fn.qtip).toHaveBeenCalled()
+        $('[rel*=blModal]').each (index, element) -> 
+          expect(qtipSpy.calls[index].object).toBe $(element)
+
       describe 'when a video clip is click', ->
         it 'should open the modal window', ->
           spyOn(VideoClipper.modal, 'open')
@@ -889,23 +896,47 @@ describe "VideoClipper", ->
 
     describe "that doesn't already have contents", ->
       it "the div's text equal the new link", ->
-        console.log $('.'+@clippy.answerClass).contents().length
+        expect($('.'+@clippy.answerClass).contents().length).toEqual 0
         @clippy.update(@newTag)
         expect($('.'+@clippy.answerClass).find('a').text()).
           toEqual @newTag.text()
 
     describe 'that already has contents', ->
+      it 'should get the questionBox contents', ->
+          spyOn(@clippy.questionBox, 'contents').andCallThrough()
+          @clippy.update(@newTag)
+          expect(@clippy.questionBox.contents).toHaveBeenCalled()
+
       it "should iterate through the question's text and html", ->
-        expect('pending').toEqual('completed')
-
-      it "should place the new link at the caret position", ->
-        expect('pending').toEqual('completed')
-
-      it "should replace the question's content with the new content", ->
-        expect('pending').toEqual('completed')
+        eachAgent = jasmine.createSpyObj('each', ['each'])
+        spyOn(@clippy.questionBox, 'contents').andReturn eachAgent
+        @clippy.update(@newTag)
+        expect(eachAgent.each).toHaveBeenCalled()
 
     it "should update the question's textarea", ->
-      expect('pending').toEqual('completed')
+      valSpy = spyOn($.fn, 'val').andCallThrough()
+      @clippy.update(@newTag) 
+      newVal = @clippy.questionBox.html()
+      expect($.fn.val).toHaveBeenCalledWith newVal
+      expect(valSpy.mostRecentCall.object).toEqual @clippy.questionBox.prev()
+
+    it "should make video clips handle clicks", ->
+      @clippy.update(@newTag)
+      expect(@clippy.questionBox.find('[rel*=blModal]')).toHandle 'click'
+
+    it "adds a qtip to each '[rel*=blModal]'", ->
+      qtipSpy = spyOn($.fn,'qtip')
+      @clippy.update(@newTag)
+      expect($.fn.qtip).toHaveBeenCalled()
+      @clippy.questionBox.find('[rel*=blModal]').each (index, element) -> 
+        expect(qtipSpy.calls[index].object).toBe $(element)
+
+    describe 'when a video clip is click', ->
+      it 'should open the modal window', ->
+        spyOn(VideoClipper.modal, 'open')
+        @clippy.update(@newTag)
+        $('[rel*=blModal]').click()
+        expect(VideoClipper.modal.open).toHaveBeenCalled()
 
   describe ".generateTag", ->
     beforeEach ->
@@ -1071,12 +1102,6 @@ describe "VideoClipper", ->
       spyOn(document, "createElement").andCallThrough()
       VideoClipper.stripHTML(@elementHtml)
       expect(document.createElement).toHaveBeenCalledWith("DIV")
-
-    it "should put the html into the div's innerHTML", ->
-      expect('pending').toEqual('completed')
-
-    it "should return div's textContent or innerText", ->
-      expect('pending').toEqual('completed')
 
   describe ".secondsToTime", ->
     describe "with 0 seconds, minutes and hours of time", ->

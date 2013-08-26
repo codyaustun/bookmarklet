@@ -31,7 +31,6 @@ class @VideoClipper
     @videoId = obj.videoId
     @videoType = obj.videoType
 
-    # TODO: Add tests
     @mediaContentUrl = obj.mediaContentUrl
     @thumbnailUrl = obj.thumbnailUrl
 
@@ -103,7 +102,6 @@ class @VideoClipper
     @generateQuestionBox()
     VideoClipper.generate(this)
 
-  # TODO: Add tests
   update: (newTag) =>
     $(".bl-URL").text newTag
     currContent = @questionBox.contents()
@@ -141,29 +139,26 @@ class @VideoClipper
     $(newContent).each (i, e) =>
       @questionBox.append e
 
-    newVal = @questionBox.html()
-    @questionBox.prev().val newVal
-
     that = this
 
-    # TODO: Add tests
-    @questionBox.find('[rel*=blModal]').click ->
-      VideoClipper.modal.open this, that
-
-    # TODO: Add tests
     @questionBox.find('[rel*=blModal]').each (index, element) ->
       data = VideoClipper.getBLData $(element)
 
       startTime = VideoClipper.secondsToTime(data.startSeconds)
       endTime = VideoClipper.secondsToTime(data.endSeconds)
 
+      $(element).click ->
+        VideoClipper.modal.open this, that
+
       $(element).qtip
         style:
           classes: 'qtip-rounded qtip-dark'
         content:
           text: "Start: #{startTime} - End: #{endTime}"
-          # text: "<img class='video-thumbnail-small' src='http://img.youtube.com/vi/#{that.videoId}/0.jpg'> <span class='video-thumbnail-label'>Start: #{startTime} - End: #{endTime}</span>"
-          
+              
+    newVal = @questionBox.html()
+    @questionBox.prev().val newVal
+
   @checkErrors: =>
     startTime = parseFloat(@getStartTime())
     endTime = parseFloat(@getEndTime())
@@ -201,15 +196,14 @@ class @VideoClipper
     that = this
 
     if !clipper?
-      $('[rel*=blModal]').click ->
-        that.modal.open this
-
-      # TODO: Add tests
       $('[rel*=blModal]').each (index, element) ->
         data = VideoClipper.getBLData $(element)
 
         startTime = VideoClipper.secondsToTime(data.start)
         endTime = VideoClipper.secondsToTime(data.end)
+
+        $(element).click ->
+          that.modal.open this
 
         $(element).qtip
           style:
@@ -436,6 +430,7 @@ class @VideoClipper
 
         @clearInputs()
         if @player is false || @player.videoType != blData.videoType || @playerV.videoId == blData.videoId
+          @player.remove() if @player? && @player
           @player = new OmniPlayer blData
         else
           @player.cueVideoById(blData)
@@ -443,6 +438,7 @@ class @VideoClipper
         # OPTIMIZE: This works, 
         #   but it would be nice if it didn't need to delete the video
         if @playerV is false || @playerV.videoType != blData.videoType || @playerV.videoId == blData.videoId
+          @playerV.remove() if @playerV? && @playerV
           @playerV = new OmniPlayer blData
         else
           @playerV.cueVideoById blData
