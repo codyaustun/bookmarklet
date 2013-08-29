@@ -44,6 +44,8 @@
 
     VideoClipper.clippers = [];
 
+    VideoClipper.callback = false;
+
     VideoClipper.prepared = {
       snippet: false
     };
@@ -538,5 +540,12 @@
     return VideoClipper;
 
   }).call(this);
+
+  VideoClipper.generate();
+
+  if (window.onVideoClipperReady != null) {
+    VideoClipper.callback = true;
+    window.onVideoClipperReady();
+  }
 
 }).call(this);
