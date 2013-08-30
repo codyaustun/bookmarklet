@@ -47,6 +47,11 @@ class @VideoClipper
 
     VideoClipper.clippers = VideoClipper.clippers.concat(this)
 
+  # TODO: Add tests
+  destroy: ->
+    @questionBox.remove() if @questionBox?
+    @snippetButton.remove() if @snippetButton?
+
   generateQuestionBox: () =>
     element = $("#"+@textareaId)
     w = element.width()
@@ -176,7 +181,9 @@ class @VideoClipper
     $('#bl-vid').remove()
     $("#bookMarklet-overlay").remove()
     @prepared.snippet = false
-    clipper.questionBox.remove() for clipper in @clippers when clipper.questionBox?
+    for clipper in @clippers
+      clipper.destroy()
+    @clippers = []
     return this
 
   @clearInputs: =>
@@ -520,16 +527,17 @@ class @VideoClipper
     $("input[name='bl-start']").val val
     return val
 
-if $('#combined-open-ended').length > 0
+# TODO: Add Tests
+coeVideoId = $('#combined-open-ended').data('videoId')
+
+if coeVideoId? && coeVideoId != ""
   textarea = $('#combined-open-ended').find('textarea')
-  videoId = $('#combined-open-ended').data('videoId')
   textarea.attr('id','video-clipper')
 
   new VideoClipper
     textareaId: "video-clipper"
     videoType: "YT"
-    videoId: videoId
-
+    videoId: coeVideoId
 
 VideoClipper.generate()
 if window.onVideoClipperReady?
