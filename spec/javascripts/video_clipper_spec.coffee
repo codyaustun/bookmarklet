@@ -526,11 +526,8 @@ describe "VideoClipper", ->
         expect($('[rel*=blModal]')).toHandle 'click'
 
       it "adds a qtip to each '[rel*=blModal]'", ->
-        qtipSpy = spyOn($.fn,'qtip')
         VideoClipper.generate()
         expect($.fn.qtip).toHaveBeenCalled()
-        $('[rel*=blModal]').each (index, element) -> 
-          expect(qtipSpy.calls[index].object).toBe $(element)
 
       describe 'when a video clip is click', ->
         it 'should open the modal window', ->
@@ -572,10 +569,9 @@ describe "VideoClipper", ->
       expect(VideoClipper.prepared.snippet).toBeFalsy()
 
     it 'should remove all questionBoxs', ->
-      removeSpy = spyOn($.fn,'remove')
+      spyOn(@clippy, 'destroy')
       VideoClipper.cleanUp()
-      expect($.fn.remove).toHaveBeenCalled()
-      expect(removeSpy.mostRecentCall.object).toEqual @clippy.questionBox
+      expect(@clippy.destroy).toHaveBeenCalled()
 
   describe ".modal.close", ->
     beforeEach ->
@@ -882,11 +878,6 @@ describe "VideoClipper", ->
     afterEach ->
       $('#test').remove()
 
-    it "should put the new link into the .bl-URL textarea", ->
-      textSpy = spyOn($.fn, 'text').andCallThrough()
-      @clippy.update(@newTag)
-      expect($('.bl-URL')).toContainText(@newTag)
-
     it "should get the question's current contents", ->
       contentSpy = spyOn($.fn, 'contents').andCallThrough()
       @clippy.update(@newTag)
@@ -925,11 +916,8 @@ describe "VideoClipper", ->
       expect(@clippy.questionBox.find('[rel*=blModal]')).toHandle 'click'
 
     it "adds a qtip to each '[rel*=blModal]'", ->
-      qtipSpy = spyOn($.fn,'qtip')
       @clippy.update(@newTag)
       expect($.fn.qtip).toHaveBeenCalled()
-      @clippy.questionBox.find('[rel*=blModal]').each (index, element) -> 
-        expect(qtipSpy.calls[index].object).toBe $(element)
 
     describe 'when a video clip is click', ->
       it 'should open the modal window', ->
