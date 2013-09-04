@@ -1,9 +1,5 @@
 describe "VideoClipper", ->
 
-  it "should have VideoClipper class", ->
-    @clippy = new VideoClipper
-    expect(@clippy).toBeDefined()
-
   describe "when constructing", ->
     beforeEach ->
       @textareaId = 'bl-text'
@@ -20,25 +16,25 @@ describe "VideoClipper", ->
           videoId: @videoId
           videoType: @videoType
 
-      it "should use @textareaId for the instance's textareaId", ->
+      it "uses @textareaId for the instance's textareaId", ->
         expect(@clippy.textareaId).toEqual @textareaId
 
-      it "should use @videoId for the instance's videoId", ->
+      it "uses @videoId for the instance's videoId", ->
         expect(@clippy.videoId).toEqual @videoId
 
-      it "should use @videoType for the instance's videoType", ->
+      it "uses @videoType for the instance's videoType", ->
         expect(@clippy.videoType).toEqual @videoType
 
-      it "should use VideoClipper.reel for the instance's reel", ->
+      it "uses VideoClipper.reel for the instance's reel", ->
         expect(@clippy.reel).toEqual VideoClipper.reel
 
-      it "should use VideoClipper.answerClass for the instance's answerClass", ->
+      it "uses VideoClipper.answerClass for the instance's answerClass", ->
         expect(@clippy.answerClass).toEqual VideoClipper.answerClass
 
-      it "should use VideoClipper.generateHtml for the instance's generate", ->
+      it "uses VideoClipper.generateHtml for the instance's generate", ->
         expect(@clippy.generate).toEqual VideoClipper.generateHtml
 
-      it 'should generate a buttonId for the instance', ->
+      it 'generates a buttonId for the instance', ->
         expect(@clippy.buttonId).toBeDefined()
 
     describe 'without using defaults', ->
@@ -62,35 +58,35 @@ describe "VideoClipper", ->
           mediaContentUrl: @mediaContentUrl
           thumbnailUrl: @thumbnailUrl
 
-      it "should use @textareaId for the instance's textareaId", ->
+      it "uses @textareaId for the instance's textareaId", ->
         expect(@clippy.textareaId).toEqual @textareaId
 
-      it "should use @videoId for the instance's videoId", ->
+      it "uses @videoId for the instance's videoId", ->
         expect(@clippy.videoId).toEqual @videoId
 
-      it "should use @videoType for the instance's videoType", ->
+      it "uses @videoType for the instance's videoType", ->
         expect(@clippy.videoType).toEqual @videoType
 
-      it "should use @mediaContentUrl for the instance's mediaContentUrl", ->
+      it "uses @mediaContentUrl for the instance's mediaContentUrl", ->
         expect(@clippy.mediaContentUrl).toEqual @mediaContentUrl
 
-      it "should use @thumbnailUrl for the instance's thumbnailUrl", ->
+      it "uses @thumbnailUrl for the instance's thumbnailUrl", ->
         expect(@clippy.thumbnailUrl).toEqual @thumbnailUrl
 
-      it "should use the given value for the instance's reel", ->
+      it "uses the given value for the instance's reel", ->
         expect(@clippy.reel).toEqual @reel
 
-      it "should use the given value for the instance's answerClass", ->
+      it "uses the given value for the instance's answerClass", ->
         expect(@clippy.answerClass).toEqual @answerClass
 
-      it "should use the given value for the instance's generate", ->
+      it "uses the given value for the instance's generate", ->
         expect(@clippy.generate).toEqual @generate
 
-      it "should use the given value for the instance's buttonId", ->
+      it "uses the given value for the instance's buttonId", ->
         expect(@clippy.buttonId).toEqual @buttonId
 
     describe 'when generate is true', ->
-      it 'should call #setup', ->
+      it 'calls #setup', ->
         # clippy.setup calls VideoClipper.generate, so
         # this tests spies on VideoClipper.generate
         spyOn(VideoClipper, 'generate')
@@ -102,7 +98,7 @@ describe "VideoClipper", ->
           generate: true
 
     describe 'when generate is false', ->
-      it 'should not call #setup', ->
+      it 'does not call #setup', ->
         # clippy.setup calls VideoClipper.generate, so
         # this tests spies on VideoClipper.generate
         spyOn(VideoClipper, 'generate')
@@ -115,7 +111,7 @@ describe "VideoClipper", ->
 
         expect(VideoClipper.generate).not.toHaveBeenCalled()
 
-    it 'should add the new instance to VideoClipper.clippers', ->
+    it 'adds the new instance to VideoClipper.clippers', ->
       clippy = new VideoClipper
         textareaId: @textareaId
         videoId: @videoId
@@ -138,11 +134,8 @@ describe "VideoClipper", ->
         videoId: '8f7wj_RcqYk'
         videoType: 'TEST'
         generate: false
-
-    it 'should only have one element specified by textareaId', ->
-      expect($(@selector).length).toBe(1)
         
-    it 'should get height of the element with textareaId', ->
+    it 'gets the height of the element with textareaId', ->
       heightSpy = spyOn($.fn, 'height')
       spyOn(@clippy, 'generateQuestionBox').andCallThrough()
       @clippy.generateQuestionBox()
@@ -150,53 +143,53 @@ describe "VideoClipper", ->
       expect($.fn.height).toHaveBeenCalled()
       expect(heightSpy.mostRecentCall.object.selector).toEqual(@selector)
 
-    it 'should get width of the element with textareaId', ->
+    it 'gets the width of the element with textareaId', ->
       widthSpy = spyOn($.fn, 'width')
       @clippy.generateQuestionBox()
       expect($.fn.width).toHaveBeenCalled()
       expect(widthSpy.mostRecentCall.object.selector).toEqual @selector
 
-    it 'should get the value of the element with textareaId', ->
+    it 'gets the value of the element with textareaId', ->
       valSpy = spyOn $.fn, 'val'
       @clippy.generateQuestionBox()
       expect($.fn.val).toHaveBeenCalled()
       expect(valSpy.mostRecentCall.object.selector).toEqual @selector
 
-    it 'should insert of an answerClass div after the textarea', ->
+    it 'inserts of an answerClass div after the textarea', ->
       @clippy.generateQuestionBox()
       textarea = $(@selector)
       expect(textarea.next()).toBe 'div'
       expect(textarea.next()).toHaveClass @clippy.answerClass
 
-    it 'should make the divcontenteditable', ->
+    it 'makes the divcontenteditable', ->
       @clippy.generateQuestionBox()
       textarea = $(@selector)
       expect(textarea.next()).toHaveAttr 'contenteditable', 'true'
 
-    it 'should make the div have the same height and width as the textarea', ->
+    it 'makes the div have the same height and width as the textarea', ->
       @clippy.generateQuestionBox()
       textarea = $(@selector)
       div = textarea.next()
       expect(div.height()).toEqual textarea.height()
       expect(div.width()).toEqual textarea.width()
 
-    it 'should generate a bl data string', ->
+    it 'generates a bl data string', ->
       spyOn(VideoClipper, 'generateBLDataString')
       @clippy.generateQuestionBox()
       expect(VideoClipper.generateBLDataString).toHaveBeenCalledWith 'generate', @clippy
 
     describe 'without a buttonId specified', ->
-      it 'should create a button after the outputbox div', ->
+      it 'creates a button after the outputbox div', ->
         @clippy.generateQuestionBox()
         div = $(@selector).next()
         expect(div.next()).toBe 'input[type=button]'
 
-      it "should set the rel attribute of the button to 'blModal'", ->
+      it "sets the rel attribute of the button to 'blModal'", ->
         @clippy.generateQuestionBox()
         button = $(@selector).next().next()
         expect(button).toHaveAttr 'rel', 'blModal'
 
-      it 'should store the encoded BLDataString in the bl-data attribute', ->
+      it 'stores the encoded BLDataString in the bl-data attribute', ->
         @clippy.generateQuestionBox()
         button = $(@selector).next().next()
 
@@ -205,7 +198,7 @@ describe "VideoClipper", ->
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
-      it 'should make the button respond to clicks', ->
+      it 'makes the button respond to clicks', ->
         @clippy.generateQuestionBox()
         expect($("#"+@clippy.buttonId)).toHandle('click')
 
@@ -221,12 +214,12 @@ describe "VideoClipper", ->
           buttonId: @testID
           generate: false
 
-      it "should set the rel attribute of the button to 'blModal'", ->
+      it "sets the rel attribute of the button to 'blModal'", ->
         @clippy.generateQuestionBox()
         button = $('#'+@testID)
         expect(button).toHaveAttr 'rel', 'blModal'
 
-      it 'should store the encoded BLDataString in the bl-data attribute', ->
+      it 'stores the encoded BLDataString in the bl-data attribute', ->
         @clippy.generateQuestionBox()
         button = $('#'+@testID)
 
@@ -235,7 +228,7 @@ describe "VideoClipper", ->
         encoded = encodeURI(blData)
         expect(button).toHaveAttr 'data-bl', encoded
 
-      it 'should make the button respond to clicks', ->
+      it 'makes the button respond to clicks', ->
         @clippy.generateQuestionBox()
         expect($("#"+@clippy.buttonId)).toHandle('click')
 
@@ -250,7 +243,7 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         generate: false
 
-    it "should create a bookMarklet-overlay div if doesn't exist", ->
+    it "creates a bookMarklet-overlay div if doesn't exist", ->
       expect($("#bookMarklet-overlay").length).toEqual 0
       appendSpy = spyOn($.fn, 'appendTo').andCallThrough()
       VideoClipper.generateOverlay()
@@ -259,7 +252,7 @@ describe "VideoClipper", ->
 
     describe 'and one already exists', ->
 
-      it 'should not create another overlay', ->
+      it 'does not create another overlay', ->
         VideoClipper.generateOverlay()
         expect($("#bookMarklet-overlay").length).toEqual 1
         appendSpy = spyOn($.fn, 'appendTo').andCallThrough()
@@ -267,12 +260,12 @@ describe "VideoClipper", ->
         expect($("#bookMarklet-overlay").length).toEqual 1
         expect($.fn.appendTo).not.toHaveBeenCalled()
 
-    it 'should make the overlay respond to click', ->
+    it 'makes the overlay respond to click', ->
       VideoClipper.generateOverlay()
       expect($("#bookMarklet-overlay")).toHandle('click')
 
     describe 'and the overlay is clicked', ->
-      it 'should call modal.close', ->
+      it 'calls modal.close', ->
         VideoClipper.generateOverlay()
         spyOn(VideoClipper.modal, "close").andCallThrough
         $("#bookMarklet-overlay").click()
@@ -297,18 +290,18 @@ describe "VideoClipper", ->
 
       VideoClipper.clipper = @clippy
 
-    it "should make the start button respond to clicks", ->
+    it "makes the start button respond to clicks", ->
       expect($('.bl-start')).toHandle("click")
 
     describe "and the start button is clicked", ->
   
-      it "should get the current time from the player", ->
+      it "gets the current time from the player", ->
         spyOn(VideoClipper.player, 'getCurrentTime').andCallThrough()
         spyOn(VideoClipper, 'checkErrors')
         $('.bl-start').click()
         expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled()
 
-      it "should set the bl-start input to the current time", ->
+      it "sets the bl-start input to the current time", ->
         val = 300
         spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val)
         spyOn(VideoClipper, 'checkErrors')
@@ -318,23 +311,23 @@ describe "VideoClipper", ->
         expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val))
         expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
 
-      it "should check for errors", ->
+      it "checks for errors", ->
         spyOn(VideoClipper, 'checkErrors')
         $('.bl-start').click()
         expect(VideoClipper.checkErrors).toHaveBeenCalled()
 
 
-    it "should make the end button respond to clicks", ->
+    it "makes the end button respond to clicks", ->
       expect($('.bl-end')).toHandle("click")
 
     describe 'and end button is clicked', ->
-      it "should get the current time from the player", ->
+      it "gets the current time from the player", ->
         spyOn(VideoClipper.player, 'getCurrentTime').andCallThrough()
         spyOn(VideoClipper, 'checkErrors')
         $('.bl-end').click()
         expect(VideoClipper.player.getCurrentTime).toHaveBeenCalled()
 
-      it "should set the bl-start input to the current time", ->
+      it "sets the bl-start input to the current time", ->
         val = 300
         spyOn(VideoClipper.player, 'getCurrentTime').andReturn(val)
         spyOn(VideoClipper, 'checkErrors')
@@ -344,47 +337,47 @@ describe "VideoClipper", ->
         expect($.fn.val).toHaveBeenCalledWith(VideoClipper.secondsToTime(val))
         expect(valSpy.mostRecentCall.object.selector).toEqual inputSelector
 
-      it "should check for errors", ->
+      it "checks for errors", ->
         spyOn(VideoClipper, 'checkErrors')
         $('.bl-end').click()
         expect(VideoClipper.checkErrors).toHaveBeenCalled()
 
-    it "should make the reset button respond to clicks", ->
+    it "makes the reset button respond to clicks", ->
       expect($(".bl-reset")).toHandle("click")
 
     describe 'and the reset button is clicked', ->
-      it 'should clear the snippet box inputs', ->
+      it 'clears the snippet box inputs', ->
         spyOn(VideoClipper, 'clearInputs')
         $('.bl-reset').click()
         expect(VideoClipper.clearInputs).toHaveBeenCalled
 
-      it 'should cue the video by id', ->
+      it 'cues the video by id', ->
         spyOn(VideoClipper.player, 'cueVideoById')
         $('.bl-reset').click()
         expect(VideoClipper.player.cueVideoById).toHaveBeenCalled()
 
-    it "should make the done button respond to clicks", ->
+    it "makes the done button respond to clicks", ->
       expect($('.bl-done')).toHandle("click")
 
     describe 'and the done button is clicked', ->
-      it 'should close the modal', ->
+      it 'closes the modal', ->
         spyOn(VideoClipper.modal, 'close')
         $('.bl-done').click()
         expect(VideoClipper.modal.close).toHaveBeenCalled()
 
-      it 'should generate a new tag', ->
+      it 'generates a new tag', ->
         spyOn(VideoClipper, 'generateTag')
         $('.bl-done').click()
         expect(VideoClipper.generateTag).toHaveBeenCalled()
 
-      it 'should use the generated tag to update', ->
+      it 'uses the generated tag to update', ->
         testString = 'Testing 1 2 3'
         spyOn(VideoClipper, 'generateTag').andReturn(testString)
         spyOn(@clippy, 'update')
         $('.bl-done').click()
         expect(@clippy.update).toHaveBeenCalledWith(testString)
 
-    it 'should set VideoClipper prepared snippet to true', ->
+    it 'sets VideoClipper prepared snippet to true', ->
       expect(VideoClipper.prepared.snippet).toBeTruthy()
 
   describe ".generateVideoBox", ->
@@ -394,22 +387,22 @@ describe "VideoClipper", ->
 
       afterEach ->
         VideoClipper.cleanUp()
-      it "should not add another #bl-vid div", ->
+      it "does not add another #bl-vid div", ->
         expect($('#bl-vid').length).toEqual 1
         VideoClipper.generateVideoBox()
         expect($('#bl-vid').length).toEqual 1
 
     describe 'without a #bl-vid already', ->
-      it 'should add a #bl-vid div', ->
+      it 'adds a #bl-vid div', ->
         expect($('#bl-vid').length).toEqual 0
         VideoClipper.generateVideoBox()
         expect($('#bl-vid').length).toEqual 1
 
-      it 'should have #bl-playerV inside #bl-vid', ->
+      it 'has #bl-playerV inside #bl-vid', ->
         VideoClipper.generateVideoBox()
         expect($('#bl-vid').find('#bl-playerV').length).toEqual 1        
 
-    it 'should return VideoClipper', ->
+    it 'returns VideoClipper', ->
       result = VideoClipper.generateVideoBox()
       expect(result).toEqual VideoClipper
 
@@ -427,25 +420,25 @@ describe "VideoClipper", ->
         buttonId: @testID
         generate: false
 
-    it "should generate a video box", ->
+    it "generates a video box", ->
       expect($('#bl-vid').length).toBe(0)
       spyOn(VideoClipper, 'generateVideoBox')
       @clippy.setup()
       expect(VideoClipper.generateVideoBox).toHaveBeenCalled()
 
-    it "should generate a snippet box", ->
+    it "generates a snippet box", ->
       expect($('#bl').length).toBe(0)
       spyOn(VideoClipper, 'generateSnippetBox')
       @clippy.setup()
       expect(VideoClipper.generateSnippetBox).toHaveBeenCalled()
 
-    it "should generate the question box", ->
+    it "generates the question box", ->
       spyOn(@clippy, 'generateQuestionBox').andCallThrough()
       spyOn(VideoClipper, 'generateSnippetBox')
       @clippy.setup()
       expect(@clippy.generateQuestionBox).toHaveBeenCalled()
 
-    it "should generate the video clipper overlay", ->
+    it "generates the video clipper overlay", ->
       expect($('#bookmarklet-overlay').length).toBe(0)
       spyOn(VideoClipper, 'generateOverlay')
       @clippy.setup()
@@ -456,10 +449,10 @@ describe "VideoClipper", ->
         onSpy = spyOn($.fn,'on').andCallThrough()
         @clippy.setup()
 
-      it 'should make the output box respond to clicks', ->
+      it 'makes the output box respond to clicks', ->
         expect($("."+@clippy.answerClass)).toHandle('click')
 
-      it 'should make the output box respond to keyups', ->
+      it 'makes the output box respond to keyups', ->
         expect($("."+@clippy.answerClass)).toHandle('keyup')
 
   describe '.generate', ->
@@ -481,19 +474,19 @@ describe "VideoClipper", ->
         @clippy.generateQuestionBox()
         loadFixtures('video_clipper_question.html')
 
-      it "should generate a snippet box", ->
+      it "generates a snippet box", ->
         expect($('#bl').length).toBe(0)
         spyOn(VideoClipper, 'generateSnippetBox')
         VideoClipper.generate @clippy
         expect(VideoClipper.generateSnippetBox).toHaveBeenCalledWith @clippy
 
-      it "should generate the video clipper overlay", ->
+      it "generates the video clipper overlay", ->
         expect($('#bookmarklet-overlay').length).toBe(0)
         spyOn(VideoClipper, 'generateOverlay')
         VideoClipper.generate @clippy
         expect(VideoClipper.generateOverlay).toHaveBeenCalled()
 
-      it "should generate a video box", ->
+      it "generates a video box", ->
         expect($('#bl-vid').length).toBe(0)
         spyOn(VideoClipper, 'generateVideoBox')
         VideoClipper.generate @clippy
@@ -502,26 +495,26 @@ describe "VideoClipper", ->
     describe 'without a VideoClipper instance', ->
       beforeEach ->
         loadFixtures('video_clipper_answer.html')
-      it "should not generate a snippet box", ->
+      it "does not generate a snippet box", ->
         expect($('#bl').length).toBe(0)
         spyOn(VideoClipper, 'generateSnippetBox')
         VideoClipper.generate()
         expect($('#bl').length).toBe(0)
         expect(VideoClipper.generateSnippetBox).not.toHaveBeenCalled()
 
-      it "should generate the video clipper overlay", ->
+      it "generates the video clipper overlay", ->
         expect($('#bookmarklet-overlay').length).toBe(0)
         spyOn(VideoClipper, 'generateOverlay')
         VideoClipper.generate()
         expect(VideoClipper.generateOverlay).toHaveBeenCalled()
 
-      it "should generate a video box", ->
+      it "generates a video box", ->
         expect($('#bl-vid').length).toBe(0)
         spyOn(VideoClipper, 'generateVideoBox')
         VideoClipper.generate()
         expect(VideoClipper.generateVideoBox).toHaveBeenCalled()
 
-      it "should make video clips handle clicks", ->
+      it "makes video clips handle clicks", ->
         VideoClipper.generate()
         expect($('[rel*=blModal]')).toHandle 'click'
 
@@ -530,7 +523,7 @@ describe "VideoClipper", ->
         expect($.fn.qtip).toHaveBeenCalled()
 
       describe 'when a video clip is click', ->
-        it 'should open the modal window', ->
+        it 'opens the modal window', ->
           spyOn(VideoClipper.modal, 'open')
           VideoClipper.generate()
           $('[rel*=blModal]').click()
@@ -549,26 +542,26 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         buttonId: @testID
 
-    it 'should remove the div with id of bl', ->
+    it 'removes the div with id of bl', ->
       expect($('#bl')).toExist()
       VideoClipper.cleanUp()
       expect($('#bl')).not.toExist()
 
-    it 'should remove the div with id of bl-vid', ->
+    it 'removes the div with id of bl-vid', ->
       expect($('#bl-vid')).toExist()
       VideoClipper.cleanUp()
       expect($('#bl-vid')).not.toExist()
 
-    it 'should remove the div with id of bookMarklet-overlay', ->
+    it 'removes the div with id of bookMarklet-overlay', ->
       expect($('#bookMarklet-overlay')).toExist()
       VideoClipper.cleanUp()
       expect($('#bookMarklet-overlay')).not.toExist()
 
-    it 'should set VideoClipper prepared snippet to false', ->
+    it 'sets VideoClipper prepared snippet to false', ->
       VideoClipper.cleanUp()
       expect(VideoClipper.prepared.snippet).toBeFalsy()
 
-    it 'should remove all questionBoxs', ->
+    it 'removes all questionBoxs', ->
       spyOn(@clippy, 'destroy')
       VideoClipper.cleanUp()
       expect(@clippy.destroy).toHaveBeenCalled()
@@ -588,18 +581,18 @@ describe "VideoClipper", ->
 
       VideoClipper.modal.open $('#'+@testID), @clippy
 
-    it "should fade out the overlay", ->
+    it "fades out the overlay", ->
       fadeSpy = spyOn($.fn, 'fadeOut')
       VideoClipper.modal.close(@clippy.modalID)
       expect($.fn.fadeOut).toHaveBeenCalled()
       expect(fadeSpy.mostRecentCall.object.selector).toEqual "#bookMarklet-overlay"
 
-    it "should hide the modal window", ->
+    it "hides the modal window", ->
       expect($("##{VideoClipper.modal.Id}")).toBeVisible()
       VideoClipper.modal.close()
       expect($("##{VideoClipper.modal.Id}")).toBeHidden()
 
-    it "should stop the video player", ->
+    it "stops the video player", ->
       spyOn(VideoClipper.player, 'stopVideo')
       VideoClipper.modal.close(@clippy.modalID)
       expect(VideoClipper.player.stopVideo).toHaveBeenCalled()
@@ -623,12 +616,12 @@ describe "VideoClipper", ->
     afterEach ->
       VideoClipper.modal.close()
 
-    it 'should close any open modal windows', ->
+    it 'closes any open modal windows', ->
       spyOn(VideoClipper.modal, 'close')
       VideoClipper.modal.open @el, @clippy
       expect(VideoClipper.modal.close).toHaveBeenCalled()
 
-    it "should get the data from the element", ->
+    it "gets the data from the element", ->
       spyOn(VideoClipper, 'getBLData').andReturn @blData
       VideoClipper.modal.open @el, @clippy
       expect(VideoClipper.getBLData).toHaveBeenCalledWith @el
@@ -637,27 +630,27 @@ describe "VideoClipper", ->
       beforeEach ->
         spyOn(VideoClipper, 'getBLData').andReturn @blData
 
-      it "should get video type and id", ->
+      it "gets video type and id", ->
         VideoClipper.modal.open @el, @clippy
         expect(@clippy.videoId).toEqual @blData.videoId
         expect(@clippy.videoType).toEqual @blData.videoType
 
-      it "should clear inputs", ->
+      it "clears inputs", ->
         spyOn(VideoClipper, 'clearInputs').andCallThrough()
         VideoClipper.modal.open @el, @clippy
         expect(VideoClipper.clearInputs).toHaveBeenCalled()
 
-      it "should create a video player if it doesn't exist", ->
+      it "creates a video player if it doesn't exist", ->
         VideoClipper.modal.open @el, @clippy
         expect(VideoClipper.player).toEqual jasmine.any(OmniPlayer)
 
-      it "should show snippet box", ->
+      it "shows snippet box", ->
         fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
         VideoClipper.modal.open @el, @clippy
         expect($.fn.fadeTo).toHaveBeenCalled()
         expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl')
 
-      it "should show overlay", ->
+      it "shows overlay", ->
         fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
         VideoClipper.modal.open @el, @clippy
         expect($.fn.fadeTo).toHaveBeenCalled()
@@ -673,24 +666,24 @@ describe "VideoClipper", ->
       afterEach ->
         VideoClipper.modal.close()
 
-      it "should get video type, id, start time and end time", ->
+      it "gets video type, id, start time and end time", ->
         VideoClipper.modal.open @el
         expect(@clippy.videoId).toEqual @blData.videoId
         expect(@clippy.videoType).toEqual @blData.videoType
         expect(@clippy.startTime).toEqual @blData.startSeconds
         expect(@clippy.endTime).toEqual @blData.endSeconds
 
-      it "should create a video player if it doesn't exist", ->
+      it "creates a video player if it doesn't exist", ->
         VideoClipper.modal.open @el
         expect(VideoClipper.playerV).toEqual jasmine.any(OmniPlayer)
 
-      it "should show video box", ->
+      it "shows video box", ->
         fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
         VideoClipper.modal.open @el
         expect($.fn.fadeTo).toHaveBeenCalled()
         expect(fadeSpy.mostRecentCall.object.selector).toEqual('#bl-vid')
 
-      it "should show overlay", ->
+      it "shows overlay", ->
         fadeSpy = spyOn($.fn,'fadeTo').andCallThrough()
         VideoClipper.modal.open @el
         expect($.fn.fadeTo).toHaveBeenCalled()
@@ -709,13 +702,13 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         buttonId: @testID
 
-    it "should parse floats from the  start input box", ->
+    it "parses floats from the  start input box", ->
       $("input[name='bl-start']").val("300")
       spyOn(window, 'parseFloat').andReturn 300
       VideoClipper.checkErrors()
       expect(window.parseFloat).toHaveBeenCalledWith "300"
 
-    it "should parse floats from the  end input box", ->
+    it "parses floats from the  end input box", ->
       $("input[name='bl-end']").val("300")
       spyOn(window, 'parseFloat').andReturn 300
       VideoClipper.checkErrors()
@@ -726,14 +719,14 @@ describe "VideoClipper", ->
         $("input[name='bl-start']").val("300")
         $("input[name='bl-end']").val("400")
 
-      it "should remove incorrect highlighting class", ->
+      it "removes incorrect highlighting class", ->
         $("input[name='bl-start']").addClass "bl-incorrect"
         $("input[name='bl-end']").addClass "bl-incorrect"
         VideoClipper.checkErrors()
         expect($("input[name='bl-start']")).not.toHaveClass "bl-incorrect"
         expect($("input[name='bl-end']")).not.toHaveClass "bl-incorrect"
 
-      it "should return true", ->
+      it "returns true", ->
         expect(VideoClipper.checkErrors()).toBeTruthy()      
 
     describe 'if incorrect', ->
@@ -741,12 +734,12 @@ describe "VideoClipper", ->
         $("input[name='bl-start']").val("400")
         $("input[name='bl-end']").val("300")
 
-      it "should add incorrect highlighting class", -> 
+      it "adds incorrect highlighting class", -> 
         VideoClipper.checkErrors()
         expect($("input[name='bl-start']")).toHaveClass "bl-incorrect"
         expect($("input[name='bl-end']")).toHaveClass "bl-incorrect"
 
-      it 'should return false', ->
+      it 'returns false', ->
         expect(VideoClipper.checkErrors()).toBeFalsy() 
 
   describe ".getBLData", ->
@@ -773,7 +766,7 @@ describe "VideoClipper", ->
     afterEach ->
       $('#test').remove()
 
-    it "should check if it has a data-bl attribute", ->
+    it "checks if it has a data-bl attribute", ->
       el = $('#test').attr('data-bl', @testDataGenerate)
       attrSpy = spyOn($.fn, 'attr').andCallThrough()
       VideoClipper.getBLData(el)
@@ -784,18 +777,18 @@ describe "VideoClipper", ->
       beforeEach ->
         @el = $('#test').attr 'data-bl', @testDataGenerate
 
-      it 'should get the encoded data from the data-bl attribute', ->
+      it 'gets the encoded data from the data-bl attribute', ->
         attrSpy = spyOn($.fn, 'attr').andCallThrough()
         VideoClipper.getBLData @el
         expect($.fn.attr.calls.length).toEqual 2
         expect(attrSpy.calls[1].object).toEqual @el
 
-      it "should parse a JSON object from the data-bl attribute", ->
+      it "parses a JSON object from the data-bl attribute", ->
         spyOn($, 'parseJSON')
         VideoClipper.getBLData @el
         expect($.parseJSON).toHaveBeenCalledWith decodeURI @testDataGenerate
 
-      it "should produce a valid JSON object with the correct data", ->
+      it "produces a valid JSON object with the correct data", ->
         blData = VideoClipper.getBLData @el
         expect(blData).toEqual $.parseJSON decodeURI @testDataGenerate
 
@@ -803,18 +796,18 @@ describe "VideoClipper", ->
       beforeEach ->
         @el = $('#test').text @testDataShow
 
-      it 'should get the encoded data from the elements tesxt', ->
+      it 'gets the encoded data from the elements tesxt', ->
         textSpy = spyOn($.fn, 'text').andCallThrough()
         VideoClipper.getBLData @el
         expect($.fn.text).toHaveBeenCalled()
         expect(textSpy.calls[0].object).toEqual(@el)
 
-      it "should parse a JSON object from the elements text", ->
+      it "parses a JSON object from the elements text", ->
         spyOn($, 'parseJSON')
         VideoClipper.getBLData @el
         expect($.parseJSON).toHaveBeenCalledWith decodeURI @testDataShow
 
-      it "should produce a valid JSON object with the correct data", ->
+      it "produces a valid JSON object with the correct data", ->
         blData = VideoClipper.getBLData @el
         expect(blData).toEqual $.parseJSON decodeURI @testDataShow
 
@@ -832,19 +825,19 @@ describe "VideoClipper", ->
         videoType: 'TEST'
         buttonId: @testID
 
-    it "should clear values for input box in the snippet box", ->
+    it "clears values for input box in the snippet box", ->
       $("input[name='bl-end']").val 200
       $("input[name='bl-start']").val 300
       VideoClipper.clearInputs()
       expect($("input[name='bl-end']").val()).toEqual ""
       expect($("input[name='bl-start']").val()).toEqual ""      
 
-    it "should clear values for the textarea in the snippet box", ->
+    it "clears values for the textarea in the snippet box", ->
       $(".bl-URL").text "Testing 1.. 2.. 3.."
       VideoClipper.clearInputs()
       expect($(".bl-URL").text()).toEqual "Generated URL goes here"
 
-    it "should remove the bl-incorrect class from the input boxes", ->
+    it "removes the bl-incorrect class from the input boxes", ->
       $("input[name='bl-end']").addClass "bl-incorrect"
       $("input[name='bl-start']").addClass "bl-incorrect"
       VideoClipper.clearInputs()
@@ -878,7 +871,7 @@ describe "VideoClipper", ->
     afterEach ->
       $('#test').remove()
 
-    it "should get the question's current contents", ->
+    it "gets the question's current contents", ->
       contentSpy = spyOn($.fn, 'contents').andCallThrough()
       @clippy.update(@newTag)
       expect($.fn.contents).toHaveBeenCalled()
@@ -886,32 +879,32 @@ describe "VideoClipper", ->
         toEqual @clippy.questionBox
 
     describe "that doesn't already have contents", ->
-      it "the div's text equal the new link", ->
+      it "makes the div's text equal the new link", ->
         expect($('.'+@clippy.answerClass).contents().length).toEqual 0
         @clippy.update(@newTag)
         expect($('.'+@clippy.answerClass).find('a').text()).
           toEqual @newTag.text()
 
     describe 'that already has contents', ->
-      it 'should get the questionBox contents', ->
+      it 'gets the questionBox contents', ->
           spyOn(@clippy.questionBox, 'contents').andCallThrough()
           @clippy.update(@newTag)
           expect(@clippy.questionBox.contents).toHaveBeenCalled()
 
-      it "should iterate through the question's text and html", ->
+      it "iterates through the question's text and html", ->
         eachAgent = jasmine.createSpyObj('each', ['each'])
         spyOn(@clippy.questionBox, 'contents').andReturn eachAgent
         @clippy.update(@newTag)
         expect(eachAgent.each).toHaveBeenCalled()
 
-    it "should update the question's textarea", ->
+    it "updates the question's textarea", ->
       valSpy = spyOn($.fn, 'val').andCallThrough()
       @clippy.update(@newTag) 
       newVal = @clippy.questionBox.html()
       expect($.fn.val).toHaveBeenCalledWith newVal
       expect(valSpy.mostRecentCall.object).toEqual @clippy.questionBox.prev()
 
-    it "should make video clips handle clicks", ->
+    it "makes video clips handle clicks", ->
       @clippy.update(@newTag)
       expect(@clippy.questionBox.find('[rel*=blModal]')).toHandle 'click'
 
@@ -920,7 +913,7 @@ describe "VideoClipper", ->
       expect($.fn.qtip).toHaveBeenCalled()
 
     describe 'when a video clip is click', ->
-      it 'should open the modal window', ->
+      it 'opens the modal window', ->
         spyOn(VideoClipper.modal, 'open')
         @clippy.update(@newTag)
         $('[rel*=blModal]').click()
@@ -947,7 +940,7 @@ describe "VideoClipper", ->
     afterEach ->
       VideoClipper.modal.close()
 
-    it "should get start time from the snippet box", ->
+    it "gets start time from the snippet box", ->
       $("input[name='bl-start']").val("200.50")
       valSpy = spyOn($.fn, "val").andCallThrough()
       VideoClipper.generateTag @clippy
@@ -955,7 +948,7 @@ describe "VideoClipper", ->
       expect("#{@clippy.startTime}").toEqual '200.50'
       expect(valSpy.calls[0].object.selector).toEqual("input[name='bl-start']")
 
-    it "should get end time from the snippet box", ->
+    it "gets end time from the snippet box", ->
       $("input[name='bl-end']").val("300.50")
       valSpy = spyOn($.fn, "val").andCallThrough()
       VideoClipper.generateTag @clippy
@@ -963,7 +956,7 @@ describe "VideoClipper", ->
       expect("#{@clippy.endTime}").toEqual '300.50'
       expect(valSpy.calls[1].object.selector).toEqual("input[name='bl-end']")
 
-    it "should check for errors in the start and end times", ->
+    it "checks for errors in the start and end times", ->
       spyOn(VideoClipper, 'checkErrors').andCallThrough()
       VideoClipper.generateTag @clippy
       expect(VideoClipper.checkErrors).toHaveBeenCalled()
@@ -973,18 +966,18 @@ describe "VideoClipper", ->
         $("input[name='bl-start']").val("200.50")
         $("input[name='bl-end']").val("300.50")
   
-      it "should set the endTime to the video duration if it isn't defined", ->
+      it "sets the endTime to the video duration if it isn't defined", ->
         $("input[name='bl-end']").val("")
         spyOn(VideoClipper.player, 'getDuration').andReturn 400
         VideoClipper.generateTag @clippy
         expect(VideoClipper.player.getDuration).toHaveBeenCalled()
 
-      it "should generate a show data JSON string", ->
+      it "generates a show data JSON string", ->
         spyOn(VideoClipper, 'generateBLDataString').andCallThrough()
         VideoClipper.generateTag @clippy
         expect(VideoClipper.generateBLDataString).toHaveBeenCalled()
 
-      it "should encode the data string", ->
+      it "encodes the data string", ->
         spyOn(window, 'encodeURI')
         str = 'Test'
         spyOn(VideoClipper, 'generateBLDataString').andReturn (str)
@@ -992,26 +985,26 @@ describe "VideoClipper", ->
         expect(window.encodeURI).toHaveBeenCalledWith(str)
   
 
-      it "should create an a tag with the encodedData in the text", ->
+      it "creates an a tag with the encodedData in the text", ->
         str = 'Test'
         spyOn(VideoClipper, 'generateBLDataString').andReturn (str)
         tag = VideoClipper.generateTag @clippy
         expect(tag).toBe 'a'
         expect(tag.text()).toEqual encodeURI str
 
-      it "should the clip to the instance's clips", ->
+      it "adds the clip to the instance's clips", ->
         tag = VideoClipper.generateTag @clippy
         clipAdded = false
         clipAdded = true for clip in @clippy.clips when clip == tag
         expect(clipAdded).toBeTruthy
 
-      it "should return the tag", ->
+      it "returns the tag", ->
         tag = VideoClipper.generateTag @clippy
         expect(tag).toBe 'a'
 
     describe "without correct values", ->
 
-      it "should return and empty string", ->
+      it "returns and empty string", ->
         spyOn(VideoClipper, 'checkErrors').andReturn false
         expect(VideoClipper.generateTag(@clippy)).toEqual ""  
 
@@ -1035,10 +1028,10 @@ describe "VideoClipper", ->
         dataString = VideoClipper.generateBLDataString 'generate', @clippy
         @blData = $.parseJSON dataString
 
-      it 'should use the vid of the instance in the JSON string', ->
+      it 'uses the vid of the instance in the JSON string', ->
         expect(@blData.videoId).toEqual @vid
 
-      it 'should use the type of the instance in the JSON string', ->
+      it 'uses the type of the instance in the JSON string', ->
         expect(@blData.videoType).toEqual @videoType
 
 
@@ -1053,21 +1046,21 @@ describe "VideoClipper", ->
         dataString = VideoClipper.generateBLDataString 'show', @clippy
         @blData = $.parseJSON dataString
 
-      it 'should use the vid of the instance in the JSON string', ->
+      it 'uses the vid of the instance in the JSON string', ->
         expect(@blData.videoId).toEqual @vid
 
-      it 'should use the type of the instance in the JSON string', ->
+      it 'uses the type of the instance in the JSON string', ->
         expect(@blData.videoType).toEqual @videoType
 
-      it 'should use the start time of the instance in the JSON string', ->
+      it 'uses the start time of the instance in the JSON string', ->
         expect(@blData.startSeconds).toEqual @startTime
 
-      it 'should use the end time of the instance in the JSON string', ->
+      it 'uses the end time of the instance in the JSON string', ->
         expect(@blData.endSeconds).toEqual @endTime
 
     describe "without an incorrect type", ->
 
-      it "should return an empty string", ->
+      it "returns an empty string", ->
         expect(VideoClipper.generateBLDataString 'incorrect', @clippy).toEqual ""
   
   describe "#getCaretPosition", ->
@@ -1103,7 +1096,7 @@ describe "VideoClipper", ->
     beforeEach ->
       @elementHtml = '<a rel="blModal" href="#bl-vid" class="bl">%7B%22start%22:%20%2243.92%22,%20%22end%22:%20%22330%22,%20%22type%22:%20%22show%22,%20%22modal%22:%20%22#bl-vid%22,%20%22video%22:%20%7B%22id%22:%20%228f7wj_RcqYk%22,%20%22type%22:%20%22YT%22%7D%7D</a>'
 
-    it "should create a div", ->
+    it "creates a div", ->
       spyOn(document, "createElement").andCallThrough()
       VideoClipper.stripHTML(@elementHtml)
       expect(document.createElement).toHaveBeenCalledWith("DIV")
@@ -1275,7 +1268,7 @@ describe "VideoClipper", ->
       expect(valSpy.mostRecentCall.object.selector).
         toEqual "input[name='bl-end']"
 
-    it 'should return the value from secondsToTime', ->
+    it 'returns the value from secondsToTime', ->
       val = 'SOME VALUE'
       val2 = 'SOME VALUE ROUND 2'
       spyOn(VideoClipper, 'secondsToTime').andReturn val2
@@ -1310,7 +1303,7 @@ describe "VideoClipper", ->
       expect(valSpy.mostRecentCall.object.selector).
         toEqual "input[name='bl-start']"
 
-    it 'should return the value from secondsToTime', ->
+    it 'returns the value from secondsToTime', ->
       val = 'SOME VALUE'
       val2 = 'SOME VALUE ROUND 2'
       spyOn(VideoClipper, 'secondsToTime').andReturn val2
