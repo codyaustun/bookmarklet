@@ -129,7 +129,7 @@ describe "VideoClipper", ->
   describe '.generateQuestionBox', ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       textareaId = 'bl-text'
       @selector = '#'+textareaId
 
@@ -242,7 +242,7 @@ describe "VideoClipper", ->
   describe '.generateOverlay', ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
 
       @clippy = new VideoClipper
         textareaId: 'bl-text'
@@ -281,7 +281,7 @@ describe "VideoClipper", ->
   describe ".generateSnippetBox", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -416,7 +416,7 @@ describe "VideoClipper", ->
   describe "#setup", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -465,7 +465,7 @@ describe "VideoClipper", ->
   describe '.generate', ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -479,7 +479,7 @@ describe "VideoClipper", ->
     describe 'with a VideoClipper instance', ->
       beforeEach ->
         @clippy.generateQuestionBox()
-        loadFixtures('question.html')
+        loadFixtures('video_clipper_question.html')
 
       it "should generate a snippet box", ->
         expect($('#bl').length).toBe(0)
@@ -501,7 +501,7 @@ describe "VideoClipper", ->
 
     describe 'without a VideoClipper instance', ->
       beforeEach ->
-        loadFixtures('answer.html')
+        loadFixtures('video_clipper_answer.html')
       it "should not generate a snippet box", ->
         expect($('#bl').length).toBe(0)
         spyOn(VideoClipper, 'generateSnippetBox')
@@ -542,7 +542,7 @@ describe "VideoClipper", ->
   describe '.cleanUp', ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -580,7 +580,7 @@ describe "VideoClipper", ->
   describe ".modal.close", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -611,7 +611,7 @@ describe "VideoClipper", ->
   describe ".modal.open", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -703,7 +703,7 @@ describe "VideoClipper", ->
   describe ".checkErrors", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -756,7 +756,7 @@ describe "VideoClipper", ->
   describe ".getBLData", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -826,7 +826,7 @@ describe "VideoClipper", ->
   describe ".clearInputs", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -858,7 +858,7 @@ describe "VideoClipper", ->
   describe "#update", -> 
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -941,7 +941,7 @@ describe "VideoClipper", ->
   describe ".generateTag", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
 
@@ -1030,7 +1030,7 @@ describe "VideoClipper", ->
   describe ".generateBLDataString", ->
     beforeEach -> 
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
       @vid = '8f7wj_RcqYk'
@@ -1085,7 +1085,7 @@ describe "VideoClipper", ->
   describe "#getCaretPosition", ->
     beforeEach -> 
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       @testID = "button-test"
       textareaId = 'bl-text'
       @vid = '8f7wj_RcqYk'
@@ -1214,7 +1214,7 @@ describe "VideoClipper", ->
   describe ".getEndTime", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       textareaId = 'bl-text'
 
       @clippy = new VideoClipper
@@ -1239,7 +1239,7 @@ describe "VideoClipper", ->
   describe ".getStartTime", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       textareaId = 'bl-text'
 
       @clippy = new VideoClipper
@@ -1263,7 +1263,7 @@ describe "VideoClipper", ->
   describe ".setEndTime", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       textareaId = 'bl-text'
 
       @clippy = new VideoClipper
@@ -1298,7 +1298,7 @@ describe "VideoClipper", ->
   describe ".setStartTime", ->
     beforeEach ->
       VideoClipper.cleanUp()
-      loadFixtures('question.html')
+      loadFixtures('video_clipper_question.html')
       textareaId = 'bl-text'
 
       @clippy = new VideoClipper
