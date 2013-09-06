@@ -89,8 +89,6 @@ a.bl{
     display: none;
 }
 
-
-/* start bookMarklet snippet box styles */
 #bl {
 	display: none;
 	background-color: #FFF;
@@ -124,8 +122,6 @@ a.bl{
 	float: left;
 	overflow: hidden;
 	border-top-left-radius: 3px;
-
-
 }
 
 .bl-controls{
@@ -133,11 +129,6 @@ a.bl{
 	box-sizing: border-box;
 	width: 30%;
 	float: right;
-	border-left-color: rgb(221, 221, 221);
-	border-left-style: solid;
-	border-left-width: 1px;
-
-
 }
 
 .bl-bottom{
@@ -184,7 +175,7 @@ a.bl{
 	
 }
 
-.bl-data, .bl-URL{
+.bl-data{
 	font-family: 'Open Sans', Verdana, Geneva, sans-serif;
 	font-size: 16px;
 	font-style: normal;
@@ -192,11 +183,9 @@ a.bl{
 	border-color: rgb(200, 200, 200);
 	border-style: solid;
 	border-width: 1px;
-}
-
-.bl-data {
 	height: 35px;
 }
+
 
 .bl-incorrect{
 	border-color: rgb(255, 0, 0);
@@ -240,17 +229,6 @@ a.bl{
 	height: 40px;
 }
 
-.bl-URL{
-	margin: 10px;
-	width: 210px;
-	text-align: left;
-	height: 105px;
-	margin-bottom: 0px;
-	resize: none;
-}
-
-/* end bookMarklet snippet box styles */
-/* start bookMarklet video box css */
 #bl-vid #bl-playerV {
 	width: 577px;
 	height: 330px;
@@ -285,5 +263,4 @@ a.bl{
 	border-width: 1px;
 }
 
-/* end bookMarklet video box css */
 /* end bookMarklet Styles */
