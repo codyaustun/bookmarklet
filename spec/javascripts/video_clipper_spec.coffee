@@ -1328,5 +1328,3 @@ describe "VideoClipper", ->
       val2 = 'SOME VALUE ROUND 2'
       spyOn(VideoClipper, 'secondsToTime').andReturn val2
       expect(VideoClipper.setStartTime(val)).toEqual val2
-
-
