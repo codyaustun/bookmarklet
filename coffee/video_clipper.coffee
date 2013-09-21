@@ -22,17 +22,13 @@ class @VideoClipper
   generate: true
   buttonId: ""
   textareaId: ""
-  clips: []
   questionBox = null # the question box as a jQuery object
   snippetButton = null # the button to open snippet box as a jQuery object
 
   # Class Variables 
   @reel: 'http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png'
-  @player: false
-  @playerV: false
   @answerClass: "bookMarklet-answer"
   @generateHtml: true
-  @clipper: ""
   @clippers: []
   @callback = false
   @prepared:
@@ -40,6 +36,9 @@ class @VideoClipper
 
   constructor: (obj)->
     obj = obj or {}
+
+    # Initialize an array of video clips created by this clipper
+    @clips = []
 
     # Required textarea id used for storing the answer
     @textareaId = obj.textareaId 
@@ -251,6 +250,13 @@ class @VideoClipper
     $('#bl').remove()
     $('#bl-vid').remove()
     $("#bookMarklet-overlay").remove()
+    if @player?
+      @player.remove() 
+      @player = undefined
+    if @playerV?
+      @playerV.remove() 
+      @playerV = undefined
+
     @prepared.snippet = false
     for clipper in @clippers
       clipper.destroy()
@@ -542,9 +548,9 @@ class @VideoClipper
       $("#bookMarklet-overlay").fadeOut 200
       $("##{modalId}").css display: "none"
       if modalId is "bl"
-        VideoClipper.player.stopVideo()
-      else 
-        VideoClipper.playerV.stopVideo()  if modalId is "bl-vid"
+        VideoClipper.player.stopVideo() if VideoClipper.player?
+      else if modalId is "bl-vid"
+        VideoClipper.playerV.stopVideo()  if VideoClipper.playerV? 
       return VideoClipper  
 
     ###
@@ -570,7 +576,7 @@ class @VideoClipper
         $(".bl-srcURL").text url
 
         @clearInputs()
-        if @player is false || @player.videoType != blData.videoType || @playerV.videoId == blData.videoId
+        if !@player? || @player.videoType != blData.videoType || @playerV.videoId == blData.videoId
           @player.remove() if @player? && @player
           @player = new OmniPlayer blData
         else
@@ -578,7 +584,7 @@ class @VideoClipper
       else
         # OPTIMIZE: This works, 
         #   but it would be nice if it didn't need to delete the video
-        if @playerV is false || @playerV.videoType != blData.videoType || @playerV.videoId == blData.videoId
+        if !@playerV? || @playerV.videoType != blData.videoType || @playerV.videoId == blData.videoId
           @playerV.remove() if @playerV? && @playerV
           @playerV = new OmniPlayer blData
         else

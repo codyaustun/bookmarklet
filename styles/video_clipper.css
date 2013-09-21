@@ -42,19 +42,6 @@ html {
 
 /* start bookMarklet Styles */
 
-.video-thumbnail-small{
-  width: 1.5em;
-  height: 1.5em;
-}
-
-.video-thumbnail-label{
-  position: relative;
-  top: -.375em;
-  font-size: 1em;
-  vertical-align: middle;
-  line-height: 1.5em;
-}
-
 a.bl{
   background-image: url('http://web.mit.edu/colemanc/www/bookmarklet/images/film3Small.png');
   display: inline-block;
